@@ -48,7 +48,9 @@ export class LoginComponent implements OnInit, AfterViewInit {
       },
       password: {
         required: 'Required',
-        minlength: 'Password must of atleast 6',
+        minlength: 'Must be of atleast 8 chars.',
+        pattern:
+          'Must contain at least one uppercase letter, one digit, and one special character',
       },
     };
 
@@ -77,7 +79,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [
         Validators.required,
-        Validators.minLength(6),
+        Validators.pattern(
+          '^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+])[A-Za-z0-9!@#$%^&*()_+]+$',
+        ),
+        Validators.minLength(8),
       ]),
     });
   }

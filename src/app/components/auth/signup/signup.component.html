@@ -86,22 +86,56 @@
     </div>
 
     <div class="form-group">
-      <label for="departmentId">DepartmentId</label>
+      <label for="departmentID">DepartmentId</label>
       <input
         type="text"
-        formControlName="departmentId"
-        [class]="validProperty('departmentId')"
-        id="departmentId"
+        formControlName="departmentID"
+        [class]="validProperty('departmentID')"
+        id="departmentID"
         [value]="1"
         [disabled]="true"
         placeholder="1"
       />
       <div class="invalid-feedback">
-        {{ this.displayFeedback.departmentId }}
+        {{ this.displayFeedback.departmentID }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="employeeType">Employee Type</label>
+      <select
+        name=""
+        id="employeeType"
+        class="form-select"
+        formControlName="employeeType"
+      >
+        <option [value]="employees[0].value" selected>
+          {{ employees[0].name }}
+        </option>
+        <option [value]="employees[1].value">
+          {{ employees[1].name }}
+        </option>
+      </select>
+      <div class="invalid-feedback">
+        {{ this.displayFeedback.employeeType }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input
+        type="password"
+        formControlName="password"
+        [class]="validProperty('password')"
+        id="password"
+        placeholder="password"
+      />
+      <div class="invalid-feedback">
+        {{ this.displayFeedback.password }}
       </div>
     </div>
 
     <a href="#" [routerLink]="['']">Have Account</a>
-    <button type="submit" class="btn btn-primary">Login</button>
+    <button type="submit" class="btn btn-primary">Signup</button>
   </form>
 </div>

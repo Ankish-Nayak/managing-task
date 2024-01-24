@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
   Component,
@@ -13,9 +14,11 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
 import { GenericValidators } from '../../../shared/validators/generic-validator';
+import { AuthService } from '../../../shared/services/auth/auth.service';
+import { END_POINTS } from '../../../utils/constants';
 
 type IPropertyName =
   | 'name'
@@ -23,13 +26,15 @@ type IPropertyName =
   | 'address'
   | 'country'
   | 'phone'
-  | 'departmentId'
-  | 'city';
+  | 'departmentID'
+  | 'city'
+  | 'employeeType'
+  | 'password';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, CommonModule],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss',
 })
@@ -40,11 +45,18 @@ export class SignupComponent implements OnInit, AfterViewInit {
   formInputElements!: ElementRef[];
 
   displayFeedback: { [key in IPropertyName]?: string } = {};
+  employees: { name: string; value: number }[] = [
+    { name: 'Employee', value: 0 },
+    { name: 'Admin', value: 1 },
+  ];
 
   private validatioMessages!: { [key: string]: { [key: string]: string } };
   private genericValidator!: GenericValidators;
 
-  constructor() {
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+  ) {
     // defining validation messages here.
     this.validatioMessages = {
       email: {
@@ -71,13 +83,24 @@ export class SignupComponent implements OnInit, AfterViewInit {
       departmentId: {
         required: 'Required',
       },
+      employeeType: {
+        required: 'Required',
+        allowedvalue: 'Select from dropdown',
+      },
+      password: {
+        required: 'Required',
+        minlength: 'Must be of atleast 8 chars.',
+        pattern:
+          'Must contain at least one uppercase letter, one digit, and one special character',
+      },
     };
 
     this.genericValidator = new GenericValidators(this.validatioMessages);
   }
   ngOnInit(): void {
     this.signupFormInit();
-    this.disabling('departmentId');
+    //FIXME: disabling departmentID has stoped value to detected.
+    this.disabling('departmentID');
   }
 
   ngAfterViewInit(): void {
@@ -112,19 +135,35 @@ export class SignupComponent implements OnInit, AfterViewInit {
         Validators.required,
         Validators.pattern(/^[0-9]+$/),
       ]),
-      departmentId: new FormControl('1', [Validators.required]),
+      departmentID: new FormControl('1', [Validators.required]),
+      employeeType: new FormControl(0, [Validators.required]),
+      password: new FormControl('', [
+        Validators.required,
+        Validators.pattern(
+          '^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+])[A-Za-z0-9!@#$%^&*()_+]+$',
+        ),
+        Validators.minLength(8),
+      ]),
     });
   }
   onSubmit(e: SubmitEvent) {
     e.preventDefault();
     // Mark all form as touched to trigger validation messages
     this.markAsTouchedAndDirty();
+    //TODO: replace it from hard code.
+    //
+    //
+    //email: "anil1@gmail.com"
+    //password: "Anil@123"
+    const data = { ...this.signupForm.value, departmentID: 1 };
+
+    console.log('inputs: ', data);
     if (this.signupForm.valid) {
-      const data = this.signupForm.value;
-      console.log('inputs: ', data);
-    } else {
+      this.authService.signup(data).subscribe((res) => {
+        this.router.navigate(['', END_POINTS.dashboard.toString()]);
+        console.log(res);
+      });
     }
-    //TODO: Make backend request
   }
   neitherTouchedNorDirty(element: AbstractControl<any, any>) {
     return !(element.touched && element.dirty);
