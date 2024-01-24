@@ -1,0 +1,23 @@
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 500px;
+}
+
+.todo-form {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.todo-form input {
+  margin: 5px 0px;
+}
+
+.todo-form a {
+  text-decoration-line: none;
+  align-self: center;
+  padding: 10px 0px;
+}

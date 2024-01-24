@@ -1,33 +1,78 @@
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">Sno</th>
-      <th scope="col">Title</th>
-      <th scope="col">Description</th>
-      <th scope="col">IsCompleted</th>
-      <th scope="col">AssignedTo</th>
-      <th scope="col">Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let todo of todos; let i = index">
-      <th scope="row">{{ i + 1 }}</th>
-      <td>{{ todo.title }}</td>
-      <td>{{ todo.description }}</td>
-      <td>{{ todo.isCompleted }}</td>
-      <td>{{ todo.employeeId }}</td>
-      <td>
-        <div
-          class="d-flex justify-content-between container-fuild align-items-center"
-        >
-          <button class="btn btn-warning btn-sm" (click)="updateTodo(todo.id)">
-            update
-          </button>
-          <button class="btn btn-sm btn-danger" (click)="deleteTodo(todo.id)">
-            delete
-          </button>
-        </div>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<div class="spinner-border" role="status" *ngIf="isLoading">
+  <span class="visually-hidden">Loading...</span>
+</div>
+<form [formGroup]="todoForm">
+  <div class="form">
+    <table class="table" *ngIf="!isLoading">
+      <thead>
+        <tr>
+          <th scope="col">Sno</th>
+          <th scope="col">Title</th>
+          <th scope="col">Description</th>
+          <th scope="col">IsCompleted</th>
+          <th scope="col">AssignedTo</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let todo of todos; let i = index">
+          <th scope="row">{{ i + 1 }}</th>
+          <td>{{ todo.title }}</td>
+          <td>{{ todo.description }}</td>
+          <td>{{ todo.isCompleted }}</td>
+          <td>{{ todo.employeeId }}</td>
+          <td>
+            <div
+              class="d-flex justify-content-between container-fuild align-items-center"
+            >
+              <button
+                class="btn btn-warning btn-sm"
+                (click)="updateTodo(todo.id)"
+              >
+                update
+              </button>
+              <button
+                class="btn btn-sm btn-danger"
+                (click)="deleteTodo(todo.id)"
+              >
+                delete
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <!-- <form [formGroup]="todoForm"> -->
+        <!-- <tr class="input-row"> -->
+        <!--   <th>{{ todos.length + 1 }}</th> -->
+        <!--   <td colspan="1"> -->
+        <!--     <input -->
+        <!--       type="text" -->
+        <!--       formControlName="title" -->
+        <!--       placeholder="Enter title" -->
+        <!--       class="form-control" -->
+        <!--     /> -->
+        <!--   </td> -->
+        <!--   <td colspan="2"> -->
+        <!--     <textarea -->
+        <!--       name="" -->
+        <!--       id="" -->
+        <!--       cols="20" -->
+        <!--       rows="1" -->
+        <!--       formControlName="title" -->
+        <!--       placeholder="Enter description" -->
+        <!--       class="form-control" -->
+        <!--     ></textarea> -->
+        <!-- <input -->
+        <!--   type="textarea" -->
+        <!--   formControlName="description" -->
+        <!--   placeholder="Enter description" -->
+        <!--   class="form-control" -->
+        <!-- /> -->
+        <!--   </td> -->
+        <!--   <td></td> -->
+        <!-- </tr> -->
+        <!-- </form> -->
+      </tbody>
+    </table>
+  </div>
+</form>

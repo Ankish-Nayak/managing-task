@@ -5,6 +5,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { DepartmentListComponent } from './components/department-list/department-list.component';
 import { END_POINTS } from './utils/constants';
 import { TodoListComponent } from './components/dashboard/todo-list/todo-list.component';
+import { CreateTodoComponent } from './components/dashboard/create-todo/create-todo.component';
 
 export const routes: Routes = [
   {
@@ -23,6 +24,10 @@ export const routes: Routes = [
       {
         component: TodoListComponent,
         path: 'todos',
+      },
+      {
+        component: CreateTodoComponent,
+        path: 'create-todo',
       },
     ],
   },
