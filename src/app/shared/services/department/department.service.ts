@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { environment } from '../../../../environments/environment.development';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { map } from 'rxjs';
+import { environment } from '../../../../environments/environment.development';
 import { AUTH_TOKEN } from '../../../utils/constants';
 import { IGetDepartmentRes } from '../../interfaces/requests/department.interface';
-import { map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -26,10 +26,19 @@ export class DepartmentService {
       })
       .pipe(map((res) => res.iterableData));
   }
-  deleteDeparment(id: number) {
+  deleteDepartment(id: number) {
     return this.http.delete(`${this.apiUrl}/deleteDepartment/${id}`, {
       withCredentials: true,
       headers: this.Headers,
     });
+  }
+  createDepartment(data: { departmentName: string }) {
+    return this.http.post(`${this.apiUrl}/addDepartment`, data, {
+      withCredentials: true,
+      headers: this.Headers,
+    });
+  }
+  updateDepartment() {
+    return this.http.delete(`${this.apiUrl}`);
   }
 }

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment.development';
 import { AUTH_TOKEN } from '../../../utils/constants';
+import { IGetTodosRes } from '../../interfaces/requests/toto.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -19,13 +20,13 @@ export class TodoService {
   }
   getTodos() {
     return this.http
-      .get(`${this.apiUrl}/tasks/1`, {
+      .get<IGetTodosRes>(`${this.apiUrl}/tasks/1`, {
         headers: this.Headers,
       })
       .pipe(
         map((res) => {
           console.log(res);
-          return res;
+          return res.iterableData;
         }),
       );
   }

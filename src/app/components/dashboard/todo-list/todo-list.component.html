@@ -1,0 +1,33 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Sno</th>
+      <th scope="col">Title</th>
+      <th scope="col">Description</th>
+      <th scope="col">IsCompleted</th>
+      <th scope="col">AssignedTo</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let todo of todos; let i = index">
+      <th scope="row">{{ i + 1 }}</th>
+      <td>{{ todo.title }}</td>
+      <td>{{ todo.description }}</td>
+      <td>{{ todo.isCompleted }}</td>
+      <td>{{ todo.employeeId }}</td>
+      <td>
+        <div
+          class="d-flex justify-content-between container-fuild align-items-center"
+        >
+          <button class="btn btn-warning btn-sm" (click)="updateTodo(todo.id)">
+            update
+          </button>
+          <button class="btn btn-sm btn-danger" (click)="deleteTodo(todo.id)">
+            delete
+          </button>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>

@@ -71,14 +71,22 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
 
   deleteDepartment(id: number) {
     //TODO: make backened request for deleting .
-    this.departmentService.deleteDeparment(id).subscribe((res) => {
+    this.departmentService.deleteDepartment(id).subscribe((res) => {
       console.log(res);
+      this.isLoading = true;
+      this.getDepartments();
     });
   }
 
-  createNewDeparment(e: SubmitEvent) {
-    e.preventDefault();
-    // this.departmentService
+  createDepartment() {
+    const data = this.departmentForm.value;
+    console.log(data);
+    this.departmentService.createDepartment(data).subscribe((res) => {
+      console.log(res);
+      this.isLoading = true;
+      this.departmentFormInit();
+      this.getDepartments();
+    });
   }
 
   departmentFormInit() {
@@ -109,6 +117,8 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
   formValue(propertyName: IPropertyName) {
     return this.departmentForm.get(propertyName)!;
   }
+
+  updateDepartment(id: number) {}
 
   getDepartments() {
     this.departmentService.getDepartments().subscribe(

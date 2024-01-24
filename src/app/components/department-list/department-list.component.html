@@ -7,16 +7,25 @@
       <tr>
         <th scope="col">Sno</th>
         <th scope="col">DepartmentName</th>
+        <th scope="col">Actions</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let department of departments; let i = index">
         <th scope="row">{{ i + 1 }}</th>
         <td>
+          {{ department.departmentName }}
+        </td>
+        <td>
           <div
             class="d-flex justify-content-between container-fuild align-items-center"
           >
-            <p>{{ department.departmentName }}</p>
+            <button
+              class="btn btn-sm btn-warning"
+              (click)="updateDepartment(department.id)"
+            >
+              update
+            </button>
             <button
               class="btn btn-danger btn-sm"
               (click)="deleteDepartment(department.id)"
@@ -29,7 +38,7 @@
       <tr>
         <th scope="row">{{ departments.length + 1 }}</th>
         <td>
-          <form [formGroup]="departmentForm" (submit)="(createNewDeparment)">
+          <form [formGroup]="departmentForm">
             <div class="form-group">
               <input
                 type="text"
@@ -42,8 +51,15 @@
                 {{ this.displayFeedback.departmentName }}
               </div>
             </div>
-            <button class="btn btn-primary btn-sm">Add Department</button>
           </form>
+        </td>
+        <td>
+          <button
+            class="btn btn-primary btn-sm"
+            (click)="this.createDepartment()"
+          >
+            Add Department
+          </button>
         </td>
       </tr>
     </tbody>
