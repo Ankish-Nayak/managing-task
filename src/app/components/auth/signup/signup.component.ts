@@ -87,33 +87,23 @@ export class SignupComponent implements OnInit {
     } else if (property.valid) {
       style = style + ' is-valid';
     } else {
-      // not valid
-
       style = style + ' is-invalid';
-      // if(VALIDATION_MESSAGES.hasOwnProperty(propertyName)){
-      //   const messages = VALIDATION_MESSAGES[propertyName];
-      //   for(const message in messages){
-      //     if(property.errors?.hasOwnProperty(message) && this.feedback.hasOwnProperty(message)){
-      //       VALIDATION_MESSAGES[propertyName][message];
-      //     }
-      //   }
-      // }
     }
     return style;
   }
+  formValue(propertyName: IPropertyName) {
+    return this.signupForm.get(propertyName)!;
+  }
   validEmail() {
     const email = this.formValue('email');
-    if(email.errors?.['required']){
+    if (email.errors?.['required']) {
       this.feedback.email = VALIDATION_MESSAGES.email.required;
-    }else if(email.errors?.['email']){
+    } else if (email.errors?.['email']) {
       this.feedback.email = VALIDATION_MESSAGES.email.email;
     }
   }
-  validName(){
+  validName() {
     const name = this.formValue('name');
-    if(name.)
-  }
-  formValue(propertyName: IPropertyName) {
-    return this.signupForm.get(propertyName)!;
+    // if(name.)
   }
 }

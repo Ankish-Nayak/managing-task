@@ -1,15 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChildren,
+} from '@angular/core';
 import {
   AbstractControl,
   FormControl,
+  FormControlName,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { LoginFeedback } from '../../../shared/models/feedback/loginFeedback.model';
+import { Observable, fromEvent, merge } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 import { AuthService } from '../../../shared/services/auth/auth.service';
+import { GenericValidators } from '../../../shared/validators/generic-validator';
+
+type IPropertyName = 'email' | 'password';
 
 @Component({
   selector: 'app-login',
@@ -18,16 +29,51 @@ import { AuthService } from '../../../shared/services/auth/auth.service';
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, AfterViewInit {
+  @ViewChildren(FormControlName, { read: ElementRef })
+  formInputElements!: ElementRef[];
   loginForm!: FormGroup;
-  feedback: LoginFeedback = new LoginFeedback('', '');
+  // feedback: LoginFeedback = new LoginFeedback('', '');
+
+  displayFeedback: { [key: string]: string } = {};
+  private validationMessages!: { [key: string]: { [key: string]: string } };
+  private genericValidator!: GenericValidators;
   constructor(
     private authService: AuthService,
     private router: Router,
-  ) {}
+  ) {
+    // defining validationMessages here.
+    this.validationMessages = {
+      email: {
+        required: 'Required',
+        email: 'Invalid email address',
+      },
+      password: {
+        required: 'Required',
+        minlength: 'Password must of atleast 6',
+      },
+    };
+
+    this.genericValidator = new GenericValidators(this.validationMessages);
+  }
   ngOnInit(): void {
     this.formInit();
   }
+
+  ngAfterViewInit(): void {
+    const controlBlurs: Observable<any>[] = this.formInputElements.map(
+      (formControl: ElementRef) => fromEvent(formControl.nativeElement, 'blur'),
+    );
+
+    merge(this.loginForm.valueChanges, ...controlBlurs)
+      .pipe(debounceTime(800))
+      .subscribe((value) => {
+        this.displayFeedback = this.genericValidator.processMessages(
+          this.loginForm,
+        );
+      });
+  }
+
   formInit() {
     this.loginForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
@@ -59,7 +105,7 @@ export class LoginComponent implements OnInit {
       if (email.valid) {
         style = style + ' is-valid';
       } else {
-        this.feedback.email = 'Invalid email address.';
+        // this.feedback.email = 'Invalid email address.';
         style = style + ' is-invalid';
       }
       return style;
@@ -74,7 +120,7 @@ export class LoginComponent implements OnInit {
       if (password.valid) {
         style = style + ' is-valid';
       } else {
-        this.feedback.password = 'Password must ot least 6 chars';
+        // this.feedback.password = 'Password must ot least 6 chars';
         style = style + ' is-invalid';
       }
       return style;
@@ -85,5 +131,20 @@ export class LoginComponent implements OnInit {
   }
   get password() {
     return this.loginForm.get('password')!;
+  }
+  validProperty(propertyName: IPropertyName) {
+    let style = 'form-control';
+    const property = this.formValue(propertyName);
+    if (this.neitherTouchedNorDirty(property)) {
+      return style;
+    } else if (property.valid) {
+      style = style + ' is-valid';
+    } else {
+      style = style + ' is-invalid';
+    }
+    return style;
+  }
+  formValue(propertyName: IPropertyName) {
+    return this.loginForm.get(propertyName)!;
   }
 }
