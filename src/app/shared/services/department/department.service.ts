@@ -26,4 +26,10 @@ export class DepartmentService {
       })
       .pipe(map((res) => res.iterableData));
   }
+  deleteDeparment(id: number) {
+    return this.http.delete(`${this.apiUrl}/deleteDepartment/${id}`, {
+      withCredentials: true,
+      headers: this.Headers,
+    });
+  }
 }

@@ -71,6 +71,9 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
 
   deleteDepartment(id: number) {
     //TODO: make backened request for deleting .
+    this.departmentService.deleteDeparment(id).subscribe((res) => {
+      console.log(res);
+    });
   }
 
   createNewDeparment(e: SubmitEvent) {
