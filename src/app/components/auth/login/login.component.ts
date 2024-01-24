@@ -33,9 +33,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   @ViewChildren(FormControlName, { read: ElementRef })
   formInputElements!: ElementRef[];
   loginForm!: FormGroup;
-  // feedback: LoginFeedback = new LoginFeedback('', '');
-
-  displayFeedback: { [key: string]: string } = {};
+  displayFeedback: { [key in IPropertyName]?: string } = {};
   private validationMessages!: { [key: string]: { [key: string]: string } };
   private genericValidator!: GenericValidators;
   constructor(
@@ -85,13 +83,16 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
   onSubmit(e: SubmitEvent) {
     e.preventDefault();
-    const { email, password } = this.loginForm.value;
-
-    this.router.navigate(['', 'dashboard']);
-    this.authService.login(email, password).subscribe((res) => {
-      console.log(res);
-      this.router.navigate(['', 'dashboard']);
-    });
+    // mark as touched and dirty
+    this.markAsTouchedAndDirty();
+    if (this.loginForm.valid) {
+      const { email, password } = this.loginForm.value;
+      this.authService.login(email, password).subscribe((res) => {
+        console.log(res);
+        this.router.navigate(['', 'dashboard']);
+      });
+    } else {
+    }
   }
   neitherTouchedNorDirty(element: AbstractControl<any, any>) {
     return !(element.touched && element.dirty);
@@ -110,5 +111,11 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
   formValue(propertyName: IPropertyName) {
     return this.loginForm.get(propertyName)!;
+  }
+  markAsTouchedAndDirty() {
+    Object.values(this.loginForm.controls).forEach((control) => {
+      control.markAsDirty();
+      control.markAsTouched();
+    });
   }
 }

@@ -4,14 +4,14 @@
       <label for="exampleInputEmail1">Email address</label>
       <input
         type="email"
-        [autofocus]="true"
+        autofocus
         [class]="validProperty('email')"
         id="exampleInputEmail1"
         aria-describedby="emailHelp"
         formControlName="email"
         placeholder="Enter email"
       />
-      <div class="invalid-feedback">{{ this.displayFeedback["email"] }}</div>
+      <div class="invalid-feedback">{{ this.displayFeedback.email }}</div>
     </div>
     <div class="form-group">
       <label for="exampleInputPassword1">Password</label>
@@ -22,7 +22,7 @@
         id="exampleInputPassword1"
         placeholder="Password"
       />
-      <div class="invalid-feedback">{{ this.displayFeedback["password"] }}</div>
+      <div class="invalid-feedback">{{ this.displayFeedback.password }}</div>
     </div>
 
     <a href="#" [routerLink]="['', 'signup']">Register</a>

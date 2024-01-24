@@ -39,7 +39,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
   @ViewChildren(FormControlName, { read: ElementRef })
   formInputElements!: ElementRef[];
 
-  displayFeedback: { [key: string]: string } = {};
+  displayFeedback: { [key in IPropertyName]?: string } = {};
 
   private validatioMessages!: { [key: string]: { [key: string]: string } };
   private genericValidator!: GenericValidators;
