@@ -6,6 +6,7 @@ import { DepartmentListComponent } from './components/department-list/department
 import { END_POINTS } from './utils/constants';
 import { TodoListComponent } from './components/dashboard/todo-list/todo-list.component';
 import { CreateTodoComponent } from './components/dashboard/create-todo/create-todo.component';
+import { UpdateTodoComponent } from './components/dashboard/update-todo/update-todo.component';
 
 export const routes: Routes = [
   {
@@ -28,6 +29,10 @@ export const routes: Routes = [
       {
         component: CreateTodoComponent,
         path: 'create-todo',
+      },
+      {
+        component: UpdateTodoComponent,
+        path: 'update-todo/:id',
       },
     ],
   },

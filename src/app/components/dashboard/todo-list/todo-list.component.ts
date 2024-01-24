@@ -3,6 +3,7 @@ import { TodoService } from '../../../shared/services/todo/todo.service';
 import { Todo } from '../../../shared/models/todo.model';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-todo-list',
@@ -15,7 +16,11 @@ export class TodoListComponent implements OnInit, AfterViewInit {
   isLoading: boolean = true;
   todoForm!: FormGroup;
   todos!: Todo[];
-  constructor(private todoService: TodoService) {}
+  constructor(
+    private todoService: TodoService,
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {}
   ngOnInit(): void {
     this.getTodos();
     this.todoFormInit();
@@ -42,6 +47,10 @@ export class TodoListComponent implements OnInit, AfterViewInit {
       },
     );
   }
-  updateTodo(id: number) {}
+  updateTodo(id: number) {
+    const todo = this.todos.find((todo) => todo.id === id);
+    localStorage.setItem(`todo/${id}`, JSON.stringify(todo));
+    this.router.navigate([`../update-todo/${id}`], { relativeTo: this.route });
+  }
   deleteTodo(id: number) {}
 }

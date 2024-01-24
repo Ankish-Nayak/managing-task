@@ -30,7 +30,19 @@ export class TodoService {
         }),
       );
   }
-  updateTodo() {}
+  updateTodo(
+    todoId: number,
+    data: {
+      title: string;
+      description: string;
+      isCompleted: boolean;
+    },
+  ) {
+    return this.http.put(`${this.apiUrl}/update/${todoId}`, data, {
+      withCredentials: true,
+      headers: this.Headers,
+    });
+  }
   createTodo(
     employeeId: number,
     data: {
@@ -49,5 +61,8 @@ export class TodoService {
       withCredentials: true,
       headers: this.Headers,
     });
+  }
+  getTodo(id: number) {
+    //TODO: make backend request to get particular todo.
   }
 }

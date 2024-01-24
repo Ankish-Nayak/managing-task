@@ -1,0 +1,39 @@
+<div class="todo-form">
+  <form [formGroup]="todoForm" (submit)="onSubmit($event)">
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input
+        type="text"
+        formControlName="title"
+        autoFocus
+        [class]="validProperty('title')"
+        id="title"
+        placeholder="Enter title"
+      />
+      <div class="invalid-feedback">
+        {{ this.displayFeedback.title }}
+      </div>
+
+      <label for="description">Description</label>
+      <textarea
+        formControlName="description"
+        [class]="validProperty('description')"
+        id="description"
+        placeholder="Enter description"
+      ></textarea>
+      <div class="invalid-feedback">
+        {{ this.displayFeedback.description }}
+      </div>
+      <!---TODO: employee selection for assigning task->
+
+      <!-- <select class="form-select" aria-label="Default select example"> -->
+      <!--   <option selected>Open this select menu</option> -->
+      <!--   <option value="1">One</option> -->
+      <!--   <option value="2">Two</option> -->
+      <!--   <option value="3">Three</option> -->
+      <!-- </select> -->
+    </div>
+
+    <button class="btn btn-primary" type="submit">update todo</button>
+  </form>
+</div>
