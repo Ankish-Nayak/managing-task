@@ -1,0 +1,21 @@
+<div class="d-flex justify-content-center align-items-center container-fuild">
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">DepartmentName</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let department of departments; let i = index">
+        <th scope="row">{{ i }}</th>
+        <td>{{ department.departmentName }}</td>
+      </tr>
+      <tr>
+        <th scope="row">{{ departments.length + 1 }}</th>
+        <td>enter data here</td>
+      </tr>
+    </tbody>
+  </table>
+  <button class="btn btn-primary btn-sm">Add Department</button>
+</div>
