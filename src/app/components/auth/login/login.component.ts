@@ -67,7 +67,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
     merge(this.loginForm.valueChanges, ...controlBlurs)
       .pipe(debounceTime(800))
-      .subscribe((value) => {
+      .subscribe(() => {
         this.displayFeedback = this.genericValidator.processMessages(
           this.loginForm,
         );
@@ -95,42 +95,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
   neitherTouchedNorDirty(element: AbstractControl<any, any>) {
     return !(element.touched && element.dirty);
-  }
-  validEmail() {
-    const email = this.email;
-    let style = 'form-control';
-    if (email === null || !(email.touched && email.dirty)) {
-      return style;
-    } else {
-      if (email.valid) {
-        style = style + ' is-valid';
-      } else {
-        // this.feedback.email = 'Invalid email address.';
-        style = style + ' is-invalid';
-      }
-      return style;
-    }
-  }
-  validPassword() {
-    const password = this.password;
-    let style = 'form-control';
-    if (password === null || !(password.touched && password.dirty)) {
-      return style;
-    } else {
-      if (password.valid) {
-        style = style + ' is-valid';
-      } else {
-        // this.feedback.password = 'Password must ot least 6 chars';
-        style = style + ' is-invalid';
-      }
-      return style;
-    }
-  }
-  get email() {
-    return this.loginForm.get('email')!;
-  }
-  get password() {
-    return this.loginForm.get('password')!;
   }
   validProperty(propertyName: IPropertyName) {
     let style = 'form-control';
