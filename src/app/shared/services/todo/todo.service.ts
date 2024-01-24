@@ -30,4 +30,24 @@ export class TodoService {
         }),
       );
   }
+  updateTodo() {}
+  createTodo(
+    employeeId: number,
+    data: {
+      title: string;
+      description: string;
+      isCompleted: boolean;
+    },
+  ) {
+    return this.http.post(`${this.apiUrl}/add/${employeeId}`, data, {
+      withCredentials: true,
+      headers: this.Headers,
+    });
+  }
+  deleteTodo(id: number) {
+    return this.http.delete(`${this.apiUrl}/remove/${id}`, {
+      withCredentials: true,
+      headers: this.Headers,
+    });
+  }
 }
