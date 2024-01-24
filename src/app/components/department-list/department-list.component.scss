@@ -1,1 +1,11 @@
+form {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
 
+.table {
+  width: 500px;
+  margin: auto;
+}

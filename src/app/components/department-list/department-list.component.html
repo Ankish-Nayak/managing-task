@@ -1,21 +1,51 @@
-<div class="d-flex justify-content-center align-items-center container-fuild">
-  <table class="table">
+<div class="table-container">
+  <div class="spinner-border" role="status" *ngIf="isLoading">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+  <table class="table table-hover" *ngIf="!isLoading">
     <thead>
       <tr>
-        <th scope="col">#</th>
+        <th scope="col">Sno</th>
         <th scope="col">DepartmentName</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let department of departments; let i = index">
-        <th scope="row">{{ i }}</th>
-        <td>{{ department.departmentName }}</td>
+        <th scope="row">{{ i + 1 }}</th>
+        <td>
+          <div
+            class="d-flex justify-content-between container-fuild align-items-center"
+          >
+            <p>{{ department.departmentName }}</p>
+            <button
+              class="btn btn-danger btn-sm"
+              (click)="deleteDepartment(department.id)"
+            >
+              delete
+            </button>
+          </div>
+        </td>
       </tr>
       <tr>
         <th scope="row">{{ departments.length + 1 }}</th>
-        <td>enter data here</td>
+        <td>
+          <form [formGroup]="departmentForm" (submit)="(createNewDeparment)">
+            <div class="form-group">
+              <input
+                type="text"
+                formControlName="departmentName"
+                [class]="validProperty('departmentName')"
+                id="departmentName"
+                placeholder="Enter department name"
+              />
+              <div class="invalid-feedback">
+                {{ this.displayFeedback.departmentName }}
+              </div>
+            </div>
+            <button class="btn btn-primary btn-sm">Add Department</button>
+          </form>
+        </td>
       </tr>
     </tbody>
   </table>
-  <button class="btn btn-primary btn-sm">Add Department</button>
 </div>
