@@ -3,6 +3,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  EventEmitter,
   OnInit,
   ViewChildren,
 } from '@angular/core';
@@ -31,6 +32,8 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
   isLoading: boolean = true;
   departments!: IDepartment[];
   departmentForm!: FormGroup;
+
+  deleteDepartmentEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   @ViewChildren(FormControlName, { read: ElementRef })
   formInputElements!: ElementRef[];
@@ -71,11 +74,23 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
 
   deleteDepartment(id: number) {
     //TODO: make backened request for deleting .
-    this.departmentService.deleteDepartment(id).subscribe((res) => {
+    //
+    this.deleteDepartmentEvent.subscribe((res) => {
       console.log(res);
-      this.isLoading = true;
-      this.getDepartments();
+      if (res) {
+        this.departmentService.deleteDepartment(id).subscribe((res) => {
+          console.log(res);
+          this.isLoading = true;
+          this.getDepartments();
+        });
+      } else {
+        console.log('cancelled');
+      }
     });
+  }
+
+  confirm(confirmation: boolean) {
+    this.deleteDepartmentEvent.emit(confirmation);
   }
 
   createDepartment() {

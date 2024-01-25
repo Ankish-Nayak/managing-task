@@ -6,11 +6,12 @@ import { Todo } from '../../../shared/models/todo.model';
 import { EmployeeService } from '../../../shared/services/employee/employee.service';
 import { TodoService } from '../../../shared/services/todo/todo.service';
 import { END_POINTS } from '../../../utils/constants';
+import { ConfirmationModalComponent } from '../../../shared/modals/confirmation-modal/confirmation-modal.component';
 
 @Component({
   selector: 'app-todo-list',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ConfirmationModalComponent],
   templateUrl: './todo-list.component.html',
   styleUrl: './todo-list.component.scss',
 })
