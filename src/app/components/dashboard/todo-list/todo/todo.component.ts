@@ -1,0 +1,33 @@
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Todo } from '../../../../shared/models/todo.model';
+import { CommonModule } from '@angular/common';
+import { ConfirmationModalComponent } from '../../../../shared/modals/confirmation-modal/confirmation-modal.component';
+
+@Component({
+  selector: '[app-todo]',
+  standalone: true,
+  imports: [CommonModule, ConfirmationModalComponent],
+  templateUrl: './todo.component.html',
+  styleUrl: './todo.component.scss',
+})
+export class TodoComponent {
+  @Input({ required: true }) todo!: Todo;
+  @Input({ required: true }) sno!: number;
+  @Output() deleteTodo = new EventEmitter<number>();
+  @Output() updateTodo = new EventEmitter<number>();
+  constructor() {}
+  delete() {
+    this.deleteTodo.emit(this.todo.id);
+  }
+  getDescription(description: string) {
+    return description.length > 115
+      ? description.substring(0, 115) + '...'
+      : description;
+  }
+  update() {
+    this.updateTodo.emit(this.todo.id);
+  }
+  getModalName() {
+    return `todoDeleteConfirmation|${this.todo.id}`;
+  }
+}

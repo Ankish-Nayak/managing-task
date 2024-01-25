@@ -1,0 +1,25 @@
+<th scope="row">{{ sno }}</th>
+<td class="todo-title">{{ todo.title }}</td>
+<td class="todo-description">
+  {{ getDescription(todo.description) }}
+</td>
+<td class="todo-isCompeleted">{{ todo.isCompleted }}</td>
+<td class="todo-assignedTo">{{ todo.employeeId }}</td>
+<td>
+  <div
+    class="d-flex justify-content-between container-fuild align-items-center"
+  >
+    <button class="btn btn-warning btn-sm" (click)="update()">update</button>
+    <button
+      type="button"
+      class="btn btn-sm btn-danger"
+      (click)="delete()"
+      data-bs-toggle="modal"
+      data-bs-target="#todoDeleteConfirmation"
+    >
+      delete
+    </button>
+  </div>
+</td>
+
+<app-confirmation-modal modalName="d"> </app-confirmation-modal>
