@@ -33,7 +33,18 @@
       <!--   <option value="3">Three</option> -->
       <!-- </select> -->
     </div>
-
-    <button class="btn btn-primary" type="submit">create todo</button>
+    <div class="d-flex justify-content-between align-items">
+      <button class="btn btn-primary" type="submit">
+        {{ updateForm ? "Update Todo" : "Create Todo" }}
+      </button>
+      <button
+        class="btn btn-primary"
+        type="button"
+        *ngIf="updateForm"
+        (click)="reset()"
+      >
+        Reset
+      </button>
+    </div>
   </form>
 </div>

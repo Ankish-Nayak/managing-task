@@ -1,10 +1,5 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  OnInit,
-  ViewChildren,
-} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, ElementRef, ViewChildren } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -17,13 +12,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
 import { TodoService } from '../../../shared/services/todo/todo.service';
 import { GenericValidators } from '../../../shared/validators/generic-validator';
+import { END_POINTS } from '../../../utils/constants';
 
 type IPropertyName = 'title' | 'description' | 'employeeId';
 
 @Component({
   selector: 'app-upsert-todo',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './upsert-todo.component.html',
   styleUrl: './upsert-todo.component.scss',
 })
@@ -81,8 +77,29 @@ export class UpsertTodoComponent {
         this.id = id;
       }
     });
-
+    if (this.getActiveEndpoint() === `./${END_POINTS.createTodo}`) {
+      this.updateForm = false;
+    } else {
+      this.updateForm = true;
+    }
     this.todoFormInit();
+  }
+
+  getActiveEndpoint() {
+    // Get the current activated route
+    let currentRoute = this.route;
+    while (currentRoute.firstChild) {
+      currentRoute = currentRoute.firstChild;
+    }
+
+    // Get the URL segments of the activated route
+    const urlSegments = currentRoute.snapshot.url.map(
+      (segment) => segment.path,
+    );
+
+    // Determine the active endpoint based on the URL segments
+    const activeEndpoint = '/' + urlSegments.join('/');
+    return `.${activeEndpoint}`;
   }
 
   onSubmit(e: SubmitEvent) {
@@ -142,47 +159,36 @@ export class UpsertTodoComponent {
     return value.trim();
   }
   todoFormInit() {
-    // will get this when we use it as update form
-    const todo = JSON.parse(this.todoService.getTodo(this.id));
-    this.todoForm = new FormGroup({
-      title: new FormControl(todo.title || '', [
-        Validators.required,
-        Validators.minLength(6),
-      ]),
-      description: new FormControl(todo.description || '', [
-        Validators.required,
-        Validators.minLength(6),
-      ]),
-      employeeId: new FormControl('1', [Validators.required]),
-    });
-    // if(this.updateForm){
-    //   const todo = this.todoService.getTodo(this.id);
-    // this.todoForm = new FormGroup({
-    //   title: new FormControl('', [
-    //     Validators.required,
-    //     Validators.minLength(6),
-    //   ]),
-    //   description: new FormControl('', [
-    //     Validators.required,
-    //     Validators.minLength(6),
-    //   ]),
-    //   employeeId: new FormControl('1', [Validators.required]),
-    // });
-    // }else{
-    //
-    // this.todoForm = new FormGroup({
-    //   title: new FormControl('', [
-    //     Validators.required,
-    //     Validators.minLength(6),
-    //   ]),
-    //   description: new FormControl('', [
-    //     Validators.required,
-    //     Validators.minLength(6),
-    //   ]),
-    //   employeeId: new FormControl('1', [Validators.required]),
-    // });
-    //
-    // }
+    if (this.updateForm) {
+      const todo = JSON.parse(this.todoService.getTodo(this.id));
+      this.todoForm = new FormGroup({
+        title: new FormControl(todo.title || '', [
+          Validators.required,
+          Validators.minLength(6),
+        ]),
+        description: new FormControl(todo.description || '', [
+          Validators.required,
+          Validators.minLength(6),
+        ]),
+        employeeId: new FormControl('1', [Validators.required]),
+      });
+    } else {
+      this.todoForm = new FormGroup({
+        title: new FormControl('', [
+          Validators.required,
+          Validators.minLength(6),
+        ]),
+        description: new FormControl('', [
+          Validators.required,
+          Validators.minLength(6),
+        ]),
+        employeeId: new FormControl('1', [Validators.required]),
+      });
+    }
+  }
+
+  reset() {
+    if (this.updateForm) this.todoFormInit();
   }
 
   neitherTouchedNorDirty(element: AbstractControl<any, any>) {
