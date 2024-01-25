@@ -62,7 +62,9 @@ export class TodoService {
       headers: this.Headers,
     });
   }
-  getTodo(id: number) {
+  getTodo(id: string) {
     //TODO: make backend request to get particular todo.
+    //
+    return localStorage.getItem(`todo/${id}`)!;
   }
 }
