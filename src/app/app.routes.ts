@@ -7,6 +7,7 @@ import { END_POINTS } from './utils/constants';
 import { TodoListComponent } from './components/dashboard/todo-list/todo-list.component';
 import { CreateTodoComponent } from './components/dashboard/create-todo/create-todo.component';
 import { UpdateTodoComponent } from './components/dashboard/update-todo/update-todo.component';
+import { authGuard } from './shared/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -20,6 +21,8 @@ export const routes: Routes = [
   {
     component: DashboardComponent,
     path: END_POINTS.dashboard,
+    canActivate: [authGuard],
+    canActivateChild: [authGuard],
     children: [
       { component: DepartmentListComponent, path: '' },
       {
@@ -35,6 +38,11 @@ export const routes: Routes = [
         path: 'update-todo/:id',
       },
     ],
+  },
+  {
+    path: '**',
+    component: LoginComponent,
+    pathMatch: 'full',
   },
   // { component: DepartmentListComponent, path: END_POINTS.departmentList },
 ];

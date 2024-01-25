@@ -24,6 +24,17 @@ export class AuthService {
     //TODO: handle headers here.
     //
   }
+
+  me() {
+    //TODO: make it observable for backend request.
+    const token = localStorage.getItem(AUTH_TOKEN);
+    return token === null ? false : true;
+  }
+
+  logout() {
+    localStorage.removeItem(AUTH_TOKEN);
+    return of();
+  }
   login(email: string, password: string) {
     return this.http
       .post<ILoginRes>(

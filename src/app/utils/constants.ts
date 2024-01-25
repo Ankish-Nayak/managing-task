@@ -4,5 +4,7 @@ export const END_POINTS = {
   dashboard: 'dashboard',
   login: '',
   sigup: 'signup',
-  departmentList: 'dashboard',
+  departmentList: '',
+  todoList: 'todos',
+  createTodo: 'create-todo',
 };
