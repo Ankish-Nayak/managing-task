@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Todo } from '../../../shared/models/todo.model';
 import { EmployeeService } from '../../../shared/services/employee/employee.service';
 import { TodoService } from '../../../shared/services/todo/todo.service';
+import { END_POINTS } from '../../../utils/constants';
 
 @Component({
   selector: 'app-todo-list',
@@ -73,5 +74,15 @@ export class TodoListComponent implements OnInit, AfterViewInit {
   }
   confirm(confirmation: boolean) {
     this.deleteTodoEvent.emit(confirmation);
+  }
+  assignTo() {
+    this.router.navigate([`../${END_POINTS.createTodo}`], {
+      relativeTo: this.route,
+    });
+  }
+  getDescription(description: string) {
+    return description.length > 115
+      ? description.substring(0, 115) + '...'
+      : description;
   }
 }

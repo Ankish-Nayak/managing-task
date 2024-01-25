@@ -13,6 +13,28 @@ form {
 }
 
 .table {
-  width: 1000px;
+  width: 1500px;
   margin: auto;
+  text-align: center;
+}
+
+.assign-task {
+  position: sticky;
+  top: 40px;
+}
+
+#title {
+  width: 20%;
+}
+#description {
+  width: 30%;
+}
+
+.todo-description {
+  // display: block;
+  // text-overflow: ellipsis;
+  // word-wrap: break-word;
+  // overflow: hidden;
+  // max-height: 3.6em;
+  // line-height: 1.8em;
 }

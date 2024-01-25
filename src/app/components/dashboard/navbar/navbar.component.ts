@@ -33,11 +33,11 @@ export class NavbarComponent implements OnInit {
       path: this.processPath(END_POINTS.departmentList),
       active: true,
     },
-    {
-      name: 'CreateTodo',
-      path: this.processPath(END_POINTS.createTodo),
-      active: false,
-    },
+    // {
+    //   name: 'CreateTodo',
+    //   path: this.processPath(END_POINTS.createTodo),
+    //   active: false,
+    // },
   ];
   profileLinks: {
     name: string;

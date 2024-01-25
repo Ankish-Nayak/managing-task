@@ -79,6 +79,7 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
   }
 
   createDepartment() {
+    console.log(this.departmentForm);
     const data = this.departmentForm.value;
     console.log(data);
     this.departmentService.createDepartment(data).subscribe((res) => {

@@ -6,21 +6,30 @@
     <table class="table table-hover" *ngIf="!isLoading">
       <thead>
         <tr>
-          <th scope="col">Sno</th>
-          <th scope="col">Title</th>
-          <th scope="col">Description</th>
-          <th scope="col">IsCompleted</th>
-          <th scope="col">AssignedTo</th>
-          <th scope="col">Actions</th>
+          <th scope="col" id="sNo">Sno</th>
+          <th scope="col" id="title">Title</th>
+          <th scope="col" id="description">Description</th>
+          <th scope="col" id="isCompleted">IsCompleted</th>
+          <th scope="col" id="assginedTo">AssignedTo</th>
+          <th scope="col" id="actions">Actions</th>
         </tr>
       </thead>
       <tbody>
+        <tr class="assign-task">
+          <td colspan="6">
+            <button class="btn btn-primary" (click)="assignTo()">
+              Assign Task
+            </button>
+          </td>
+        </tr>
         <tr *ngFor="let todo of todos; let i = index">
           <th scope="row">{{ i + 1 }}</th>
-          <td>{{ todo.title }}</td>
-          <td>{{ todo.description }}</td>
-          <td>{{ todo.isCompleted }}</td>
-          <td>{{ todo.employeeId }}</td>
+          <td class="todo-title">{{ todo.title }}</td>
+          <td class="todo-description">
+            {{ getDescription(todo.description) }}
+          </td>
+          <td class="todo-isCompeleted">{{ todo.isCompleted }}</td>
+          <td class="todo-assignedTo">{{ todo.employeeId }}</td>
           <td>
             <div
               class="d-flex justify-content-between container-fuild align-items-center"
@@ -79,16 +88,6 @@
     </table>
   </div>
 </form>
-
-<!-- <!-- Button trigger modal -->
-<!-- <button -->
-<!--   type="button" -->
-<!--   class="btn btn-primary" -->
-<!--   data-bs-toggle="modal" -->
-<!--   data-bs-target="#deleteTodoConfirmation" -->
-<!-- > -->
-<!--   Launch demo modal -->
-<!-- </button> -->
 
 <!-- Modal -->
 <div

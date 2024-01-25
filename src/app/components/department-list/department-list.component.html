@@ -11,31 +11,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let department of departments; let i = index">
-        <th scope="row">{{ i + 1 }}</th>
-        <td>
-          {{ department.departmentName }}
-        </td>
-        <td>
-          <div
-            class="d-flex justify-content-between container-fuild align-items-center"
-          >
-            <button
-              class="btn btn-sm btn-warning"
-              (click)="updateDepartment(department.id)"
-            >
-              update
-            </button>
-            <button
-              class="btn btn-danger btn-sm"
-              (click)="deleteDepartment(department.id)"
-            >
-              delete
-            </button>
-          </div>
-        </td>
-      </tr>
-      <tr>
+      <tr class="create-department">
         <th scope="row">{{ departments.length + 1 }}</th>
         <td>
           <form [formGroup]="departmentForm">
@@ -60,6 +36,31 @@
           >
             Add Department
           </button>
+        </td>
+      </tr>
+
+      <tr *ngFor="let department of departments; let i = index">
+        <th scope="row">{{ i + 1 }}</th>
+        <td>
+          {{ department.departmentName }}
+        </td>
+        <td>
+          <div
+            class="d-flex justify-content-between container-fuild align-items-center"
+          >
+            <button
+              class="btn btn-sm btn-warning"
+              (click)="updateDepartment(department.id)"
+            >
+              update
+            </button>
+            <button
+              class="btn btn-danger btn-sm"
+              (click)="deleteDepartment(department.id)"
+            >
+              delete
+            </button>
+          </div>
         </td>
       </tr>
     </tbody>
