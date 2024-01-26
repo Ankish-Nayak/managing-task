@@ -6,7 +6,7 @@
     <thead>
       <tr>
         <th scope="col">Sno</th>
-        <th scope="col">DepartmentName</th>
+        <th scope="col">Department</th>
         <th scope="col">Actions</th>
       </tr>
     </thead>
@@ -39,80 +39,18 @@
         </td>
       </tr>
 
-      <tr *ngFor="let department of departments; let i = index">
-        <th scope="row">{{ i + 1 }}</th>
-        <td>
-          {{ department.departmentName }}
-        </td>
-        <td>
-          <div
-            class="d-flex justify-content-between container-fuild align-items-center"
-          >
-            <button
-              class="btn btn-sm btn-warning"
-              (click)="updateDepartment(department.id)"
-            >
-              update
-            </button>
-            <button
-              data-bs-toggle="modal"
-              data-bs-target="#deleteTodoConfirmation"
-              class="btn btn-danger btn-sm"
-              (click)="deleteDepartment(department.id)"
-            >
-              delete
-            </button>
-          </div>
-        </td>
-      </tr>
+      <tr
+        *ngFor="let department of departments; let i = index"
+        app-department
+        [department]="department"
+        [sNo]="i + 1"
+        (updateDepartment)="updateDepartment($event)"
+        (deleteDepartment)="deleteDepartment($event)"
+      ></tr>
     </tbody>
   </table>
 </div>
 
-<!-- Modal -->
-<div
-  class="modal fade"
-  id="deleteTodoConfirmation"
-  tabindex="-1"
-  aria-labelledby="deleteTodoConfirmationLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="deleteTodoConfirmationLabel">
-          Delete Todo
-        </h1>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div>
-      <div class="modal-body">
-        Do you want to delete?
-        <div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-              (click)="confirm(false)"
-            >
-              No
-            </button>
-            <button
-              type="button"
-              data-bs-dismiss="modal"
-              class="btn btn-primary"
-              (click)="confirm(true)"
-            >
-              Yes
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<app-confirmation-modal
+  (confirmation)="confirm($event)"
+></app-confirmation-modal>

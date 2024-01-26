@@ -16,22 +16,31 @@ import {
   Validators,
 } from '@angular/forms';
 import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
-import { IDepartment } from '../../shared/interfaces/requests/department.interface';
+import { ConfirmationModalComponent } from '../../shared/modals/confirmation-modal/confirmation-modal.component';
+import { Department } from '../../shared/models/department.model';
 import { DepartmentService } from '../../shared/services/department/department.service';
 import { GenericValidators } from '../../shared/validators/generic-validator';
+import { DepartmentComponent } from './department/department.component';
 
 type IPropertyName = 'departmentName';
 @Component({
   selector: 'app-department-list',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    DepartmentComponent,
+    ConfirmationModalComponent,
+  ],
   templateUrl: './department-list.component.html',
   styleUrl: './department-list.component.scss',
 })
 export class DepartmentListComponent implements OnInit, AfterViewInit {
   isLoading: boolean = true;
-  departments!: IDepartment[];
+  departments!: Department[];
   departmentForm!: FormGroup;
+
+  departmentIdTobeDeleted!: number | null;
 
   deleteDepartmentEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
 
@@ -50,7 +59,6 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
         pattern: 'Must contains only aplhabets.',
       },
     };
-
     this.genericValidator = new GenericValidators(this.validatioMessages);
   }
   ngOnInit(): void {
@@ -73,30 +81,23 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
   }
 
   deleteDepartment(id: number) {
-    //TODO: make backened request for deleting .
-    //
-    this.deleteDepartmentEvent.subscribe((res) => {
-      console.log(res);
-      if (res) {
-        this.departmentService.deleteDepartment(id).subscribe((res) => {
+    this.departmentIdTobeDeleted = id;
+  }
+
+  confirm(confirmation: boolean) {
+    if (confirmation && this.departmentIdTobeDeleted !== null) {
+      this.departmentService
+        .deleteDepartment(this.departmentIdTobeDeleted)
+        .subscribe((res) => {
           console.log(res);
           this.isLoading = true;
           this.getDepartments();
         });
-      } else {
-        console.log('cancelled');
-      }
-    });
-  }
-
-  confirm(confirmation: boolean) {
-    this.deleteDepartmentEvent.emit(confirmation);
+    }
   }
 
   createDepartment() {
-    console.log(this.departmentForm);
     const data = this.departmentForm.value;
-    console.log(data);
     this.departmentService.createDepartment(data).subscribe((res) => {
       console.log(res);
       this.isLoading = true;
@@ -140,7 +141,9 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
     this.departmentService.getDepartments().subscribe(
       (res) => {
         this.isLoading = false;
-        this.departments = res;
+        this.departments = res.map(
+          (d) => new Department(d.id, d.departmentName),
+        );
         console.log(res);
       },
       (e) => {

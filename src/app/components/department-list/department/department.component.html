@@ -1,0 +1,21 @@
+<th scope="row">{{ sNo }}</th>
+<td>
+  {{ department.name }}
+</td>
+<td>
+  <div
+    class="d-flex justify-content-between container-fuild align-items-center"
+  >
+    <button class="btn btn-sm btn-warning" (click)="update(department.id)">
+      update
+    </button>
+    <button
+      data-bs-toggle="modal"
+      data-bs-target="#deleteConfirmation"
+      class="btn btn-danger btn-sm"
+      (click)="delete(department.id)"
+    >
+      delete
+    </button>
+  </div>
+</td>
