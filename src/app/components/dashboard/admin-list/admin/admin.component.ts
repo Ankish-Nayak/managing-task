@@ -14,6 +14,10 @@ export class AdminComponent {
   @Output() updateAdmin = new EventEmitter<number>();
   @Output() deleteAdmin = new EventEmitter<number>();
   update() {
+    localStorage.setItem(
+      `employee/${this.admin.id}`,
+      JSON.stringify(this.admin),
+    );
     this.updateAdmin.emit(this.admin.id);
   }
   delete() {

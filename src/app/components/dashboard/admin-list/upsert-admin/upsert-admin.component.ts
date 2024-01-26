@@ -16,12 +16,13 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
-import { GenericValidators } from '../../../shared/validators/generic-validator';
-import { AuthService } from '../../../shared/services/auth/auth.service';
-import { END_POINTS } from '../../../utils/constants';
-import { Department } from '../../../shared/models/department.model';
-import { DepartmentService } from '../../../shared/services/department/department.service';
-import { notNullValidator } from '../../../shared/validators/not-null-validators';
+import { GenericValidators } from '../../../../shared/validators/generic-validator';
+import { AuthService } from '../../../../shared/services/auth/auth.service';
+import { END_POINTS } from '../../../../utils/constants';
+import { Department } from '../../../../shared/models/department.model';
+import { DepartmentService } from '../../../../shared/services/department/department.service';
+import { notNullValidator } from '../../../../shared/validators/not-null-validators';
+import { EmployeeService } from '../../../../shared/services/employee/employee.service';
 
 type IPropertyName =
   | 'name'
@@ -35,13 +36,13 @@ type IPropertyName =
   | 'password';
 
 @Component({
-  selector: 'app-signup',
+  selector: 'app-upsert-admin',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, CommonModule],
-  templateUrl: './signup.component.html',
-  styleUrl: './signup.component.scss',
+  imports: [ReactiveFormsModule, CommonModule],
+  templateUrl: './upsert-admin.component.html',
+  styleUrl: './upsert-admin.component.scss',
 })
-export class SignupComponent implements OnInit, AfterViewInit {
+export class UpsertAdminComponent implements OnInit, AfterViewInit {
   signupForm!: FormGroup;
   // returns the query list of FormControlName
   @ViewChildren(FormControlName, { read: ElementRef })
@@ -65,6 +66,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
     private router: Router,
     private departmentService: DepartmentService,
     private route: ActivatedRoute,
+    private employeeService: EmployeeService,
   ) {
     // defining validation messages here.
     this.validatioMessages = {
@@ -210,15 +212,21 @@ export class SignupComponent implements OnInit, AfterViewInit {
 
     if (this.signupForm.valid) {
       console.log('inputs: ', data);
-      this.authService.signup(data).subscribe((res) => {
-        if (this.adminRegistration) {
-          this.router.navigate(['', END_POINTS.adminList]);
-        } else {
-          this.router.navigate(['', END_POINTS.dashboard.toString()]);
-        }
+      if (this.adminRegistration) {
+        this.authService.signup(data).subscribe((res) => {
+          if (this.adminRegistration) {
+            this.router.navigate(['', END_POINTS.adminList]);
+          } else {
+            this.router.navigate(['', END_POINTS.dashboard.toString()]);
+          }
 
-        console.log(res);
-      });
+          console.log(res);
+        });
+      } else {
+        // this.employeeService.updateEmployee(id, data).subscribe((res) => {
+        //   console.log(res);
+        // });
+      }
     }
   }
   neitherTouchedNorDirty(element: AbstractControl<any, any>) {

@@ -2,7 +2,10 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment.development';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AUTH_TOKEN } from '../../../utils/constants';
-import { IGetEmployees } from '../../interfaces/requests/employee.interface';
+import {
+  IEmployee,
+  IGetEmployees,
+} from '../../interfaces/requests/employee.interface';
 import { map } from 'rxjs';
 
 @Injectable({
@@ -19,10 +22,7 @@ export class EmployeeService {
     });
   }
   getEmployee(id: number) {
-    return this.http.get(`${this.apiUrl}/userDetails`, {
-      withCredentials: true,
-      headers: this.Headers,
-    });
+    return localStorage.getItem(`employee/${id}`)!;
   }
   getAdmins(page: number) {
     return this.http
@@ -54,5 +54,10 @@ export class EmployeeService {
       headers: this.Headers,
     });
   }
-  updateEmployee(id: number) {}
+  updateEmployee(id: number, data: IEmployee) {
+    return this.http.put(`${this.apiUrl}/updateuser/${id}`, data, {
+      withCredentials: true,
+      headers: this.Headers,
+    });
+  }
 }

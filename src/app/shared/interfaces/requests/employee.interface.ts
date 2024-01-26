@@ -2,10 +2,10 @@ export interface IGetEmployees {
   status: string;
   message: string;
   statusCode: number;
-  iterableData: Employee[];
+  iterableData: IEmployee[];
 }
 
-interface Employee {
+export interface IEmployee {
   id: number;
   name: string;
   email: string;

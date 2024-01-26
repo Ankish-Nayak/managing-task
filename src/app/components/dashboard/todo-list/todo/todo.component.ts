@@ -25,6 +25,7 @@ export class TodoComponent {
       : description;
   }
   update() {
+    localStorage.setItem(`todo/${this.todo.id}`, JSON.stringify(this.todo));
     this.updateTodo.emit(this.todo.id);
   }
   getModalName() {

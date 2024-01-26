@@ -60,13 +60,11 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   //TODO: make request to show employee name rather than id.
   getEmployee(id: number) {
-    this.employeeService.getEmployee(id).subscribe((res) => {
-      console.log(res);
-    });
+    // this.employeeService.getEmployee(id).subscribe((res) => {
+    //   console.log(res);
+    // });
   }
   updateTodo(id: number) {
-    const todo = this.todos.find((todo) => todo.id === id);
-    localStorage.setItem(`todo/${id}`, JSON.stringify(todo));
     this.router.navigate([`../update-todo/${id}`], { relativeTo: this.route });
   }
   deleteTodo(id: number) {

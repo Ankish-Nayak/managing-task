@@ -34,11 +34,6 @@ export class NavbarComponent implements OnInit {
       active: false,
     },
     {
-      name: 'CreateAdmin',
-      path: this.processPath(END_POINTS.createAdmin),
-      active: false,
-    },
-    {
       name: 'AdminList',
       path: this.processPath(END_POINTS.adminList),
       active: false,
