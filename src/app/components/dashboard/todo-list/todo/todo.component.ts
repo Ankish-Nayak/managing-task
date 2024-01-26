@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Todo } from '../../../../shared/models/todo.model';
 import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ConfirmationModalComponent } from '../../../../shared/modals/confirmation-modal/confirmation-modal.component';
+import { Todo } from '../../../../shared/models/todo.model';
 
 @Component({
   selector: '[app-todo]',

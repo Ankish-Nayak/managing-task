@@ -1,7 +1,6 @@
 <div
-  #myModal
   class="modal fade"
-  [id]="modalName"
+  id="todoDeleteConfirmation"
   tabindex="-1"
   aria-labelledby="deleteTodoConfirmationLabel"
   aria-hidden="true"
@@ -18,6 +17,7 @@
         <div>
           <div class="modal-footer">
             <button
+              #noButton
               type="button"
               class="btn btn-secondary"
               data-bs-dismiss="modal"
@@ -26,6 +26,7 @@
               No
             </button>
             <button
+              #yesButton
               type="button"
               data-bs-dismiss="modal"
               class="btn btn-primary"

@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  Output,
-} from '@angular/core';
-import { ConfirmationService } from '../../services/dialog/confirmation.service';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-confirmation-modal',
@@ -14,16 +7,11 @@ import { ConfirmationService } from '../../services/dialog/confirmation.service'
   templateUrl: './confirmation-modal.component.html',
   styleUrl: './confirmation-modal.component.scss',
 })
-export class ConfirmationModalComponent implements OnDestroy {
-  @Input({ required: true }) modalName!: string;
+export class ConfirmationModalComponent {
   @Output() confirmation = new EventEmitter<boolean>();
-  constructor(private confirmationDialogService: ConfirmationService) {}
+  constructor() {}
 
   confirm(confirmation: boolean) {
     this.confirmation.emit(confirmation);
-    // this.confirmationDialogService.confirm(confirmation);
-  }
-  ngOnDestroy(): void {
-    // this.confirmationDialogService.reset();
   }
 }

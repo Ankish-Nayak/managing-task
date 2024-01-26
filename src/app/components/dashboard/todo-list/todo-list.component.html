@@ -27,121 +27,14 @@
           app-todo
           [todo]="todo"
           [sno]="i + 1"
+          (updateTodo)="updateTodo($event)"
+          (deleteTodo)="deleteTodo($event)"
         ></tr>
-
-        <!-- <app-todo  *ngFor="const todo of todos let i = index" [todo]="todo" [sno]="i"></app-todo> -->
-        <!-- <tr *ngFor="let todo of todos; let i = index"> -->
-        <!--   <th scope="row">{{ i + 1 }}</th> -->
-        <!--   <td class="todo-title">{{ todo.title }}</td> -->
-        <!--   <td class="todo-description"> -->
-        <!--     {{ getDescription(todo.description) }} -->
-        <!--   </td> -->
-        <!--   <td class="todo-isCompeleted">{{ todo.isCompleted }}</td> -->
-        <!--   <td class="todo-assignedTo">{{ todo.employeeId }}</td> -->
-        <!--   <td> -->
-        <!--     <div -->
-        <!--       class="d-flex justify-content-between container-fuild align-items-center" -->
-        <!--     > -->
-        <!--       <button -->
-        <!--         class="btn btn-warning btn-sm" -->
-        <!--         (click)="updateTodo(todo.id)" -->
-        <!--       > -->
-        <!--         update -->
-        <!--       </button> -->
-        <!--       <button -->
-        <!--         type="button" -->
-        <!--         class="btn btn-sm btn-danger" -->
-        <!--         (click)="deleteTodo(todo.id)" -->
-        <!--       > -->
-        <!--         delete -->
-        <!--       </button> -->
-        <!--     </div> -->
-        <!--   </td> -->
-        <!-- </tr> -->
-
-        <!-- <form [formGroup]="todoForm"> -->
-        <!-- <tr class="input-row"> -->
-        <!--   <th>{{ todos.length + 1 }}</th> -->
-        <!--   <td colspan="1"> -->
-        <!--     <input -->
-        <!--       type="text" -->
-        <!--       formControlName="title" -->
-        <!--       placeholder="Enter title" -->
-        <!--       class="form-control" -->
-        <!--     /> -->
-        <!--   </td> -->
-        <!--   <td colspan="2"> -->
-        <!--     <textarea -->
-        <!--       name="" -->
-        <!--       id="" -->
-        <!--       cols="20" -->
-        <!--       rows="1" -->
-        <!--       formControlName="title" -->
-        <!--       placeholder="Enter description" -->
-        <!--       class="form-control" -->
-        <!--     ></textarea> -->
-        <!-- <input -->
-        <!--   type="textarea" -->
-        <!--   formControlName="description" -->
-        <!--   placeholder="Enter description" -->
-        <!--   class="form-control" -->
-        <!-- /> -->
-        <!--   </td> -->
-        <!--   <td></td> -->
-        <!-- </tr> -->
-        <!-- </form> -->
       </tbody>
     </table>
   </div>
 </form>
 
 <app-confirmation-modal
-  modalName="deleteTodoConfirmation"
+  (confirmation)="confirm($event)"
 ></app-confirmation-modal>
-<!-- Modal -->
-<!-- <div -->
-<!--   class="modal fade" -->
-<!--   id="deleteTodoConfirmation" -->
-<!--   tabindex="-1" -->
-<!--   aria-labelledby="deleteTodoConfirmationLabel" -->
-<!--   aria-hidden="true" -->
-<!-- > -->
-<!--   <div class="modal-dialog"> -->
-<!--     <div class="modal-content"> -->
-<!--       <div class="modal-header"> -->
-<!--         <h1 class="modal-title fs-5" id="deleteTodoConfirmationLabel"> -->
-<!--           Delete Todo -->
-<!--         </h1> -->
-<!--         <button -->
-<!--           type="button" -->
-<!--           class="btn-close" -->
-<!--           data-bs-dismiss="modal" -->
-<!--           aria-label="Close" -->
-<!--         ></button> -->
-<!--       </div> -->
-<!--       <div class="modal-body"> -->
-<!--         Do you want to delete? -->
-<!--         <div> -->
-<!--           <div class="modal-footer"> -->
-<!--             <button -->
-<!--               type="button" -->
-<!--               class="btn btn-secondary" -->
-<!--               data-bs-dismiss="modal" -->
-<!--               (click)="confirm(false)" -->
-<!--             > -->
-<!--               No -->
-<!--             </button> -->
-<!--             <button -->
-<!--               type="button" -->
-<!--               data-bs-dismiss="modal" -->
-<!--               class="btn btn-primary" -->
-<!--               (click)="confirm(true)" -->
-<!--             > -->
-<!--               Yes -->
-<!--             </button> -->
-<!--           </div> -->
-<!--         </div> -->
-<!--       </div> -->
-<!--     </div> -->
-<!--   </div> -->
-<!-- </div> -->
