@@ -1,1 +1,51 @@
-<p>admin-list works!</p>
+<form [formGroup]="adminForm">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Sno</th>
+        <th scope="col">Name</th>
+        <th scope="col">Department</th>
+        <th scope="col">Email</th>
+        <th scope="col">Phone</th>
+        <th scope="col">City</th>
+        <th scope="col">Country</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- <tr class="create-admin"> -->
+      <!--   <th scope="row">{{ admins.length + 1 }}</th> -->
+      <!--   <td> -->
+      <!--     <form [formGroup]="adminForm"> -->
+      <!--       <div class="form-group"> -->
+      <!--         <input -->
+      <!--           type="text" -->
+      <!--           formControlName="adminName" -->
+      <!--           [class]="validProperty('adminName')" -->
+      <!--           id="adminName" -->
+      <!--           placeholder="Enter admin name" -->
+      <!--         /> -->
+      <!--         <div class="invalid-feedback"> -->
+      <!--           {{ this.displayFeedback.adminName }} -->
+      <!--         </div> -->
+      <!--       </div> -->
+      <!--     </form> -->
+      <!--   </td> -->
+      <!--   <td> -->
+      <!--     <button -->
+      <!--       class="btn btn-primary btn-sm" -->
+      <!--       (click)="this.createadmin()" -->
+      <!--     > -->
+      <!--       Add admin -->
+      <!--     </button> -->
+      <!--   </td> -->
+      <!-- </tr> -->
+      <tr
+        *ngFor="let admin of admins; let i = index"
+        app-admin
+        [admin]="admin"
+        [sno]="i + 1"
+      ></tr>
+    </tbody>
+  </table>
+</form>

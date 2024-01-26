@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment.development';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AUTH_TOKEN } from '../../../utils/constants';
+import { IGetEmployees } from '../../interfaces/requests/employee.interface';
+import { map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -22,8 +24,26 @@ export class EmployeeService {
       headers: this.Headers,
     });
   }
-  employees(page: number) {
-    return this.http.get(`${this.apiUrl}/employees/${page}`, {
+  getAdmins(page: number) {
+    return this.http
+      .get<IGetEmployees>(`${this.apiUrl}/employees/${page}`, {
+        withCredentials: true,
+        headers: this.Headers,
+      })
+      .pipe(
+        map((res) => {
+          const newIterableData = res.iterableData.filter(
+            (e) => e.employeeType === 1,
+          );
+          return {
+            ...res,
+            iterableData: newIterableData,
+          };
+        }),
+      );
+  }
+  getEmployees(page: number) {
+    return this.http.get<IGetEmployees>(`${this.apiUrl}/employees/${page}`, {
       withCredentials: true,
       headers: this.Headers,
     });
