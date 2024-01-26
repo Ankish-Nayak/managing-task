@@ -7,4 +7,7 @@ export const END_POINTS = {
   departmentList: '',
   todoList: 'todos',
   createTodo: 'create-todo',
+  createAdmin: 'create-admin',
+  adminList: 'admins',
+  updateTodo: 'update-todo/:id',
 };

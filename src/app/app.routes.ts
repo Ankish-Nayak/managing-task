@@ -7,6 +7,7 @@ import { UpsertTodoComponent } from './components/dashboard/upsert-todo/upsert-t
 import { DepartmentListComponent } from './components/department-list/department-list.component';
 import { authGuard } from './shared/guards/auth.guard';
 import { END_POINTS } from './utils/constants';
+import { AdminListComponent } from './components/dashboard/admin-list/admin-list.component';
 
 export const routes: Routes = [
   {
@@ -26,15 +27,23 @@ export const routes: Routes = [
       { component: DepartmentListComponent, path: '' },
       {
         component: TodoListComponent,
-        path: 'todos',
+        path: END_POINTS.todoList,
       },
       {
         component: UpsertTodoComponent,
-        path: 'create-todo',
+        path: END_POINTS.createTodo,
       },
       {
         component: UpsertTodoComponent,
-        path: 'update-todo/:id',
+        path: END_POINTS.updateTodo,
+      },
+      {
+        component: SignupComponent,
+        path: END_POINTS.createAdmin,
+      },
+      {
+        component: AdminListComponent,
+        path: END_POINTS.adminList,
       },
     ],
   },

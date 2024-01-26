@@ -14,7 +14,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
 import { GenericValidators } from '../../../shared/validators/generic-validator';
 import { AuthService } from '../../../shared/services/auth/auth.service';
@@ -55,6 +55,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
 
   departments!: Department[];
 
+  adminRegistration: boolean = false;
+
   private validatioMessages!: { [key: string]: { [key: string]: string } };
   private genericValidator!: GenericValidators;
 
@@ -62,6 +64,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
     private authService: AuthService,
     private router: Router,
     private departmentService: DepartmentService,
+    private route: ActivatedRoute,
   ) {
     // defining validation messages here.
     this.validatioMessages = {
@@ -107,6 +110,12 @@ export class SignupComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.signupFormInit();
     this.getDepartments();
+    console.log('endpoint', this.getActiveEndpoint());
+    if (this.getActiveEndpoint() === `./${END_POINTS.createAdmin}`) {
+      this.adminRegistration = true;
+    } else {
+      this.adminRegistration = false;
+    }
     //FIXME: disabling departmentID has stoped value to detected.
     // this.disabling('departmentID');
   }
@@ -124,6 +133,23 @@ export class SignupComponent implements OnInit, AfterViewInit {
           this.signupForm,
         );
       });
+  }
+
+  getActiveEndpoint() {
+    // Get the current activated route
+    let currentRoute = this.route;
+    while (currentRoute.firstChild) {
+      currentRoute = currentRoute.firstChild;
+    }
+
+    // Get the URL segments of the activated route
+    const urlSegments = currentRoute.snapshot.url.map(
+      (segment) => segment.path,
+    );
+
+    // Determine the active endpoint based on the URL segments
+    const activeEndpoint = '/' + urlSegments.join('/');
+    return `.${activeEndpoint}`;
   }
   disabling(propertyName: IPropertyName) {
     this.signupForm.get(propertyName)?.disable();
@@ -149,7 +175,11 @@ export class SignupComponent implements OnInit, AfterViewInit {
         Validators.required,
         notNullValidator(),
       ]),
-      employeeType: new FormControl(0, [Validators.required]),
+      // 0 -> means employee
+      // 1 -> means admin
+      employeeType: new FormControl(this.adminRegistration ? 1 : 0, [
+        Validators.required,
+      ]),
       password: new FormControl('', [
         Validators.required,
         Validators.pattern(

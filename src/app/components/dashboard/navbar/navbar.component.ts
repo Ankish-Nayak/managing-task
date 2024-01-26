@@ -1,19 +1,19 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
   ActivatedRoute,
-  RouterLink,
   Router,
-  NavigationEnd,
+  RouterLink,
+  RouterLinkActive,
 } from '@angular/router';
-import { END_POINTS } from '../../../utils/constants';
-import { CommonModule } from '@angular/common';
-import { filter } from 'rxjs';
+import { ActiveEndpointService } from '../../../shared/services/activeEndpoint/active-endpoint.service';
 import { AuthService } from '../../../shared/services/auth/auth.service';
+import { END_POINTS } from '../../../utils/constants';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, CommonModule, RouterLinkActive],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
 })
@@ -31,13 +31,18 @@ export class NavbarComponent implements OnInit {
     {
       name: 'DepartmentList',
       path: this.processPath(END_POINTS.departmentList),
-      active: true,
+      active: false,
     },
-    // {
-    //   name: 'CreateTodo',
-    //   path: this.processPath(END_POINTS.createTodo),
-    //   active: false,
-    // },
+    {
+      name: 'CreateAdmin',
+      path: this.processPath(END_POINTS.createAdmin),
+      active: false,
+    },
+    {
+      name: 'AdminList',
+      path: this.processPath(END_POINTS.adminList),
+      active: false,
+    },
   ];
   profileLinks: {
     name: string;
@@ -50,14 +55,21 @@ export class NavbarComponent implements OnInit {
   ];
   ngOnInit(): void {
     // Subscribe to route changes
-    this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe(() => {
-        // Call a function to get the active router endpoint
-        const endpoint = this.getActiveEndpoint();
-        console.log(endpoint);
-        this.updateNavLinks(endpoint);
-      });
+    // this.router.events
+    //   .pipe(filter((event) => event instanceof NavigationEnd))
+    //   .subscribe(() => {
+    //     // Call a function to get the active router endpoint
+    //     const endpoint = this.getActiveEndpoint();
+    //     console.log('ddd', endpoint);
+    //     this.updateNavLinks(endpoint);
+    //   });
+
+    this.route.data.subscribe(() => {
+      console.log(this.getActiveEndpoint());
+    });
+    this.activeEndpoint.activeEndpointMessage$.subscribe((endPoint) => {
+      this.updateNavLinks(endPoint);
+    });
   }
   updateNavLinks(endpoint: string) {
     this.navLinks = this.navLinks.map((n) => {
@@ -95,6 +107,7 @@ export class NavbarComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private authService: AuthService,
+    private activeEndpoint: ActiveEndpointService,
   ) {}
 
   getActiveEndpoint() {
@@ -108,6 +121,7 @@ export class NavbarComponent implements OnInit {
     const urlSegments = currentRoute.snapshot.url.map(
       (segment) => segment.path,
     );
+    console.log(urlSegments);
 
     // Determine the active endpoint based on the URL segments
     const activeEndpoint = '/' + urlSegments.join('/');

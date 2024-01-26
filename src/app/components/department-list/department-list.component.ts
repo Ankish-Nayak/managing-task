@@ -21,6 +21,7 @@ import { Department } from '../../shared/models/department.model';
 import { DepartmentService } from '../../shared/services/department/department.service';
 import { GenericValidators } from '../../shared/validators/generic-validator';
 import { DepartmentComponent } from './department/department.component';
+import { ActivatedRoute, ActivationEnd } from '@angular/router';
 
 type IPropertyName = 'departmentName';
 @Component({
@@ -52,7 +53,10 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
   private validatioMessages!: { [key: string]: { [key: string]: string } };
   private genericValidator!: GenericValidators;
 
-  constructor(private departmentService: DepartmentService) {
+  constructor(
+    private departmentService: DepartmentService,
+    private route: ActivatedRoute,
+  ) {
     this.validatioMessages = {
       departmentName: {
         required: 'Required.',
