@@ -85,23 +85,23 @@
       </div>
     </div>
 
-    <div class="form-group">
-      <label for="departmentID">DepartmentId</label>
-      <input
-        type="text"
-        formControlName="departmentID"
-        [class]="validProperty('departmentID')"
-        id="departmentID"
-        [value]="1"
-        [disabled]="true"
-        placeholder="1"
-      />
-      <div class="invalid-feedback">
-        {{ this.displayFeedback.departmentID }}
-      </div>
+    <label for="departmentID">Department</label>
+    <select
+      name=""
+      id="departmentID"
+      [class]="validProperty('departmentID')"
+      class="form-select"
+      formControlName="departmentID"
+    >
+      <option [value]="null">Select department</option>
+      <option *ngFor="let department of departments" [value]="department.id">
+        {{ department.name }}
+      </option>
+    </select>
+    <div class="invalid-feedback">
+      {{ this.displayFeedback.departmentID }}
     </div>
-
-    <div class="form-group">
+    <div class="form-group" *ngIf="false">
       <label for="employeeType">Employee Type</label>
       <select
         name=""

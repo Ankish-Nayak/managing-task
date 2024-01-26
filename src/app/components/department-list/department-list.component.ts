@@ -134,7 +134,7 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
   formValue(propertyName: IPropertyName) {
     return this.departmentForm.get(propertyName)!;
   }
-
+  //TODO: make update department work
   updateDepartment(id: number) {}
 
   getDepartments() {

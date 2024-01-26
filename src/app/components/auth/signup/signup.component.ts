@@ -19,6 +19,9 @@ import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
 import { GenericValidators } from '../../../shared/validators/generic-validator';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { END_POINTS } from '../../../utils/constants';
+import { Department } from '../../../shared/models/department.model';
+import { DepartmentService } from '../../../shared/services/department/department.service';
+import { notNullValidator } from '../../../shared/validators/not-null-validators';
 
 type IPropertyName =
   | 'name'
@@ -50,12 +53,15 @@ export class SignupComponent implements OnInit, AfterViewInit {
     { name: 'Admin', value: 1 },
   ];
 
+  departments!: Department[];
+
   private validatioMessages!: { [key: string]: { [key: string]: string } };
   private genericValidator!: GenericValidators;
 
   constructor(
     private authService: AuthService,
     private router: Router,
+    private departmentService: DepartmentService,
   ) {
     // defining validation messages here.
     this.validatioMessages = {
@@ -80,8 +86,9 @@ export class SignupComponent implements OnInit, AfterViewInit {
         pattern: 'Must be numbers.',
         required: 'Required',
       },
-      departmentId: {
+      departmentID: {
         required: 'Required',
+        notNull: 'Select department',
       },
       employeeType: {
         required: 'Required',
@@ -99,8 +106,9 @@ export class SignupComponent implements OnInit, AfterViewInit {
   }
   ngOnInit(): void {
     this.signupFormInit();
+    this.getDepartments();
     //FIXME: disabling departmentID has stoped value to detected.
-    this.disabling('departmentID');
+    // this.disabling('departmentID');
   }
 
   ngAfterViewInit(): void {
@@ -133,9 +141,14 @@ export class SignupComponent implements OnInit, AfterViewInit {
       ]),
       phone: new FormControl('', [
         Validators.required,
-        Validators.pattern(/^[0-9]+$/),
+        Validators.pattern(
+          /^(?:\+\d{1,3}\s?)?(?:\(\d{1,4}\)|\d{1,4})(?:[-.\s]?\d{1,12})+$/,
+        ),
       ]),
-      departmentID: new FormControl('1', [Validators.required]),
+      departmentID: new FormControl('null', [
+        Validators.required,
+        notNullValidator(),
+      ]),
       employeeType: new FormControl(0, [Validators.required]),
       password: new FormControl('', [
         Validators.required,
@@ -144,6 +157,12 @@ export class SignupComponent implements OnInit, AfterViewInit {
         ),
         Validators.minLength(8),
       ]),
+    });
+  }
+
+  getDepartments() {
+    this.departmentService.getDepartments().subscribe((res) => {
+      this.departments = res.map((d) => new Department(d.id, d.departmentName));
     });
   }
   onSubmit(e: SubmitEvent) {
@@ -155,7 +174,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
     //
     //email: "anil1@gmail.com"
     //password: "Anil@123"
-    const data = { ...this.signupForm.value, departmentID: 1 };
+    // const data = { ...this.signupForm.value, departmentID: 1 };
+    const data = this.signupForm.value;
 
     console.log('inputs: ', data);
     if (this.signupForm.valid) {
