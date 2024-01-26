@@ -8,6 +8,7 @@ import { DepartmentListComponent } from './components/department-list/department
 import { authGuard } from './shared/guards/auth.guard';
 import { END_POINTS } from './utils/constants';
 import { AdminListComponent } from './components/dashboard/admin-list/admin-list.component';
+import { UpsertAdminComponent } from './components/dashboard/admin-list/upsert-admin/upsert-admin.component';
 
 export const routes: Routes = [
   {
@@ -38,12 +39,16 @@ export const routes: Routes = [
         path: END_POINTS.updateTodo,
       },
       {
-        component: SignupComponent,
+        component: UpsertAdminComponent,
         path: END_POINTS.createAdmin,
       },
       {
         component: AdminListComponent,
         path: END_POINTS.adminList,
+      },
+      {
+        component: UpsertAdminComponent,
+        path: END_POINTS.updateAdmin,
       },
     ],
   },

@@ -55,7 +55,9 @@ export class AdminListComponent implements OnInit {
   delete(id: number) {
     this.adminToBeDeletedID = id;
   }
-  update(id: number) {}
+  update(id: number) {
+    this.router.navigate([`../update-admin/${id}`], { relativeTo: this.route });
+  }
   createAdmin() {
     this.router.navigate([`../${END_POINTS.createAdmin}`], {
       relativeTo: this.route,
@@ -67,12 +69,12 @@ export class AdminListComponent implements OnInit {
   confirm(confirmation: boolean) {
     if (confirmation && this.adminToBeDeletedID !== null) {
       console.log(`deleting ${this.adminToBeDeletedID}`);
-      // this.employeeService
-      //   .deleteEmployee(this.adminToBeDeletedID)
-      //   .subscribe((res) => {
-      //     console.log(res);
-      //     this.getAdmins();
-      //   });
+      this.employeeService
+        .deleteEmployee(this.adminToBeDeletedID)
+        .subscribe((res) => {
+          console.log(res);
+          this.getAdmins();
+        });
     }
   }
 }

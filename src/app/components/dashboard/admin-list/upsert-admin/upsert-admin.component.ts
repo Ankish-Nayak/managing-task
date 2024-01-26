@@ -23,7 +23,6 @@ import { Department } from '../../../../shared/models/department.model';
 import { DepartmentService } from '../../../../shared/services/department/department.service';
 import { notNullValidator } from '../../../../shared/validators/not-null-validators';
 import { EmployeeService } from '../../../../shared/services/employee/employee.service';
-
 type IPropertyName =
   | 'name'
   | 'email'
@@ -55,6 +54,7 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
   ];
 
   departments!: Department[];
+  id!: string;
 
   adminRegistration: boolean = false;
 
@@ -110,6 +110,13 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
     this.genericValidator = new GenericValidators(this.validatioMessages);
   }
   ngOnInit(): void {
+    this.route.paramMap.subscribe((params) => {
+      const id = params.get('id');
+      if (id !== null) {
+        this.id = id;
+      }
+    });
+
     this.getDepartments();
     console.log('endpoint', this.getActiveEndpoint());
     if (this.getActiveEndpoint() === `./${END_POINTS.createAdmin}`) {
@@ -191,6 +198,14 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
         Validators.minLength(8),
       ]),
     });
+    // TODO: can not pass pass therefore not able to create update admin from super admin side
+    if (!this.adminRegistration) {
+      const employee = JSON.parse(
+        this.employeeService.getEmployee(Number(this.id)),
+      );
+      console.log(employee);
+      this.signupForm.setValue(employee);
+    }
   }
 
   getDepartments() {

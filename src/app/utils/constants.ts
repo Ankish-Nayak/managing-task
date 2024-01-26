@@ -10,4 +10,5 @@ export const END_POINTS = {
   createAdmin: 'create-admin',
   adminList: 'admins',
   updateTodo: 'update-todo/:id',
+  updateAdmin: 'update-admin/:id',
 };
