@@ -11,4 +11,5 @@ export const END_POINTS = {
   adminList: 'admins',
   updateTodo: 'update-todo/:id',
   updateAdmin: 'update-admin/:id',
+  todoDetail: 'todo-detail/:id',
 };

@@ -64,6 +64,10 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
     //   console.log(res);
     // });
   }
+
+  navigateTo(id: number) {
+    this.router.navigate([`../todo-detail/${id}`], { relativeTo: this.route });
+  }
   updateTodo(id: number) {
     this.router.navigate([`../update-todo/${id}`], { relativeTo: this.route });
   }

@@ -1,11 +1,13 @@
-<th scope="row">{{ sno }}</th>
-<td class="todo-title">{{ todo.title }}</td>
-<td class="todo-description">
+<th scope="row" (click)="navigate()">{{ sno }}</th>
+<td class="todo-title" (click)="navigate()">
+  {{ todo.title }}
+</td>
+<td class="todo-description" (click)="navigate()">
   {{ getDescription(todo.description) }}
 </td>
-<td class="todo-isCompeleted">{{ todo.isCompleted }}</td>
-<td class="todo-assignedTo">{{ todo.employeeId }}</td>
-<td>
+<td class="todo-isCompeleted" (click)="navigate()">{{ todo.isCompleted }}</td>
+<td class="todo-assignedTo" (click)="navigate()">{{ todo.employeeId }}</td>
+<td (click)="navigate()">
   <div
     class="d-flex justify-content-between container-fuild align-items-center"
   >

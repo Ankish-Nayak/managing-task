@@ -9,6 +9,7 @@ import { authGuard } from './shared/guards/auth.guard';
 import { END_POINTS } from './utils/constants';
 import { AdminListComponent } from './components/dashboard/admin-list/admin-list.component';
 import { UpsertAdminComponent } from './components/dashboard/admin-list/upsert-admin/upsert-admin.component';
+import { TodoDetailComponent } from './components/dashboard/todo-list/todo-detail/todo-detail.component';
 
 export const routes: Routes = [
   {
@@ -29,6 +30,10 @@ export const routes: Routes = [
       {
         component: TodoListComponent,
         path: END_POINTS.todoList,
+      },
+      {
+        component: TodoDetailComponent,
+        path: END_POINTS.todoDetail,
       },
       {
         component: UpsertTodoComponent,
