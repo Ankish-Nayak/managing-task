@@ -68,11 +68,9 @@ export class AdminListComponent implements OnInit {
   }
   confirm(confirmation: boolean) {
     if (confirmation && this.adminToBeDeletedID !== null) {
-      console.log(`deleting ${this.adminToBeDeletedID}`);
       this.employeeService
         .deleteEmployee(this.adminToBeDeletedID)
-        .subscribe((res) => {
-          console.log(res);
+        .subscribe(() => {
           this.getAdmins();
         });
     }

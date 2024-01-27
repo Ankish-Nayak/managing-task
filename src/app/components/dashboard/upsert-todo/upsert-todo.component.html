@@ -25,14 +25,21 @@
       <div class="invalid-feedback">
         {{ this.displayFeedback.description }}
       </div>
-      <!---TODO: employee selection for assigning task->
-
-      <!-- <select class="form-select" aria-label="Default select example"> -->
-      <!--   <option selected>Open this select menu</option> -->
-      <!--   <option value="1">One</option> -->
-      <!--   <option value="2">Two</option> -->
-      <!--   <option value="3">Three</option> -->
-      <!-- </select> -->
+      <!-- <!---TODO: employee selection for assigning task-> -->
+      <label for="employeeID" *ngIf="!updateForm">Assign To</label>
+      <select
+        [class]="validProperty('employeeId')"
+        id="employeeID"
+        formControlName="employeeId"
+        aria-label="Default select example"
+        *ngIf="!updateForm"
+      >
+        <option [value]="null">Select Employee</option>
+        <option *ngFor="let employee of employees" [value]="employee.id">
+          {{ employee.email }}
+        </option>
+      </select>
+      <div class="invalid-feedback">{{ this.displayFeedback.employeeId }}</div>
     </div>
     <div class="d-flex justify-content-between align-items">
       <button class="btn btn-primary" type="submit">

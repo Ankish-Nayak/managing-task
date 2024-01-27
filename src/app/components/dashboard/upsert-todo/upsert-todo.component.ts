@@ -10,8 +10,11 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
+import { Employee } from '../../../shared/models/employee.model';
+import { EmployeeService } from '../../../shared/services/employee/employee.service';
 import { TodoService } from '../../../shared/services/todo/todo.service';
 import { GenericValidators } from '../../../shared/validators/generic-validator';
+import { notNullValidator } from '../../../shared/validators/not-null-validators';
 import { END_POINTS } from '../../../utils/constants';
 
 type IPropertyName = 'title' | 'description' | 'employeeId';
@@ -31,6 +34,8 @@ export class UpsertTodoComponent {
   formInputElements!: ElementRef[];
   id!: string;
 
+  employees!: Employee[];
+
   updateForm: boolean = false;
 
   private validatioMessages!: { [key: string]: { [key: string]: string } };
@@ -40,6 +45,7 @@ export class UpsertTodoComponent {
     private todoService: TodoService,
     private router: Router,
     private route: ActivatedRoute,
+    private employeeService: EmployeeService,
   ) {
     this.validatioMessages = {
       title: {
@@ -52,6 +58,7 @@ export class UpsertTodoComponent {
       },
       employeeId: {
         required: 'Required',
+        notNull: 'Select Employee',
       },
     };
     this.genericValidator = new GenericValidators(this.validatioMessages);
@@ -70,6 +77,24 @@ export class UpsertTodoComponent {
         );
       });
   }
+  getEmployees() {
+    this.employeeService.getEmployees(1).subscribe((res) => {
+      this.employees = res.iterableData.map((item) => {
+        return new Employee(
+          item.id,
+          item.name,
+          item.email,
+          item.employeeType,
+          item.address,
+          item.city,
+          item.country,
+          item.phone,
+          item.departmentID,
+          item.departmentName,
+        );
+      });
+    });
+  }
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
@@ -82,6 +107,7 @@ export class UpsertTodoComponent {
     } else {
       this.updateForm = true;
     }
+    this.getEmployees();
     this.todoFormInit();
   }
 
@@ -115,14 +141,12 @@ export class UpsertTodoComponent {
           description: this.trimValue(description),
           isCompleted: false,
         };
-        console.log(data);
         this.isLoading = true;
 
         this.todoService.updateTodo(Number(this.id), data).subscribe(
-          (res) => {
+          () => {
             this.router.navigate(['../../todos'], { relativeTo: this.route });
             this.isLoading = false;
-            console.log(res);
           },
           (e) => {
             this.isLoading = false;
@@ -132,20 +156,20 @@ export class UpsertTodoComponent {
       }
     } else {
       const { title, description, employeeId } = this.todoForm.value;
+      const data = {
+        title: this.trimValue(title),
+        description: this.trimValue(description),
+        employeeId,
+        isCompleted: false,
+      };
+
       this.markAsTouchedAndDirty();
       if (this.todoForm.valid) {
-        const data = {
-          title: this.trimValue(title),
-          description: this.trimValue(description),
-          isCompleted: false,
-        };
-        console.log(data);
         this.isLoading = true;
         this.todoService.createTodo(employeeId, data).subscribe(
-          (res) => {
+          () => {
             this.router.navigate(['../todos'], { relativeTo: this.route });
             this.isLoading = false;
-            console.log(res);
           },
           (e) => {
             this.isLoading = false;
@@ -170,7 +194,10 @@ export class UpsertTodoComponent {
           Validators.required,
           Validators.minLength(6),
         ]),
-        employeeId: new FormControl('1', [Validators.required]),
+        employeeId: new FormControl(String(todo.employeeId), [
+          Validators.required,
+          notNullValidator(),
+        ]),
       });
     } else {
       this.todoForm = new FormGroup({
@@ -182,7 +209,10 @@ export class UpsertTodoComponent {
           Validators.required,
           Validators.minLength(6),
         ]),
-        employeeId: new FormControl('1', [Validators.required]),
+        employeeId: new FormControl('null', [
+          Validators.required,
+          notNullValidator(),
+        ]),
       });
     }
   }

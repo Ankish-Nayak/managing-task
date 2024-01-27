@@ -25,7 +25,6 @@ export class TodoService {
       })
       .pipe(
         map((res) => {
-          console.log(res);
           return res.iterableData;
         }),
       );

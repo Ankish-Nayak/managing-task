@@ -30,7 +30,6 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
     private todoService: TodoService,
     private router: Router,
     private route: ActivatedRoute,
-    private employeeService: EmployeeService,
   ) {}
   ngOnInit(): void {
     this.getTodos();
@@ -48,7 +47,6 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isLoading = true;
     this.todoService.getTodos().subscribe(
       (res) => {
-        console.log(res);
         this.todos = res;
         this.isLoading = false;
       },
@@ -59,7 +57,7 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
     );
   }
   //TODO: make request to show employee name rather than id.
-  getEmployee(id: number) {
+  getEmployee() {
     // this.employeeService.getEmployee(id).subscribe((res) => {
     //   console.log(res);
     // });
@@ -76,8 +74,7 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   confirm(confirmation: boolean) {
     if (confirmation && this.todoIdTobeDeleted !== null) {
-      this.todoService.deleteTodo(this.todoIdTobeDeleted).subscribe((res) => {
-        console.log(res);
+      this.todoService.deleteTodo(this.todoIdTobeDeleted).subscribe(() => {
         this.getTodos();
       });
     }
