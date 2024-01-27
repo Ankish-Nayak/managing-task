@@ -1,0 +1,25 @@
+.card {
+  width: 500px;
+  text-align: center;
+}
+
+.card a {
+  text-decoration-line: none;
+}
+
+.card-title {
+  position: sticky;
+  top: 40px;
+  background: inherit;
+  width: 100%;
+  background: white;
+}
+.card-see-more {
+  cursor: pointer;
+  color: blue;
+  margin: 2px;
+}
+
+.card-see-more:hover {
+  color: darkblue;
+}

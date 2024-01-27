@@ -31,6 +31,7 @@ export class TodoComponent {
     this.updateTodo.emit(this.todo.id);
   }
   navigate() {
+    localStorage.setItem(`todo/${this.todo.id}`, JSON.stringify(this.todo));
     this.navigateTo.emit(this.todo.id);
   }
 }

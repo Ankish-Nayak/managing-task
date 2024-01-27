@@ -1,1 +1,19 @@
-<p>todo-detail works!</p>
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">{{ todo.title }}</h5>
+    <h6 class="card-subtitle mb-2 text-muted">
+      {{ todo.isCompleted ? "Pending" : "Completed" }}
+    </h6>
+    <p class="card-text">
+      {{ getDescription()
+      }}<span (click)="toogleWrap()" *ngIf="canWrap" class="card-see-more"
+        >see {{ !wrapped ? "less" : "more" }}</span
+      >
+    </p>
+    <!-- TODO: make admin work -->
+    <a href="" class="card-link">Assigned By</a>
+    <a href="" class="card-link" [routerLink]="['../../', END_POINTS.todoList]"
+      >Other Todos</a
+    >
+  </div>
+</div>
