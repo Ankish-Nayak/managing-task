@@ -1,0 +1,38 @@
+<div class="spinner-border" role="status" *ngIf="isLoading">
+  <span class="visually-hidden">Loading...</span>
+</div>
+<table class="table table-hover" *ngIf="!isLoading">
+  <thead>
+    <tr>
+      <th scope="col">Sno</th>
+      <th scope="col">Name</th>
+      <th scope="col">Department</th>
+      <th scope="col">Email</th>
+      <th scope="col">Phone</th>
+      <th scope="col">Address</th>
+      <th scope="col">City</th>
+      <th scope="col">Country</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- <tr> -->
+    <!--   <td colspan="9"> -->
+    <!--     <button class="btn btn-primary" (click)="createAdmin()"> -->
+    <!--       Create Admin -->
+    <!--     </button> -->
+    <!--   </td> -->
+    <!-- </tr> -->
+    <tr
+      *ngFor="let employee of employees; let i = index"
+      app-employee
+      [employee]="employee"
+      [sno]="i + 1"
+      (deleteEmployee)="delete($event)"
+    ></tr>
+  </tbody>
+</table>
+
+<app-confirmation-modal
+  (confirmation)="confirm($event)"
+></app-confirmation-modal>

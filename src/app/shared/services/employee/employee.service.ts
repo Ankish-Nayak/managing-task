@@ -33,7 +33,7 @@ export class EmployeeService {
       .pipe(
         map((res) => {
           const newIterableData = res.iterableData.filter(
-            (e) => e.employeeType === 1,
+            (e) => e.employeeType === 0,
           );
           return {
             ...res,
@@ -43,10 +43,22 @@ export class EmployeeService {
       );
   }
   getEmployees(page: number) {
-    return this.http.get<IGetEmployees>(`${this.apiUrl}/employees/${page}`, {
-      withCredentials: true,
-      headers: this.Headers,
-    });
+    return this.http
+      .get<IGetEmployees>(`${this.apiUrl}/employees/${page}`, {
+        withCredentials: true,
+        headers: this.Headers,
+      })
+      .pipe(
+        map((res) => {
+          const newIterableData = res.iterableData.filter(
+            (e) => e.employeeType === 1,
+          );
+          return {
+            ...res,
+            iterableData: newIterableData,
+          };
+        }),
+      );
   }
   deleteEmployee(id: number) {
     return this.http.delete(`${this.apiUrl}/deleteEmployee/${id}`, {

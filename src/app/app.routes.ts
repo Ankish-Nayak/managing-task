@@ -10,6 +10,7 @@ import { END_POINTS } from './utils/constants';
 import { AdminListComponent } from './components/dashboard/admin-list/admin-list.component';
 import { UpsertAdminComponent } from './components/dashboard/admin-list/upsert-admin/upsert-admin.component';
 import { TodoDetailComponent } from './components/dashboard/todo-list/todo-detail/todo-detail.component';
+import { EmployeeListComponent } from './components/dashboard/employee-list/employee-list.component';
 
 export const routes: Routes = [
   {
@@ -54,6 +55,10 @@ export const routes: Routes = [
       {
         component: UpsertAdminComponent,
         path: END_POINTS.updateAdmin,
+      },
+      {
+        component: EmployeeListComponent,
+        path: END_POINTS.employeeList,
       },
     ],
   },
