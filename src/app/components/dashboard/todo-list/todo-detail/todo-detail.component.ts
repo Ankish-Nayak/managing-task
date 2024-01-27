@@ -39,29 +39,23 @@ export class TodoDetailComponent implements OnInit, OnDestroy {
   }
   getDescription() {
     const words = this.todo.description.split(' ');
-    console.log('words length', words.length);
     this.canWrap = words.length > this.SHOWN_WORD_COUNT;
     if (!this.canWrap) {
       return words.join(' ');
     } else if (this.wrapped === true) {
       const newWords = words.slice(0, this.SHOWN_WORD_COUNT);
-      console.log(newWords.length);
       return newWords.join(' ');
     } else {
-      console.log('unwarpped');
       return words.join(' ');
     }
   }
   toogleWrap() {
     this.wrapped = !this.wrapped;
   }
-
-  ngOnDestroy(): void {
-    localStorage.removeItem(`todo/${this.todo.id}`);
-  }
-  otherTodos() {
-    this.router.navigate([`../${END_POINTS.todoList}`], {
+  edit() {
+    this.router.navigate([`../../update-todo/${this.todo.id}`], {
       relativeTo: this.route,
     });
   }
+  ngOnDestroy(): void {}
 }
