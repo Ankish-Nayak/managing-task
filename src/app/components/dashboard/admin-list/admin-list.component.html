@@ -1,6 +1,12 @@
 <div class="spinner-border" role="status" *ngIf="isLoading">
   <span class="visually-hidden">Loading...</span>
 </div>
+
+<div class="d-flex flex-row-reverse" *ngIf="!isLoading">
+  <button class="btn btn-primary btn-sm" (click)="createAdmin()">
+    Create Admin
+  </button>
+</div>
 <table class="table table-hover" *ngIf="!isLoading">
   <thead>
     <tr>
@@ -16,13 +22,6 @@
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td colspan="9">
-        <button class="btn btn-primary" (click)="createAdmin()">
-          Create Admin
-        </button>
-      </td>
-    </tr>
     <tr
       *ngFor="let admin of admins; let i = index"
       app-admin

@@ -6,7 +6,6 @@
 }
 form {
   display: flex;
-  border: 1px solid black;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
@@ -32,13 +31,4 @@ tr {
 }
 #description {
   width: 30%;
-}
-
-.todo-description {
-  // display: block;
-  // text-overflow: ellipsis;
-  // word-wrap: break-word;
-  // overflow: hidden;
-  // max-height: 3.6em;
-  // line-height: 1.8em;
 }

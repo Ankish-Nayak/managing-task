@@ -1,6 +1,7 @@
 <div class="spinner-border" role="status" *ngIf="isLoading">
   <span class="visually-hidden">Loading...</span>
 </div>
+
 <table class="table table-hover" *ngIf="!isLoading">
   <thead>
     <tr>
@@ -16,13 +17,6 @@
     </tr>
   </thead>
   <tbody>
-    <!-- <tr> -->
-    <!--   <td colspan="9"> -->
-    <!--     <button class="btn btn-primary" (click)="createAdmin()"> -->
-    <!--       Create Admin -->
-    <!--     </button> -->
-    <!--   </td> -->
-    <!-- </tr> -->
     <tr
       *ngFor="let employee of employees; let i = index"
       app-employee

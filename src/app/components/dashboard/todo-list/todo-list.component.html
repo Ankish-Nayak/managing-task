@@ -1,6 +1,12 @@
 <div class="spinner-border" role="status" *ngIf="isLoading">
   <span class="visually-hidden">Loading...</span>
 </div>
+
+<div class="d-flex flex-row-reverse" *ngIf="!isLoading">
+  <button class="btn btn-primary btn-sm" (click)="assignTo()">
+    Assign Task
+  </button>
+</div>
 <form [formGroup]="todoForm">
   <div class="form">
     <table class="table table-hover" *ngIf="!isLoading">
@@ -15,13 +21,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr class="assign-task">
-          <td colspan="6">
-            <button class="btn btn-primary" (click)="assignTo()">
-              Assign Task
-            </button>
-          </td>
-        </tr>
+        <!-- <tr class="assign-task"> -->
+        <!--   <td colspan="6"> -->
+        <!--     <button class="btn btn-primary" (click)="assignTo()"> -->
+        <!--       Assign Task -->
+        <!--     </button> -->
+        <!--   </td> -->
+        <!-- </tr> -->
         <tr
           *ngFor="let todo of todos; let i = index"
           app-todo
