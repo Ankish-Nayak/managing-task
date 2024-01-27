@@ -12,4 +12,5 @@ export const END_POINTS = {
   updateTodo: 'update-todo/:id',
   updateAdmin: 'update-admin/:id',
   todoDetail: 'todo-detail/:id',
+  employeeList: 'employees',
 };

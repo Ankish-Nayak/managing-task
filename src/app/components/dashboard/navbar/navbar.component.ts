@@ -38,6 +38,11 @@ export class NavbarComponent implements OnInit {
       path: this.processPath(END_POINTS.adminList),
       active: false,
     },
+    {
+      name: 'EmployeeList',
+      path: this.processPath(END_POINTS.employeeList),
+      active: false,
+    },
   ];
   profileLinks: {
     name: string;
