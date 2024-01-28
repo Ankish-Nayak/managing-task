@@ -4,7 +4,7 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment.development';
 import { AUTH_TOKEN } from '../../../utils/constants';
 import { ILoginRes } from '../../interfaces/login.interface';
-import { of } from 'rxjs';
+import { Subject, of } from 'rxjs';
 import { ISignupPostData } from '../../interfaces/requests/signup.interface';
 
 @Injectable({
@@ -12,6 +12,9 @@ import { ISignupPostData } from '../../interfaces/requests/signup.interface';
 })
 export class AuthService {
   private apiUrl = `${environment.BASE_URL}`;
+  private _userTypeSource = new Subject<'admin' | 'superadmin' | 'employee'>();
+  userTypeMessage$ = this._userTypeSource.asObservable();
+
   constructor(private http: HttpClient) {}
   get Headers() {
     const token = localStorage.getItem(AUTH_TOKEN);
@@ -52,6 +55,18 @@ export class AuthService {
       .pipe(
         map((res) => {
           localStorage.setItem(AUTH_TOKEN, res.token);
+          this._userTypeSource.next(
+            (() => {
+              const d = res.data.employeeType;
+              if (d === 0) {
+                return 'employee';
+              } else if (d === 1) {
+                return 'admin';
+              } else {
+                return 'superadmin';
+              }
+            })(),
+          );
           return res.data;
         }),
       );
@@ -62,6 +77,11 @@ export class AuthService {
       headers: {
         'Content-Type': 'application/json',
       },
+    });
+  }
+  changePassword(data: { newPassword: string }) {
+    return this.http.post(`${this.apiUrl}/user/ChangePassword`, data, {
+      headers: this.Headers,
     });
   }
 }

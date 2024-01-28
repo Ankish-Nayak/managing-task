@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   OnInit,
+  ViewChild,
   ViewChildren,
 } from '@angular/core';
 import {
@@ -19,13 +20,16 @@ import { Observable, fromEvent, merge } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { GenericValidators } from '../../../shared/validators/generic-validator';
+import { NgbToast } from '@ng-bootstrap/ng-bootstrap';
+import { ToastService } from '../../../shared/services/toast/toast.service';
+import { CommonModule } from '@angular/common';
 
 type IPropertyName = 'email' | 'password';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, NgbToast],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -34,11 +38,14 @@ export class LoginComponent implements OnInit, AfterViewInit {
   formInputElements!: ElementRef[];
   loginForm!: FormGroup;
   displayFeedback: { [key in IPropertyName]?: string } = {};
+  errorMessage: any;
+
   private validationMessages!: { [key: string]: { [key: string]: string } };
   private genericValidator!: GenericValidators;
   constructor(
     private authService: AuthService,
     private router: Router,
+    public toastService: ToastService,
   ) {
     // defining validationMessages here.
     this.validationMessages = {
@@ -92,10 +99,21 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.markAsTouchedAndDirty();
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
-      this.authService.login(email, password).subscribe((res) => {
-        console.log(res);
-        this.router.navigate(['', 'dashboard']);
-      });
+      this.authService.login(email, password).subscribe(
+        (res) => {
+          console.log(res);
+          this.router.navigate(['', 'dashboard']);
+        },
+        (e) => {
+          this.errorMessage = e;
+          this.toastService.show(
+            'Unauthorized',
+            'Invalid email or password',
+            'error',
+          );
+          console.log(e);
+        },
+      );
     } else {
     }
   }

@@ -54,16 +54,9 @@ export class NavbarComponent implements OnInit {
     },
   ];
   ngOnInit(): void {
-    // Subscribe to route changes
-    // this.router.events
-    //   .pipe(filter((event) => event instanceof NavigationEnd))
-    //   .subscribe(() => {
-    //     // Call a function to get the active router endpoint
-    //     const endpoint = this.getActiveEndpoint();
-    //     console.log('ddd', endpoint);
-    //     this.updateNavLinks(endpoint);
-    //   });
-
+    this.authService.userTypeMessage$.subscribe((res) => {
+      console.log('employeeType', res);
+    });
     this.route.data.subscribe(() => {
       console.log(this.getActiveEndpoint());
     });

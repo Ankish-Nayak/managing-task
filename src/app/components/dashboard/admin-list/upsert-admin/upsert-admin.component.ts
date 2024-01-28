@@ -14,15 +14,15 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
-import { GenericValidators } from '../../../../shared/validators/generic-validator';
-import { AuthService } from '../../../../shared/services/auth/auth.service';
-import { END_POINTS } from '../../../../utils/constants';
 import { Department } from '../../../../shared/models/department.model';
+import { AuthService } from '../../../../shared/services/auth/auth.service';
 import { DepartmentService } from '../../../../shared/services/department/department.service';
-import { notNullValidator } from '../../../../shared/validators/not-null-validators';
 import { EmployeeService } from '../../../../shared/services/employee/employee.service';
+import { GenericValidators } from '../../../../shared/validators/generic-validator';
+import { notNullValidator } from '../../../../shared/validators/not-null-validators';
+import { END_POINTS } from '../../../../utils/constants';
 type IPropertyName =
   | 'name'
   | 'email'
@@ -230,17 +230,15 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
       if (this.adminRegistration) {
         this.authService.signup(data).subscribe((res) => {
           if (this.adminRegistration) {
-            this.router.navigate(['', END_POINTS.adminList]);
+            this.router.navigate([`../${END_POINTS.adminList}`], {
+              relativeTo: this.route,
+            });
           } else {
             this.router.navigate(['', END_POINTS.dashboard.toString()]);
           }
 
           console.log(res);
         });
-      } else {
-        // this.employeeService.updateEmployee(id, data).subscribe((res) => {
-        //   console.log(res);
-        // });
       }
     }
   }
