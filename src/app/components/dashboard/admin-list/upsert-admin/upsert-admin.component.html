@@ -138,8 +138,18 @@
       </div>
     </div>
 
-    <button type="submit" class="btn btn-primary">
-      {{ adminRegistration ? "Create Admin" : "Update Admin" }}
+    <button type="submit" class="btn btn-primary" *ngIf="adminRegistration">
+      Create Admin
     </button>
+
+    <div
+      class="d-flex justify-content-between align-items-center"
+      *ngIf="!adminRegistration"
+    >
+      <button class="btn btn-primary" type="submit">Update Admin</button
+      ><button class="btn btn-primary" type="button" (click)="reset()">
+        Reset
+      </button>
+    </div>
   </form>
 </div>

@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { EmployeeService } from '../../../shared/services/employee/employee.service';
-import { Employee } from '../../../shared/models/employee.model';
+import {
+  Employee,
+  EmployeeAdapter,
+} from '../../../shared/models/employee.model';
 import { CommonModule } from '@angular/common';
 import { AdminComponent } from './admin/admin.component';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -29,26 +32,14 @@ export class AdminListComponent implements OnInit {
     private employeeService: EmployeeService,
     private router: Router,
     private route: ActivatedRoute,
+    private adminAdapter: EmployeeAdapter,
   ) {}
   ngOnInit(): void {
     this.getAdmins();
   }
   getAdmins() {
     this.employeeService.getAdmins(1).subscribe((res) => {
-      this.admins = res.iterableData.map((item) => {
-        return new Employee(
-          item.id,
-          item.name,
-          item.email,
-          item.employeeType,
-          item.address,
-          item.city,
-          item.country,
-          item.phone,
-          item.departmentID,
-          item.departmentName,
-        );
-      });
+      this.admins = this.adminAdapter.adaptArray(res.iterableData);
       this.isLoading = false;
     });
   }

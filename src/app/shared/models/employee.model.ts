@@ -1,3 +1,7 @@
+import { Injectable } from '@angular/core';
+import { IEmployee } from '../interfaces/requests/employee.interface';
+import { Adapter } from './adapter';
+
 export class Employee {
   id: number;
   name: string;
@@ -35,8 +39,11 @@ export class Employee {
   }
 }
 
-export class EmployeeAdapter {
-  adapt(item: any): Employee {
+@Injectable({
+  providedIn: 'root',
+})
+export class EmployeeAdapter implements Adapter<Employee> {
+  adapt(item: IEmployee): Employee {
     return new Employee(
       item.id,
       item.name,
@@ -51,7 +58,7 @@ export class EmployeeAdapter {
     );
   }
 
-  adaptArray(items: any[]): Employee[] {
+  adaptArray(items: IEmployee[]): Employee[] {
     return items.map((item) => this.adapt(item));
   }
 }

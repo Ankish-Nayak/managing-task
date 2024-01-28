@@ -10,7 +10,10 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
-import { Employee } from '../../../shared/models/employee.model';
+import {
+  Employee,
+  EmployeeAdapter,
+} from '../../../shared/models/employee.model';
 import { EmployeeService } from '../../../shared/services/employee/employee.service';
 import { TodoService } from '../../../shared/services/todo/todo.service';
 import { GenericValidators } from '../../../shared/validators/generic-validator';
@@ -48,6 +51,7 @@ export class UpsertTodoComponent {
     private route: ActivatedRoute,
     private employeeService: EmployeeService,
     private toastService: ToastService,
+    private employeeAdapter: EmployeeAdapter,
   ) {
     this.validatioMessages = {
       title: {
@@ -81,20 +85,7 @@ export class UpsertTodoComponent {
   }
   getEmployees() {
     this.employeeService.getEmployees(1).subscribe((res) => {
-      this.employees = res.iterableData.map((item) => {
-        return new Employee(
-          item.id,
-          item.name,
-          item.email,
-          item.employeeType,
-          item.address,
-          item.city,
-          item.country,
-          item.phone,
-          item.departmentID,
-          item.departmentName,
-        );
-      });
+      this.employees = this.employeeAdapter.adaptArray(res.iterableData);
     });
   }
   ngOnInit(): void {

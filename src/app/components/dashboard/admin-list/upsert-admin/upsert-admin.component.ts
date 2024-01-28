@@ -16,16 +16,20 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
-import { Department } from '../../../../shared/models/department.model';
+import { IUpdateEmpoyee } from '../../../../shared/interfaces/requests/employee.interface';
+import {
+  Department,
+  DepartmentAdapter,
+} from '../../../../shared/models/department.model';
+import { Employee } from '../../../../shared/models/employee.model';
 import { AuthService } from '../../../../shared/services/auth/auth.service';
 import { DepartmentService } from '../../../../shared/services/department/department.service';
 import { EmployeeService } from '../../../../shared/services/employee/employee.service';
+import { ToastService } from '../../../../shared/services/toast/toast.service';
 import { GenericValidators } from '../../../../shared/validators/generic-validator';
 import { notNullValidator } from '../../../../shared/validators/not-null-validators';
 import { EMPLOYEE_TYPE, END_POINTS } from '../../../../utils/constants';
-import { ToastService } from '../../../../shared/services/toast/toast.service';
-import { Employee } from '../../../../shared/models/employee.model';
-import { IUpdateEmpoyee } from '../../../../shared/interfaces/requests/employee.interface';
+import { getActiveEndpoint } from '../../../../utils/getActiveEndpoint';
 type IPropertyName =
   | 'name'
   | 'email'
@@ -72,6 +76,7 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
     private employeeService: EmployeeService,
     private toastService: ToastService,
+    private departmentAdapter: DepartmentAdapter,
   ) {
     // defining validation messages here.
     this.validatioMessages = {
@@ -127,8 +132,7 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
     });
 
     this.getDepartments();
-    console.log('endpoint', this.getActiveEndpoint());
-    if (this.getActiveEndpoint() === `./${END_POINTS.createAdmin}`) {
+    if (getActiveEndpoint(this.route) === `./${END_POINTS.createAdmin}`) {
       console.log('yess');
       this.adminRegistration = true;
     } else {
@@ -153,25 +157,12 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
         );
       });
   }
-
-  getActiveEndpoint() {
-    // Get the current activated route
-    let currentRoute = this.route;
-    while (currentRoute.firstChild) {
-      currentRoute = currentRoute.firstChild;
-    }
-
-    // Get the URL segments of the activated route
-    const urlSegments = currentRoute.snapshot.url.map(
-      (segment) => segment.path,
-    );
-
-    // Determine the active endpoint based on the URL segments
-    const activeEndpoint = '/' + urlSegments.join('/');
-    return `.${activeEndpoint}`;
-  }
   disabling(propertyName: IPropertyName) {
     this.signupForm.get(propertyName)?.disable();
+  }
+
+  reset() {
+    this.signupFormInit();
   }
 
   signupFormInit() {
@@ -245,7 +236,7 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
 
   getDepartments() {
     this.departmentService.getDepartments().subscribe((res) => {
-      this.departments = res.map((d) => new Department(d.id, d.departmentName));
+      this.departments = this.departmentAdapter.adaptArray(res);
       if (!this.adminRegistration) {
         this.departments = this.departments.filter(
           (d) => this.employee.departmentID !== d.id,
@@ -281,17 +272,20 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
           console.log(res);
         });
       } else {
+        const departmentName = this.departments.find(
+          (d) => d.id.toString() === this.signupForm.value.departmentID,
+        )?.name;
         const data: IUpdateEmpoyee = {
           ...this.signupForm.value,
           id: this.id,
           employeeType: Number(this.signupForm.value.employeeType),
-          departmentName: this.departments.find(
-            (d) =>
-              d.id.toString() === this.signupForm.get('departmentID')?.value.id,
-          )?.name,
+          departmentName,
         };
         this.employeeService.updateEmployee(Number(this.id), data).subscribe(
           () => {
+            this.router.navigate([`../../${END_POINTS.adminList}`], {
+              relativeTo: this.route,
+            });
             this.toastService.show(
               'Admin Updatation',
               'Admin has been updated',
