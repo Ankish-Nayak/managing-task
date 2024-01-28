@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment.development';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AUTH_TOKEN } from '../../../utils/constants';
+import { AUTH_TOKEN, EMPLOYEE_TYPE } from '../../../utils/constants';
 import {
   IEmployee,
   IGetEmployees,
+  IUpdateEmpoyee,
 } from '../../interfaces/requests/employee.interface';
-import { map } from 'rxjs';
+import { map, of } from 'rxjs';
+import { Employee } from '../../models/employee.model';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +24,10 @@ export class EmployeeService {
     });
   }
   getEmployee(id: number) {
-    return localStorage.getItem(`employee/${id}`)!;
+    const employee: Employee = JSON.parse(
+      localStorage.getItem(`employee/${id}`)!,
+    );
+    return of(employee);
   }
   getAdmins(page: number) {
     return this.http
@@ -33,7 +38,7 @@ export class EmployeeService {
       .pipe(
         map((res) => {
           const newIterableData = res.iterableData.filter(
-            (e) => e.employeeType === 0,
+            (e) => e.employeeType.toString() === EMPLOYEE_TYPE.admin,
           );
           return {
             ...res,
@@ -51,7 +56,7 @@ export class EmployeeService {
       .pipe(
         map((res) => {
           const newIterableData = res.iterableData.filter(
-            (e) => e.employeeType === 1,
+            (e) => e.employeeType.toString() === EMPLOYEE_TYPE.employee,
           );
           return {
             ...res,
@@ -66,7 +71,8 @@ export class EmployeeService {
       headers: this.Headers,
     });
   }
-  updateEmployee(id: number, data: IEmployee) {
+  updateEmployee(id: number, data: IUpdateEmpoyee) {
+    console.log(data);
     return this.http.put(`${this.apiUrl}/updateuser/${id}`, data, {
       withCredentials: true,
       headers: this.Headers,

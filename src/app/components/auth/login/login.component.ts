@@ -1,9 +1,9 @@
+import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
   Component,
   ElementRef,
   OnInit,
-  ViewChild,
   ViewChildren,
 } from '@angular/core';
 import {
@@ -11,18 +11,16 @@ import {
   FormControl,
   FormControlName,
   FormGroup,
-  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { NgbToast } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, fromEvent, merge } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { AuthService } from '../../../shared/services/auth/auth.service';
-import { GenericValidators } from '../../../shared/validators/generic-validator';
-import { NgbToast } from '@ng-bootstrap/ng-bootstrap';
 import { ToastService } from '../../../shared/services/toast/toast.service';
-import { CommonModule } from '@angular/common';
+import { GenericValidators } from '../../../shared/validators/generic-validator';
 
 type IPropertyName = 'email' | 'password';
 

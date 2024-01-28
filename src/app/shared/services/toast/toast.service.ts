@@ -14,8 +14,8 @@ export interface ToastInfo {
 export class ToastService {
   toasts: ToastInfo[] = [];
   constructor() {}
-  show(header: string, body: string, messageType: Tmessage) {
-    this.toasts.push({ header, body, messageType });
+  show(header: string, body: string, messageType: Tmessage, delay?: number) {
+    this.toasts.push({ header, body, messageType, delay });
   }
   remove(toast: ToastInfo) {
     this.toasts = this.toasts.filter((t) => t != toast);

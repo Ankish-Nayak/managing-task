@@ -14,3 +14,12 @@ export const END_POINTS = {
   todoDetail: 'todo-detail/:id',
   employeeList: 'employees',
 };
+
+// 0 -> means employee
+// 1 -> means admin
+// 2 -> super admin
+export const EMPLOYEE_TYPE = {
+  employee: '0',
+  admin: '1',
+  superAdmin: '2',
+};

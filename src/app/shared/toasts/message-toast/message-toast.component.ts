@@ -14,10 +14,11 @@ export type Tmessage = 'error' | 'success' | 'normal';
 })
 export class MessageToastComponent {
   constructor(public toastService: ToastService) {}
-  provideClass(state: Tmessage) {
-    if (state === 'error') {
+  provideClass(id: number) {
+    const toast = this.toastService.toasts.at(id);
+    if (toast?.messageType === 'error') {
       return 'bg-danger';
-    } else if (state === 'success') {
+    } else if (toast?.messageType === 'success') {
       return 'bg-success';
     } else {
       return '';

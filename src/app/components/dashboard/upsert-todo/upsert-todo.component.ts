@@ -16,6 +16,7 @@ import { TodoService } from '../../../shared/services/todo/todo.service';
 import { GenericValidators } from '../../../shared/validators/generic-validator';
 import { notNullValidator } from '../../../shared/validators/not-null-validators';
 import { END_POINTS } from '../../../utils/constants';
+import { ToastService } from '../../../shared/services/toast/toast.service';
 
 type IPropertyName = 'title' | 'description' | 'employeeId';
 
@@ -46,6 +47,7 @@ export class UpsertTodoComponent {
     private router: Router,
     private route: ActivatedRoute,
     private employeeService: EmployeeService,
+    private toastService: ToastService,
   ) {
     this.validatioMessages = {
       title: {
@@ -147,10 +149,22 @@ export class UpsertTodoComponent {
           () => {
             this.router.navigate(['../../todos'], { relativeTo: this.route });
             this.isLoading = false;
+            this.toastService.show(
+              'Todo',
+              'Todo has been updated successfully',
+              'success',
+              2000,
+            );
           },
           (e) => {
             this.isLoading = false;
             console.log(e);
+            this.toastService.show(
+              'Todo',
+              'Failed to update todo',
+              'error',
+              2000,
+            );
           },
         );
       }
@@ -169,10 +183,23 @@ export class UpsertTodoComponent {
         this.todoService.createTodo(employeeId, data).subscribe(
           () => {
             this.router.navigate(['../todos'], { relativeTo: this.route });
+            this.toastService.show(
+              'Todo',
+              'Todo has been created',
+              'success',
+              2000,
+            );
             this.isLoading = false;
           },
           (e) => {
             this.isLoading = false;
+
+            this.toastService.show(
+              'Todo',
+              'Failed to create todo',
+              'error',
+              2000,
+            );
             console.log(e);
           },
         );

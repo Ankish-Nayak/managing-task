@@ -1,9 +1,9 @@
 <ngb-toast
-  *ngFor="let toast of toastService.toasts"
+  *ngFor="let toast of toastService.toasts; let i = index"
   [header]="toast.header"
   [delay]="toast.delay || 5000"
   [autohide]="true"
   (hidden)="toastService.remove(toast)"
-  class="bg-danger"
+  [class]="provideClass(i)"
   >{{ toast.body }}</ngb-toast
 >

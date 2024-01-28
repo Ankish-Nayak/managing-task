@@ -17,3 +17,16 @@ export interface IEmployee {
   departmentID: number;
   departmentName: string;
 }
+
+export interface IUpdateEmpoyee {
+  id: number;
+  name: string;
+  email: string;
+  employeeType: number;
+  address: string;
+  city: string;
+  country: string;
+  phone: string;
+  departmentID: number;
+  departmentName: string;
+}

@@ -22,7 +22,10 @@ import { DepartmentService } from '../../../../shared/services/department/depart
 import { EmployeeService } from '../../../../shared/services/employee/employee.service';
 import { GenericValidators } from '../../../../shared/validators/generic-validator';
 import { notNullValidator } from '../../../../shared/validators/not-null-validators';
-import { END_POINTS } from '../../../../utils/constants';
+import { EMPLOYEE_TYPE, END_POINTS } from '../../../../utils/constants';
+import { ToastService } from '../../../../shared/services/toast/toast.service';
+import { Employee } from '../../../../shared/models/employee.model';
+import { IUpdateEmpoyee } from '../../../../shared/interfaces/requests/employee.interface';
 type IPropertyName =
   | 'name'
   | 'email'
@@ -53,6 +56,7 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
     { name: 'Admin', value: 1 },
   ];
 
+  employee!: Employee;
   departments!: Department[];
   id!: string;
 
@@ -67,6 +71,7 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
     private departmentService: DepartmentService,
     private route: ActivatedRoute,
     private employeeService: EmployeeService,
+    private toastService: ToastService,
   ) {
     // defining validation messages here.
     this.validatioMessages = {
@@ -115,6 +120,10 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
       if (id !== null) {
         this.id = id;
       }
+    });
+
+    this.employeeService.getEmployee(Number(this.id)).subscribe((res) => {
+      this.employee = res;
     });
 
     this.getDepartments();
@@ -187,9 +196,7 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
       ]),
       // 0 -> means employee
       // 1 -> means admin
-      employeeType: new FormControl(this.adminRegistration ? 1 : 0, [
-        Validators.required,
-      ]),
+      employeeType: new FormControl(EMPLOYEE_TYPE.admin, [Validators.required]),
       password: new FormControl('', [
         Validators.required,
         Validators.pattern(
@@ -200,17 +207,57 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
     });
     // TODO: can not pass pass therefore not able to create update admin from super admin side
     if (!this.adminRegistration) {
-      const employee = JSON.parse(
-        this.employeeService.getEmployee(Number(this.id)),
-      );
-      console.log(employee);
-      this.signupForm.setValue(employee);
+      // const employee: Employee = JSON.parse(
+      //   this.employeeService.getEmployee(Number(this.id)),
+      // );
+      // console.log(employee);
+      this.signupForm = new FormGroup({
+        name: new FormControl(this.employee.name, [Validators.required]),
+        email: new FormControl(this.employee.email, [
+          Validators.required,
+          Validators.email,
+        ]),
+        address: new FormControl(this.employee.address, [Validators.required]),
+        city: new FormControl(this.employee.city, [Validators.required]),
+        country: new FormControl(this.employee.country, [
+          Validators.required,
+          Validators.pattern(/^[a-zA-Z]+$/),
+        ]),
+        phone: new FormControl(this.employee.phone, [
+          Validators.required,
+          Validators.pattern(
+            /^(?:\+\d{1,3}\s?)?(?:\(\d{1,4}\)|\d{1,4})(?:[-.\s]?\d{1,12})+$/,
+          ),
+        ]),
+        departmentID: new FormControl(String(this.employee.departmentID), [
+          Validators.required,
+          notNullValidator(),
+        ]),
+        // 0 -> means employee
+        // 1 -> means admin
+        // 2 -> super admin
+        employeeType: new FormControl(EMPLOYEE_TYPE.admin, [
+          Validators.required,
+        ]),
+      });
     }
   }
 
   getDepartments() {
     this.departmentService.getDepartments().subscribe((res) => {
       this.departments = res.map((d) => new Department(d.id, d.departmentName));
+      if (!this.adminRegistration) {
+        this.departments = this.departments.filter(
+          (d) => this.employee.departmentID !== d.id,
+        );
+        this.departments.push(
+          new Department(
+            this.employee.departmentID,
+            this.employee.departmentName,
+          ),
+        );
+        console.log(this.departments);
+      }
     });
   }
   onSubmit(e: SubmitEvent) {
@@ -218,16 +265,11 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
     // Mark all form as touched to trigger validation messages
     this.markAsTouchedAndDirty();
     //TODO: replace it from hard code.
-    //
-    //
-    //email: "anil1@gmail.com"
-    //password: "Anil@123"
-    // const data = { ...this.signupForm.value, departmentID: 1 };
-    const data = this.signupForm.value;
 
     if (this.signupForm.valid) {
-      console.log('inputs: ', data);
       if (this.adminRegistration) {
+        const data = this.signupForm.value;
+        console.log('inputs: ', data);
         this.authService.signup(data).subscribe((res) => {
           if (this.adminRegistration) {
             this.router.navigate([`../${END_POINTS.adminList}`], {
@@ -236,9 +278,34 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
           } else {
             this.router.navigate(['', END_POINTS.dashboard.toString()]);
           }
-
           console.log(res);
         });
+      } else {
+        const data: IUpdateEmpoyee = {
+          ...this.signupForm.value,
+          id: this.id,
+          employeeType: Number(this.signupForm.value.employeeType),
+          departmentName: this.departments.find(
+            (d) =>
+              d.id.toString() === this.signupForm.get('departmentID')?.value.id,
+          )?.name,
+        };
+        this.employeeService.updateEmployee(Number(this.id), data).subscribe(
+          () => {
+            this.toastService.show(
+              'Admin Updatation',
+              'Admin has been updated',
+              'success',
+            );
+          },
+          () => {
+            this.toastService.show(
+              'Admin Updatation',
+              'Failed to update admin',
+              'error',
+            );
+          },
+        );
       }
     }
   }
