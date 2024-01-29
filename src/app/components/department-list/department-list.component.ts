@@ -15,14 +15,14 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
 import { ConfirmationModalComponent } from '../../shared/modals/confirmation-modal/confirmation-modal.component';
 import { Department } from '../../shared/models/department.model';
+import { AuthService } from '../../shared/services/auth/auth.service';
 import { DepartmentService } from '../../shared/services/department/department.service';
 import { GenericValidators } from '../../shared/validators/generic-validator';
 import { DepartmentComponent } from './department/department.component';
-import { ActivatedRoute, ActivationEnd } from '@angular/router';
-import { AuthService } from '../../shared/services/auth/auth.service';
 
 type IPropertyName = 'departmentName';
 @Component({

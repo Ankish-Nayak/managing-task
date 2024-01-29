@@ -66,4 +66,18 @@ export class TodoService {
     //
     return localStorage.getItem(`todo/${id}`)!;
   }
+  markTodo(
+    id: number,
+    data: {
+      title: string;
+      description: string;
+      isCompleted: boolean;
+    },
+  ) {
+    return this.updateTodo(id, data);
+    // return this.http.put(`${this.apiUrl}/update/${id}`, data, {
+    //   withCredentials: true,
+    //   headers: this.Headers,
+    // });
+  }
 }

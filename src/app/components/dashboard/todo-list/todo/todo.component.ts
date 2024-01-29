@@ -6,6 +6,8 @@ import { TEmployee } from '../../../../shared/interfaces/employee.type';
 import { ConfirmationModalComponent } from '../../../../shared/modals/confirmation-modal/confirmation-modal.component';
 import { Todo } from '../../../../shared/models/todo.model';
 import { COLS, TCOLS, TcolsName } from '../cols';
+import { USER_ROLES } from '../../../../utils/constants';
+import { TodoService } from '../../../../shared/services/todo/todo.service';
 
 @Component({
   selector: '[app-todo]',
@@ -26,9 +28,12 @@ export class TodoComponent {
   @Output() updateTodo = new EventEmitter<number>();
   @Output() navigateTo = new EventEmitter<number>();
   @Input({ required: true }) userType!: TEmployee;
-  cols: TCOLS = COLS;
+  // @Output() markTodo = new EventEmitter<Todo>();
 
-  constructor() {}
+  cols: TCOLS = COLS;
+  USER_ROLES = USER_ROLES;
+
+  constructor(private todoService: TodoService) {}
   delete() {
     this.deleteTodo.emit(this.todo.id);
   }
@@ -54,5 +59,20 @@ export class TodoComponent {
         (col.notAllowedUsers !== null &&
           !col.notAllowedUsers.includes(this.userType)))
     );
+  }
+  allowedToView(allowedUsers: TEmployee[]) {
+    return allowedUsers.includes(this.userType);
+  }
+  mark() {
+    //TODO: api for todo is not there.
+    this.todoService
+      .updateTodo(this.todo.id, {
+        ...this.todo,
+        isCompleted: !this.todo.isCompleted,
+      })
+      .subscribe((res) => {
+        this.todo.isCompleted = !this.todo.isCompleted;
+      });
+    // this.markTodo.emit({ ...this.todo, isCompleted: !this.todo.isCompleted });
   }
 }
