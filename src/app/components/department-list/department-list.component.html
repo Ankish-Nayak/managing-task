@@ -7,11 +7,19 @@
       <tr>
         <th scope="col">Sno</th>
         <th scope="col">Department</th>
-        <th scope="col">Actions</th>
+        <th
+          scope="col"
+          *ngIf="allowedToView([USER_ROLES.SuperAdmin], userType)"
+        >
+          Actions
+        </th>
       </tr>
     </thead>
     <tbody>
-      <tr class="create-department">
+      <tr
+        class="create-department"
+        *ngIf="allowedToView([USER_ROLES.SuperAdmin], userType)"
+      >
         <th scope="row">{{ departments.length + 1 }}</th>
         <td>
           <form [formGroup]="departmentForm">
@@ -46,12 +54,11 @@
         [sNo]="i + 1"
         (updateDepartment)="updateDepartment($event)"
         (deleteDepartment)="deleteDepartment($event)"
+        [userType]="userType"
       ></tr>
     </tbody>
   </table>
 </div>
-
-<button class="btn btn-sm" (click)="userRole()">userRole</button>
 
 <app-confirmation-modal
   (confirmation)="confirm($event)"

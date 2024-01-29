@@ -23,6 +23,9 @@ import { AuthService } from '../../shared/services/auth/auth.service';
 import { DepartmentService } from '../../shared/services/department/department.service';
 import { GenericValidators } from '../../shared/validators/generic-validator';
 import { DepartmentComponent } from './department/department.component';
+import { TEmployee } from '../../shared/interfaces/employee.type';
+import { USER_ROLES } from '../../utils/constants';
+import { allowedToView } from '../../utils/allowedToView';
 
 type IPropertyName = 'departmentName';
 @Component({
@@ -41,13 +44,15 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
   isLoading: boolean = true;
   departments!: Department[];
   departmentForm!: FormGroup;
-
+  readonly USER_ROLES = USER_ROLES;
   departmentIdTobeDeleted!: number | null;
 
+  readonly allowedToView = allowedToView;
   deleteDepartmentEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   @ViewChildren(FormControlName, { read: ElementRef })
   formInputElements!: ElementRef[];
+  userType!: TEmployee;
 
   displayFeedback: { [key in IPropertyName]?: string } = {};
 
@@ -69,6 +74,14 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
   }
   ngOnInit(): void {
     this.getDepartments();
+    this.getUserType();
+  }
+  getUserType() {
+    this.authService.userTypeMessage$.subscribe((res) => {
+      if (res !== null) {
+        this.userType = res;
+      }
+    });
   }
   userRole() {
     console.log('clicked');

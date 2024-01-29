@@ -49,10 +49,18 @@ export const routes: Routes = [
       {
         component: UpsertTodoComponent,
         path: END_POINTS.updateTodo,
+        canActivate: [userBasedAuthGuard],
+        data: {
+          roles: [USER_ROLES.Admin, USER_ROLES.SuperAdmin],
+        },
       },
       {
         component: UpsertAdminComponent,
         path: END_POINTS.createAdmin,
+        canActivate: [userBasedAuthGuard],
+        data: {
+          roles: [USER_ROLES.Admin, USER_ROLES.SuperAdmin],
+        },
       },
       {
         component: AdminListComponent,
@@ -61,6 +69,10 @@ export const routes: Routes = [
       {
         component: UpsertAdminComponent,
         path: END_POINTS.updateAdmin,
+        canActivate: [userBasedAuthGuard],
+        data: {
+          roles: [USER_ROLES.Admin, USER_ROLES.SuperAdmin],
+        },
       },
       {
         component: EmployeeListComponent,
