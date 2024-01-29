@@ -81,6 +81,10 @@ export const routes: Routes = [
       {
         component: EmployeeListComponent,
         path: END_POINTS.employeeList,
+        canActivate: [userBasedAuthGuard],
+        data: {
+          roles: [USER_ROLES.Admin, USER_ROLES.SuperAdmin],
+        },
       },
       { component: NotAllowedUserComponent, path: END_POINTS.notAllowedUser },
     ],

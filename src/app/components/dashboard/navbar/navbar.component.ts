@@ -6,55 +6,28 @@ import {
   RouterLink,
   RouterLinkActive,
 } from '@angular/router';
+import { TEmployee } from '../../../shared/interfaces/employee.type';
+import { UserViewNavLinksPipe } from '../../../shared/pipes/user-view-nav-links/user-view-nav-links.pipe';
 import { ActiveEndpointService } from '../../../shared/services/activeEndpoint/active-endpoint.service';
 import { AuthService } from '../../../shared/services/auth/auth.service';
-import { END_POINTS } from '../../../utils/constants';
-import { TEmployee } from '../../../shared/interfaces/employee.type';
+import {
+  NAV_LINKS,
+  PROFILE_LINKS,
+  TNavLinks,
+  TProfileLinks,
+} from './navBarLinks';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, CommonModule, RouterLinkActive],
+  imports: [RouterLink, CommonModule, RouterLinkActive, UserViewNavLinksPipe],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
 })
 export class NavbarComponent implements OnInit {
-  navLinks: {
-    name: string;
-    path: string;
-    active: boolean;
-  }[] = [
-    {
-      name: 'TodoList',
-      path: this.processPath(END_POINTS.todoList),
-      active: false,
-    },
-    {
-      name: 'DepartmentList',
-      path: this.processPath(END_POINTS.departmentList),
-      active: false,
-    },
-    {
-      name: 'AdminList',
-      path: this.processPath(END_POINTS.adminList),
-      active: false,
-    },
-    {
-      name: 'EmployeeList',
-      path: this.processPath(END_POINTS.employeeList),
-      active: false,
-    },
-  ];
-  profileLinks: {
-    name: string;
-  }[] = [
-    { name: 'profile' },
-    { name: 'updateProfile' },
-    {
-      name: 'logout',
-    },
-  ];
-  employeeType!: TEmployee;
+  navLinks: TNavLinks = NAV_LINKS;
+  profileLinks: TProfileLinks = PROFILE_LINKS;
+  userType!: TEmployee;
   ngOnInit(): void {
     this.getEmployeeType();
     this.route.data.subscribe(() => {
@@ -81,7 +54,6 @@ export class NavbarComponent implements OnInit {
   getCurrentPath() {
     return this.router.url;
   }
-
   processPath(path: string) {
     return `./${path}`;
   }
@@ -122,8 +94,8 @@ export class NavbarComponent implements OnInit {
   }
   getEmployeeType() {
     this.authService.userTypeMessage$.subscribe((res) => {
-      console.log('employeeType', res);
-      if (res !== null) this.employeeType = res;
+      console.log('userType', res);
+      if (res !== null) this.userType = res;
     });
   }
   handleProfileLinks(event: MouseEvent, name: string) {

@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TEmployee } from '../../../shared/interfaces/employee.type';
 import { ConfirmationModalComponent } from '../../../shared/modals/confirmation-modal/confirmation-modal.component';
 import { Todo } from '../../../shared/models/todo.model';
-import { UserViewColsPipe } from '../../../shared/pipes/user-view-cols.pipe';
+import { UserViewColsPipe } from '../../../shared/pipes/user-view-cols/user-view-cols.pipe';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { TodoService } from '../../../shared/services/todo/todo.service';
 import { END_POINTS, USER_ROLES } from '../../../utils/constants';
