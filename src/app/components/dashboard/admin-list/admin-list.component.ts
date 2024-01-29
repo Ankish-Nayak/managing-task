@@ -9,7 +9,10 @@ import { AdminComponent } from './admin/admin.component';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ConfirmationModalComponent } from '../../../shared/modals/confirmation-modal/confirmation-modal.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { END_POINTS } from '../../../utils/constants';
+import { END_POINTS, USER_ROLES } from '../../../utils/constants';
+import { allowedToView } from '../../../utils/allowedToView';
+import { AuthService } from '../../../shared/services/auth/auth.service';
+import { TEmployee } from '../../../shared/interfaces/employee.type';
 
 @Component({
   selector: 'app-admin-list',
@@ -28,14 +31,26 @@ export class AdminListComponent implements OnInit {
   admins!: Employee[];
   adminForm!: FormGroup;
   adminToBeDeletedID: number | null = null;
+  readonly allowedToview = allowedToView;
+  readonly USER_ROLES = USER_ROLES;
+  userType!: TEmployee;
   constructor(
     private employeeService: EmployeeService,
     private router: Router,
     private route: ActivatedRoute,
     private adminAdapter: EmployeeAdapter,
+    private authService: AuthService,
   ) {}
   ngOnInit(): void {
     this.getAdmins();
+    this.getUserType();
+  }
+  getUserType() {
+    this.authService.userTypeMessage$.subscribe((res) => {
+      if (res !== null) {
+        this.userType = res;
+      }
+    });
   }
   getAdmins() {
     this.employeeService.getAdmins(1).subscribe((res) => {

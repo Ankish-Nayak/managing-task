@@ -65,6 +65,10 @@ export const routes: Routes = [
       {
         component: AdminListComponent,
         path: END_POINTS.adminList,
+        canActivate: [userBasedAuthGuard],
+        data: {
+          roles: [USER_ROLES.Admin, USER_ROLES.SuperAdmin],
+        },
       },
       {
         component: UpsertAdminComponent,
