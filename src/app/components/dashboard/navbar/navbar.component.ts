@@ -9,6 +9,7 @@ import {
 import { ActiveEndpointService } from '../../../shared/services/activeEndpoint/active-endpoint.service';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { END_POINTS } from '../../../utils/constants';
+import { TEmployee } from '../../../shared/interfaces/employee.type';
 
 @Component({
   selector: 'app-navbar',
@@ -53,10 +54,9 @@ export class NavbarComponent implements OnInit {
       name: 'logout',
     },
   ];
+  employeeType!: TEmployee;
   ngOnInit(): void {
-    this.authService.userTypeMessage$.subscribe((res) => {
-      console.log('employeeType', res);
-    });
+    this.getEmployeeType();
     this.route.data.subscribe(() => {
       console.log(this.getActiveEndpoint());
     });
@@ -119,6 +119,12 @@ export class NavbarComponent implements OnInit {
     // Determine the active endpoint based on the URL segments
     const activeEndpoint = '/' + urlSegments.join('/');
     return `.${activeEndpoint}`;
+  }
+  getEmployeeType() {
+    this.authService.userTypeMessage$.subscribe((res) => {
+      console.log('employeeType', res);
+      if (res !== null) this.employeeType = res;
+    });
   }
   handleProfileLinks(event: MouseEvent, name: string) {
     event.preventDefault();

@@ -6,11 +6,13 @@ import { TodoListComponent } from './components/dashboard/todo-list/todo-list.co
 import { UpsertTodoComponent } from './components/dashboard/upsert-todo/upsert-todo.component';
 import { DepartmentListComponent } from './components/department-list/department-list.component';
 import { authGuard } from './shared/guards/auth/auth.guard';
-import { END_POINTS } from './utils/constants';
+import { END_POINTS, USER_ROLES } from './utils/constants';
 import { AdminListComponent } from './components/dashboard/admin-list/admin-list.component';
 import { UpsertAdminComponent } from './components/dashboard/admin-list/upsert-admin/upsert-admin.component';
 import { TodoDetailComponent } from './components/dashboard/todo-list/todo-detail/todo-detail.component';
 import { EmployeeListComponent } from './components/dashboard/employee-list/employee-list.component';
+import { NotAllowedUserComponent } from './components/not-allowed-user/not-allowed-user.component';
+import { userBasedAuthGuard } from './shared/guards/userBasedAuth/user-based-auth.guard';
 
 export const routes: Routes = [
   {
@@ -39,6 +41,10 @@ export const routes: Routes = [
       {
         component: UpsertTodoComponent,
         path: END_POINTS.createTodo,
+        canActivate: [userBasedAuthGuard],
+        data: {
+          roles: [USER_ROLES.Admin, USER_ROLES.SuperAdmin],
+        },
       },
       {
         component: UpsertTodoComponent,
@@ -60,6 +66,7 @@ export const routes: Routes = [
         component: EmployeeListComponent,
         path: END_POINTS.employeeList,
       },
+      { component: NotAllowedUserComponent, path: END_POINTS.notAllowedUser },
     ],
   },
   {

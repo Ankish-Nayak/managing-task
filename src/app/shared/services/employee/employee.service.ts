@@ -38,7 +38,7 @@ export class EmployeeService {
       .pipe(
         map((res) => {
           const newIterableData = res.iterableData.filter(
-            (e) => e.employeeType.toString() === EMPLOYEE_TYPE.admin,
+            (e) => e.employeeType === EMPLOYEE_TYPE.admin,
           );
           return {
             ...res,
@@ -56,7 +56,7 @@ export class EmployeeService {
       .pipe(
         map((res) => {
           const newIterableData = res.iterableData.filter(
-            (e) => e.employeeType.toString() === EMPLOYEE_TYPE.employee,
+            (e) => e.employeeType === EMPLOYEE_TYPE.employee,
           );
           return {
             ...res,

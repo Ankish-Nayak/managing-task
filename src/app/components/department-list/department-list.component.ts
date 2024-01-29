@@ -22,6 +22,7 @@ import { DepartmentService } from '../../shared/services/department/department.s
 import { GenericValidators } from '../../shared/validators/generic-validator';
 import { DepartmentComponent } from './department/department.component';
 import { ActivatedRoute, ActivationEnd } from '@angular/router';
+import { AuthService } from '../../shared/services/auth/auth.service';
 
 type IPropertyName = 'departmentName';
 @Component({
@@ -56,6 +57,7 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
   constructor(
     private departmentService: DepartmentService,
     private route: ActivatedRoute,
+    private authService: AuthService,
   ) {
     this.validatioMessages = {
       departmentName: {
@@ -67,6 +69,12 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
   }
   ngOnInit(): void {
     this.getDepartments();
+  }
+  userRole() {
+    console.log('clicked');
+    this.authService.userTypeMessage$.subscribe((res) => {
+      console.log(res);
+    });
   }
   ngAfterViewInit(): void {
     this.departmentFormInit();
