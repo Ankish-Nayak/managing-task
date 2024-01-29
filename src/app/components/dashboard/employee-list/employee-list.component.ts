@@ -7,6 +7,7 @@ import { EmployeeService } from '../../../shared/services/employee/employee.serv
 import { CommonModule } from '@angular/common';
 import { ConfirmationModalComponent } from '../../../shared/modals/confirmation-modal/confirmation-modal.component';
 import { EmployeeComponent } from './employee/employee.component';
+import { AuthService } from '../../../shared/services/auth/auth.service';
 
 @Component({
   selector: 'app-employee-list',
@@ -22,6 +23,7 @@ export class EmployeeListComponent implements OnInit {
   constructor(
     private employeeService: EmployeeService,
     private employeeAdapter: EmployeeAdapter,
+    private authService: AuthService,
   ) {}
   ngOnInit(): void {
     this.getEmployees();

@@ -3,11 +3,17 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ConfirmationModalComponent } from '../../../../shared/modals/confirmation-modal/confirmation-modal.component';
 import { Todo } from '../../../../shared/models/todo.model';
 import { RouterLink } from '@angular/router';
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: '[app-todo]',
   standalone: true,
-  imports: [RouterLink, CommonModule, ConfirmationModalComponent],
+  imports: [
+    RouterLink,
+    CommonModule,
+    ConfirmationModalComponent,
+    NgbTooltipModule,
+  ],
   templateUrl: './todo.component.html',
   styleUrl: './todo.component.scss',
 })

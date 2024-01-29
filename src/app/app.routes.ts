@@ -5,7 +5,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { TodoListComponent } from './components/dashboard/todo-list/todo-list.component';
 import { UpsertTodoComponent } from './components/dashboard/upsert-todo/upsert-todo.component';
 import { DepartmentListComponent } from './components/department-list/department-list.component';
-import { authGuard } from './shared/guards/auth.guard';
+import { authGuard } from './shared/guards/auth/auth.guard';
 import { END_POINTS } from './utils/constants';
 import { AdminListComponent } from './components/dashboard/admin-list/admin-list.component';
 import { UpsertAdminComponent } from './components/dashboard/admin-list/upsert-admin/upsert-admin.component';

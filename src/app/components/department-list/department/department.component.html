@@ -1,6 +1,12 @@
-<th scope="row">{{ sNo }}</th>
-<td>
-  {{ department.name }}
+<th scope="row" class="pointer">{{ sNo }}</th>
+<td class="pointer">
+  <p
+    placement="top"
+    ngbTooltip="group employees by department"
+    [openDelay]="300"
+  >
+    {{ department.name }}
+  </p>
 </td>
 <td>
   <div
