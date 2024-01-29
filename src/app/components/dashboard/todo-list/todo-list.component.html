@@ -2,7 +2,10 @@
   <span class="visually-hidden">Loading...</span>
 </div>
 
-<div class="d-flex flex-row-reverse" *ngIf="!isLoading">
+<div
+  class="d-flex flex-row-reverse"
+  *ngIf="!isLoading && allowedToView([USER_ROLES.Admin, USER_ROLES.SuperAdmin])"
+>
   <button class="btn btn-primary btn-sm" (click)="assignTo()">
     Assign Task
   </button>
@@ -12,12 +15,13 @@
     <table class="table table-hover" *ngIf="!isLoading">
       <thead>
         <tr>
-          <th scope="col" id="sNo">Sno</th>
-          <th scope="col" id="title">Title</th>
-          <th scope="col" id="description">Description</th>
-          <th scope="col" id="isCompleted">IsCompleted</th>
-          <th scope="col" id="assginedTo">AssignedTo</th>
-          <th scope="col" id="actions">Actions</th>
+          <th
+            *ngFor="let col of cols | userViewCols: userType"
+            scope="col"
+            [id]="col.idName"
+          >
+            {{ col.name }}
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -29,6 +33,7 @@
           (updateTodo)="updateTodo($event)"
           (deleteTodo)="deleteTodo($event)"
           (navigateTo)="navigateTo($event)"
+          [userType]="userType"
         ></tr>
       </tbody>
     </table>

@@ -17,7 +17,7 @@ export const userBasedAuthGuard: CanActivateFn = (route) => {
         console.log('yes');
         return true;
       } else {
-        router.navigate([END_POINTS.notAllowedUser]);
+        router.navigate(['dashboard', END_POINTS.notAllowedUser]);
         return false;
       }
     }),

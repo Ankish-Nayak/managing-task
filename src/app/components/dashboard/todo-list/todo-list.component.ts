@@ -2,11 +2,14 @@ import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TEmployee } from '../../../shared/interfaces/employee.type';
 import { ConfirmationModalComponent } from '../../../shared/modals/confirmation-modal/confirmation-modal.component';
 import { Todo } from '../../../shared/models/todo.model';
-import { EmployeeService } from '../../../shared/services/employee/employee.service';
+import { UserViewColsPipe } from '../../../shared/pipes/user-view-cols.pipe';
+import { AuthService } from '../../../shared/services/auth/auth.service';
 import { TodoService } from '../../../shared/services/todo/todo.service';
-import { END_POINTS } from '../../../utils/constants';
+import { END_POINTS, USER_ROLES } from '../../../utils/constants';
+import { COLS, TCOLS } from './cols';
 import { TodoComponent } from './todo/todo.component';
 
 @Component({
@@ -17,6 +20,7 @@ import { TodoComponent } from './todo/todo.component';
     ReactiveFormsModule,
     ConfirmationModalComponent,
     TodoComponent,
+    UserViewColsPipe,
   ],
   templateUrl: './todo-list.component.html',
   styleUrl: './todo-list.component.scss',
@@ -26,14 +30,26 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
   todoForm!: FormGroup;
   todos!: Todo[];
   todoIdTobeDeleted: null | number = null;
+  userType!: TEmployee;
+  cols: TCOLS = COLS;
+  USER_ROLES = USER_ROLES;
   constructor(
     private todoService: TodoService,
     private router: Router,
     private route: ActivatedRoute,
+    private authService: AuthService,
   ) {}
   ngOnInit(): void {
     this.getTodos();
     this.todoFormInit();
+    this.getUserType();
+  }
+  getUserType() {
+    this.authService.userTypeMessage$.subscribe((res) => {
+      if (res !== null) {
+        this.userType = res;
+      }
+    });
   }
   todoFormInit() {
     this.todoForm = new FormGroup({
@@ -84,6 +100,10 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.router.navigate([`../${END_POINTS.createTodo}`], {
       relativeTo: this.route,
     });
+  }
+
+  allowedToView(allowedUsers: TEmployee[]) {
+    return allowedUsers.includes(this.userType);
   }
   ngOnDestroy(): void {}
 }
