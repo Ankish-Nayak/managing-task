@@ -1,24 +1,27 @@
-<th scope="row">{{ sno }}</th>
-<td class="employee-title">{{ employee.name }}</td>
-<td class="employee-description">
-  {{ employee.departmentName }}
-</td>
-<td class="employee-isCompeleted">{{ employee.email }}</td>
-<td class="employee-assignedTo">{{ employee.phone }}</td>
-<td>{{ employee.address }}</td>
-<td>{{ employee.city }}</td>
-<td>{{ employee.country }}</td>
-<td>
-  <div class="d-flex justify-content-center container-fuild align-items-center">
-    <!-- <button class="btn btn-warning btn-sm" (click)="update()">update</button> -->
-    <button
-      type="button"
-      class="btn btn-sm btn-danger"
-      (click)="delete()"
-      data-bs-toggle="modal"
-      data-bs-target="#deleteConfirmation"
+<ng-container>
+  <th scope="row">{{ sno }}</th>
+  <td class="employee-title">{{ employee.name }}</td>
+  <td class="employee-description">
+    {{ employee.departmentName }}
+  </td>
+  <td class="employee-isCompeleted">{{ employee.email }}</td>
+  <td class="employee-assignedTo">{{ employee.phone }}</td>
+  <td>{{ employee.address }}</td>
+  <td>{{ employee.city }}</td>
+  <td>{{ employee.country }}</td>
+  <td>
+    <div
+      class="d-flex justify-content-center container-fuild align-items-center"
     >
-      delete
-    </button>
-  </div>
-</td>
+      <i
+        appHighlight
+        (highlight)="onHightlight($event)"
+        [class]="highlight ? ICONS.deleteFilled : ICONS.delete"
+        (click)="delete()"
+        data-bs-toggle="modal"
+        data-bs-target="#deleteConfirmation"
+      >
+      </i>
+    </div>
+  </td>
+</ng-container>
