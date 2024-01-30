@@ -2,18 +2,20 @@ import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TEmployee } from '../../../shared/interfaces/employee.type';
 import { ConfirmationModalComponent } from '../../../shared/modals/confirmation-modal/confirmation-modal.component';
 import { Todo } from '../../../shared/models/todo.model';
 import { UserViewColsPipe } from '../../../shared/pipes/user-view-cols/user-view-cols.pipe';
 import { AuthService } from '../../../shared/services/auth/auth.service';
-import { TodoService } from '../../../shared/services/todo/todo.service';
-import { END_POINTS, USER_ROLES } from '../../../utils/constants';
-import { COLS, TCOLS } from './cols';
-import { TodoComponent } from './todo/todo.component';
 import { EmployeeService } from '../../../shared/services/employee/employee.service';
 import { ToastService } from '../../../shared/services/toast/toast.service';
+import { TodoService } from '../../../shared/services/todo/todo.service';
 import { SpinnerComponent } from '../../../shared/spinners/spinner/spinner.component';
+import { USER_ROLES } from '../../../utils/constants';
+import { COLS, TCOLS } from './cols';
+import { TodoComponent } from './todo/todo.component';
+import { UpsertTodoModalComponent } from './upsert-todo-modal/upsert-todo-modal.component';
 
 @Component({
   selector: 'app-todo-list',
@@ -25,6 +27,7 @@ import { SpinnerComponent } from '../../../shared/spinners/spinner/spinner.compo
     TodoComponent,
     UserViewColsPipe,
     SpinnerComponent,
+    UpsertTodoModalComponent,
   ],
   templateUrl: './todo-list.component.html',
   styleUrl: './todo-list.component.scss',
@@ -44,6 +47,7 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
     private authService: AuthService,
     private employeeService: EmployeeService,
     private toastService: ToastService,
+    private modalService: NgbModal,
   ) {}
   ngOnInit(): void {
     this.getTodos();
@@ -89,7 +93,24 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.router.navigate([`../todo-detail/${id}`], { relativeTo: this.route });
   }
   updateTodo(id: number) {
-    this.router.navigate([`../update-todo/${id}`], { relativeTo: this.route });
+    const ref = this.modalService.open(UpsertTodoModalComponent, {
+      size: 'lg',
+      backdrop: 'static',
+    });
+    ref.componentInstance.update = true;
+    ref.componentInstance.id = id;
+    ref.closed.subscribe((res) => {
+      console.log(res);
+      this.getTodos();
+    });
+    ref.dismissed.subscribe((res) => {
+      console.log(res);
+      this.toastService.show(
+        'Task Updation',
+        'Task updation was cancelled',
+        'info',
+      );
+    });
   }
   deleteTodo(id: number) {
     this.todoIdTobeDeleted = id;
@@ -112,8 +133,22 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
           5000,
         );
       } else {
-        this.router.navigate([`../${END_POINTS.createTodo}`], {
-          relativeTo: this.route,
+        const ref = this.modalService.open(UpsertTodoModalComponent, {
+          size: 'lg',
+          backdrop: 'static',
+        });
+        ref.componentInstance.update = false;
+        ref.closed.subscribe((res) => {
+          console.log(res);
+          this.getTodos();
+        });
+        ref.dismissed.subscribe((res) => {
+          console.log(res);
+          this.toastService.show(
+            'Assign Task',
+            'Task assignment was cancelled',
+            'info',
+          );
         });
       }
     });

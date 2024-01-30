@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, ViewChildren } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChildren,
+} from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -38,11 +45,13 @@ export class UpsertTodoComponent {
   displayFeedback: { [key in IPropertyName]?: string } = {};
   @ViewChildren(FormControlName, { read: ElementRef })
   formInputElements!: ElementRef[];
-  id!: string;
+  @Input() id!: string;
 
   employees!: Employee[];
 
-  updateForm: boolean = false;
+  @Input({ required: true }) updateForm!: boolean;
+  @Output() updated: EventEmitter<boolean> = new EventEmitter<boolean>();
+  // updateForm: boolean = false;
 
   private validatioMessages!: { [key: string]: { [key: string]: string } };
   private genericValidator!: GenericValidators;
@@ -100,11 +109,11 @@ export class UpsertTodoComponent {
     });
 
     this.getEmployees();
-    if (getActiveEndpoint(this.route) === `./${END_POINTS.createTodo}`) {
-      this.updateForm = false;
-    } else {
-      this.updateForm = true;
-    }
+    // if (getActiveEndpoint(this.route) === `./${END_POINTS.createTodo}`) {
+    //   this.updateForm = false;
+    // } else {
+    //   this.updateForm = true;
+    // }
     this.todoFormInit();
   }
 
@@ -125,7 +134,8 @@ export class UpsertTodoComponent {
 
         this.todoService.updateTodo(Number(this.id), data).subscribe(
           () => {
-            this.router.navigate(['../../todos'], { relativeTo: this.route });
+            this.updated.emit(true);
+            // this.router.navigate(['../../todos'], { relativeTo: this.route });
             this.isLoading = false;
             this.toastService.show(
               'Todo',
@@ -160,7 +170,8 @@ export class UpsertTodoComponent {
         this.isLoading = true;
         this.todoService.createTodo(employeeId, data).subscribe(
           () => {
-            this.router.navigate(['../todos'], { relativeTo: this.route });
+            // this.router.navigate(['../todos'], { relativeTo: this.route });
+            this.updated.emit(true);
             this.toastService.show(
               'Todo',
               'Todo has been created',

@@ -1,0 +1,15 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Profile update</h4>
+</div>
+<div class="modal-body">
+  <app-upsert-todo
+    [updateForm]="update"
+    (updated)="closeModal()"
+    [id]="id"
+  ></app-upsert-todo>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-danger btn-sm" type="button" (click)="dismissModal()">
+    cancel
+  </button>
+</div>
