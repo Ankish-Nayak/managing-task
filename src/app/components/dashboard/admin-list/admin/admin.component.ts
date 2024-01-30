@@ -4,11 +4,13 @@ import { TEmployee } from '../../../../shared/interfaces/employee.type';
 import { allowedToView } from '../../../../utils/allowedToView';
 import { CommonModule } from '@angular/common';
 import { USER_ROLES } from '../../../../utils/constants';
+import { HighlightDirective } from '../../../../shared/directives/highlight.directive';
+import { ICONS } from '../../../../shared/icons/icons';
 
 @Component({
   selector: '[app-admin]',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, HighlightDirective],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.scss',
 })
@@ -20,6 +22,12 @@ export class AdminComponent {
   @Input({ required: true }) userType!: TEmployee;
   readonly allowedToView = allowedToView;
   readonly USER_ROLES = USER_ROLES;
+  readonly ICONS = ICONS;
+
+  highlight: { edit: boolean; delete: boolean } = {
+    edit: false,
+    delete: false,
+  };
   update() {
     localStorage.setItem(
       `employee/${this.admin.id}`,
@@ -29,5 +37,8 @@ export class AdminComponent {
   }
   delete() {
     this.deleteAdmin.emit(this.admin.id);
+  }
+  onHighlight(type: 'edit' | 'delete', binary: boolean) {
+    this.highlight[type] = binary;
   }
 }

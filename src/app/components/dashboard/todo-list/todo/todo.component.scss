@@ -11,3 +11,10 @@ i {
   cursor: pointer;
   font-size: 1.5em;
 }
+.admin-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 80%;
+  margin: auto;
+}

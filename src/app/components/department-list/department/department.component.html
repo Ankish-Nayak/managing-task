@@ -12,16 +12,21 @@
   <div
     class="d-flex justify-content-between container-fuild align-items-center"
   >
-    <button class="btn btn-sm btn-warning" (click)="update(department.id)">
-      update
-    </button>
-    <button
+    <i
+      appHighlight
+      (highlight)="onHighlight('edit', $event)"
+      [class]="highlight.edit ? ICONS.editFilled : ICONS.edit"
+      (click)="update(department.id)"
+    >
+    </i>
+    <i
       data-bs-toggle="modal"
       data-bs-target="#deleteConfirmation"
-      class="btn btn-danger btn-sm"
+      appHighlight
+      (highlight)="onHighlight('delete', $event)"
+      [class]="highlight.delete ? ICONS.deleteFilled : ICONS.delete"
       (click)="delete(department.id)"
     >
-      delete
-    </button>
+    </i>
   </div>
 </td>

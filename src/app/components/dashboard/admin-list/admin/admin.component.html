@@ -10,15 +10,21 @@
 <td>{{ admin.country }}</td>
 <td *ngIf="allowedToView([USER_ROLES.SuperAdmin], userType)">
   <div class="admin-actions">
-    <button class="btn btn-warning btn-sm" (click)="update()">update</button>
-    <button
-      type="button"
-      class="btn btn-sm btn-danger"
+    <i
+      appHighlight
+      (highlight)="onHighlight('edit', $event)"
+      [class]="highlight.edit ? ICONS.editFilled : ICONS.edit"
+      (click)="update()"
+    ></i>
+    <i
+      appHighlight
+      (highlight)="onHighlight('delete', $event)"
+      [class]="highlight.delete ? ICONS.deleteFilled : ICONS.delete"
+      (click)="update()"
       (click)="delete()"
       data-bs-toggle="modal"
       data-bs-target="#deleteConfirmation"
     >
-      delete
-    </button>
+    </i>
   </div>
 </td>
