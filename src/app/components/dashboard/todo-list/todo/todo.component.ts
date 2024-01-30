@@ -8,6 +8,8 @@ import { Todo } from '../../../../shared/models/todo.model';
 import { COLS, TCOLS, TcolsName } from '../cols';
 import { USER_ROLES } from '../../../../utils/constants';
 import { TodoService } from '../../../../shared/services/todo/todo.service';
+import { HighlightDirective } from '../../../../shared/directives/highlight.directive';
+import { ICONS } from '../../../../shared/icons/icons';
 
 @Component({
   selector: '[app-todo]',
@@ -17,6 +19,7 @@ import { TodoService } from '../../../../shared/services/todo/todo.service';
     CommonModule,
     ConfirmationModalComponent,
     NgbTooltipModule,
+    HighlightDirective,
   ],
   templateUrl: './todo.component.html',
   styleUrl: './todo.component.scss',
@@ -30,8 +33,13 @@ export class TodoComponent {
   @Input({ required: true }) userType!: TEmployee;
   // @Output() markTodo = new EventEmitter<Todo>();
 
+  highlight: { edit: boolean; delete: boolean } = {
+    edit: false,
+    delete: false,
+  };
   cols: TCOLS = COLS;
   USER_ROLES = USER_ROLES;
+  readonly ICONS = ICONS;
 
   constructor(private todoService: TodoService) {}
   delete() {
@@ -73,5 +81,13 @@ export class TodoComponent {
         this.todo.isCompleted = !this.todo.isCompleted;
       });
     // this.markTodo.emit({ ...this.todo, isCompleted: !this.todo.isCompleted });
+  }
+
+  onHighlight(type: 'edit' | 'delete', binary: boolean) {
+    if (type === 'edit') {
+      this.highlight.edit = binary;
+    } else {
+      this.highlight.delete = binary;
+    }
   }
 }

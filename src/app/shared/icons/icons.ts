@@ -4,5 +4,5 @@ export const ICONS = {
   add: '',
   addFilled: '',
   edit: 'bi bi-pen',
-  editFilled: '',
+  editFilled: 'bi bi-pen-fill',
 };

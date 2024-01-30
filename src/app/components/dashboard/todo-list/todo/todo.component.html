@@ -49,16 +49,23 @@
     class="d-flex justify-content-between container-fuild align-items-center"
     *ngIf="allowedToView([USER_ROLES.Admin, USER_ROLES.SuperAdmin])"
   >
-    <button class="btn btn-warning btn-sm" (click)="update()">update</button>
-    <button
-      type="button"
-      class="btn btn-sm btn-danger"
+    <div appHighlight (highlight)="onHighlight('edit', $event)">
+      <i
+        [class]="highlight.edit ? ICONS.editFilled : ICONS.edit"
+        (click)="update()"
+      >
+      </i>
+    </div>
+
+    <i
+      appHighlight
+      (highlight)="onHighlight('delete', $event)"
+      [class]="highlight.delete ? ICONS.deleteFilled : ICONS.delete"
       (click)="delete()"
       data-bs-toggle="modal"
       data-bs-target="#deleteConfirmation"
     >
-      delete
-    </button>
+    </i>
   </div>
 
   <div
