@@ -13,6 +13,8 @@ import { TEmployee } from '../../interfaces/employee.type';
 import { ILoginRes } from '../../interfaces/login.interface';
 import { IGetProfile } from '../../interfaces/requests/auth.interface';
 import { ISignupPostData } from '../../interfaces/requests/signup.interface';
+import { Employee } from '../../models/employee.model';
+import { IEmployee } from '../../interfaces/requests/employee.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -51,8 +53,9 @@ export class AuthService {
       .pipe(map((res) => res.data));
   }
 
-  updateProfile(id: number) {
-    return this.http.get(`${this.apiUrl}/updateuser/${id}`, {
+  updateProfile(id: number, data: IEmployee) {
+    console.log(data);
+    return this.http.put(`${this.apiUrl}/updateuser/${id}`, data, {
       withCredentials: true,
       headers: this.Headers,
     });

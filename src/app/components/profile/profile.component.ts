@@ -1,11 +1,5 @@
 import { CommonModule, JsonPipe } from '@angular/common';
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  OnInit,
-  ViewChildren,
-} from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChildren } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -16,13 +10,14 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
+import { IEmployee } from '../../shared/interfaces/requests/employee.interface';
 import { Department } from '../../shared/models/department.model';
 import { Employee } from '../../shared/models/employee.model';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { DepartmentService } from '../../shared/services/department/department.service';
 import { GenericValidators } from '../../shared/validators/generic-validator';
 import { notNullValidator } from '../../shared/validators/not-null-validators';
-import { END_POINTS } from '../../utils/constants';
+import { UPDATE_PROFILE_VALIDAION_MESSAGES } from './validationMessages';
 
 type IPropertyName =
   | 'name'
@@ -33,7 +28,7 @@ type IPropertyName =
   | 'departmentID'
   | 'city'
   | 'employeeType'
-  | 'password';
+  | 'departmentName';
 
 @Component({
   selector: 'app-profile',
@@ -43,8 +38,9 @@ type IPropertyName =
   styleUrl: './profile.component.scss',
 })
 export class ProfileComponent implements OnInit {
-  profile!: Employee;
-  signupForm!: FormGroup;
+  isLoading: boolean = true;
+  profile: Employee = new Employee(0, '', '', 0, '', '', '', '', 0, '');
+  updateProfileForm!: FormGroup;
   // returns the query list of FormControlName
   @ViewChildren(FormControlName, { read: ElementRef })
   formInputElements!: ElementRef[];
@@ -55,9 +51,11 @@ export class ProfileComponent implements OnInit {
     { name: 'Admin', value: 1 },
   ];
 
+  cardBodyHeader: string[] = ['card-body-header'];
+
   departments!: Department[];
 
-  adminRegistration: boolean = false;
+  updatingProfile: boolean = false;
 
   private validatioMessages!: { [key: string]: { [key: string]: string } };
   private genericValidator!: GenericValidators;
@@ -69,62 +67,23 @@ export class ProfileComponent implements OnInit {
     private route: ActivatedRoute,
   ) {
     // defining validation messages here.
-    this.validatioMessages = {
-      email: {
-        required: 'Required',
-        email: 'Invalid email address',
-      },
-      name: {
-        required: 'Required',
-      },
-      city: {
-        required: 'Required',
-      },
-      address: {
-        required: 'Required',
-      },
-      country: {
-        pattern: 'Must be alphabets.',
-        required: 'Required',
-      },
-      phone: {
-        pattern: 'Must be numbers.',
-        required: 'Required',
-      },
-      departmentID: {
-        required: 'Required',
-        notNull: 'Select department',
-      },
-      employeeType: {
-        required: 'Required',
-        allowedvalue: 'Select from dropdown',
-      },
-      password: {
-        required: 'Required',
-        minlength: 'Must be of atleast 8 chars.',
-        pattern:
-          'Must contain at least one uppercase letter, one digit, and one special character',
-      },
-    };
-
+    this.validatioMessages = UPDATE_PROFILE_VALIDAION_MESSAGES;
     this.genericValidator = new GenericValidators(this.validatioMessages);
   }
   ngOnInit(): void {
     this.getDepartments();
-    console.log('endpoint', this.getActiveEndpoint());
-    if (this.getActiveEndpoint() === `./${END_POINTS.createAdmin}`) {
-      console.log('yess');
-      this.adminRegistration = true;
-    } else {
-      this.adminRegistration = false;
-    }
-    this.signupFormInit();
 
+    this.updateProfileFormInit();
+    this.getProfile();
+    this.toggleForm();
+  }
+
+  getProfile() {
     this.authService.profile().subscribe((res) => {
       this.profile = res;
+      this.updateProfileForm.patchValue(this.profile);
+      this.isLoading = false;
     });
-    //FIXME: disabling departmentID has stoped value to detected.
-    // this.disabling('departmentID');
   }
 
   ngAfterViewInit(): void {
@@ -133,68 +92,75 @@ export class ProfileComponent implements OnInit {
       (formControl: ElementRef) => fromEvent(formControl.nativeElement, 'blur'),
     );
 
-    merge(this.signupForm.valueChanges, ...controlsBlurs)
+    merge(this.updateProfileForm.valueChanges, ...controlsBlurs)
       .pipe(debounceTime(800))
       .subscribe(() => {
         this.displayFeedback = this.genericValidator.processMessages(
-          this.signupForm,
+          this.updateProfileForm,
         );
       });
   }
-
-  getActiveEndpoint() {
-    // Get the current activated route
-    let currentRoute = this.route;
-    while (currentRoute.firstChild) {
-      currentRoute = currentRoute.firstChild;
-    }
-
-    // Get the URL segments of the activated route
-    const urlSegments = currentRoute.snapshot.url.map(
-      (segment) => segment.path,
-    );
-
-    // Determine the active endpoint based on the URL segments
-    const activeEndpoint = '/' + urlSegments.join('/');
-    return `.${activeEndpoint}`;
-  }
   disabling(propertyName: IPropertyName) {
-    this.signupForm.get(propertyName)?.disable();
+    this.updateProfileForm.get(propertyName)?.disable();
   }
-
-  signupFormInit() {
-    this.signupForm = new FormGroup({
-      name: new FormControl('', [Validators.required]),
-      email: new FormControl('', [Validators.required, Validators.email]),
-      address: new FormControl('', [Validators.required]),
-      city: new FormControl('', [Validators.required]),
-      country: new FormControl('', [
+  toggleForm() {
+    if (!this.updateProfileForm.disabled) {
+      this.cardBodyHeader = this.cardBodyHeader.filter((v) => v !== 'visible');
+      this.cardBodyHeader.push('invisible');
+      this.updateProfileForm.reset(this.profile);
+      console.log('reseting');
+      this.updateProfileForm.disable();
+      this.updatingProfile = false;
+      console.log(this.cardBodyHeader);
+    } else {
+      this.cardBodyHeader = this.cardBodyHeader.filter(
+        (v) => v !== 'invisible',
+      );
+      this.cardBodyHeader.push('visible');
+      this.updatingProfile = true;
+      console.log(this.cardBodyHeader);
+      this.updateProfileForm.enable();
+    }
+    console.log(this.updatingProfile);
+  }
+  updateProfileFormInit() {
+    console.log(this.profile);
+    this.updateProfileForm = new FormGroup({
+      name: new FormControl(this.profile.name, [Validators.required]),
+      email: new FormControl(this.profile.email, [
+        Validators.required,
+        Validators.email,
+      ]),
+      address: new FormControl(this.profile.address, [Validators.required]),
+      city: new FormControl(this.profile.city, [Validators.required]),
+      country: new FormControl(this.profile.country, [
         Validators.required,
         Validators.pattern(/^[a-zA-Z]+$/),
       ]),
-      phone: new FormControl('', [
+      phone: new FormControl(this.profile.phone, [
         Validators.required,
         Validators.pattern(
           /^(?:\+\d{1,3}\s?)?(?:\(\d{1,4}\)|\d{1,4})(?:[-.\s]?\d{1,12})+$/,
         ),
       ]),
-      departmentID: new FormControl('null', [
+      departmentID: new FormControl(this.profile.departmentID, [
         Validators.required,
         notNullValidator(),
       ]),
-      // 0 -> means employee
-      // 1 -> means admin
-      employeeType: new FormControl(this.adminRegistration ? 1 : 0, [
+      departmentName: new FormControl(this.profile.departmentName),
+      employeeType: new FormControl(this.profile.employeeType, [
         Validators.required,
-      ]),
-      password: new FormControl('', [
-        Validators.required,
-        Validators.pattern(
-          '^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+])[A-Za-z0-9!@#$%^&*()_+]+$',
-        ),
-        Validators.minLength(8),
       ]),
     });
+  }
+  edit() {
+    if (!this.updatingProfile) {
+      this.updatingProfile = true;
+      this.toggleForm();
+    }
+  }
+  reset() {
+    this.updateProfileForm.patchValue(this.profile);
   }
 
   getDepartments() {
@@ -206,23 +172,33 @@ export class ProfileComponent implements OnInit {
     e.preventDefault();
     // Mark all form as touched to trigger validation messages
     this.markAsTouchedAndDirty();
-    //TODO: replace it from hard code.
-    //
-    //
-    //email: "anil1@gmail.com"
-    //password: "Anil@123"
-    // const data = { ...this.signupForm.value, departmentID: 1 };
-    const data = this.signupForm.value;
+    const {
+      name,
+      email,
+      address,
+      country,
+      phone,
+      departmentID,
+      city,
+      employeeType,
+      departmentName,
+    } = this.updateProfileForm.value;
+    const data: IEmployee = {
+      name,
+      address,
+      country,
+      phone,
+      departmentID,
+      departmentName,
+      city,
+      employeeType,
+      email,
+      id: this.profile.id,
+    };
 
-    if (this.signupForm.valid) {
+    if (this.updateProfileForm.valid) {
       console.log('inputs: ', data);
-      this.authService.signup(data).subscribe((res) => {
-        if (this.adminRegistration) {
-          this.router.navigate(['', END_POINTS.adminList]);
-        } else {
-          this.router.navigate(['', END_POINTS.dashboard.toString()]);
-        }
-
+      this.authService.updateProfile(this.profile.id, data).subscribe((res) => {
         console.log(res);
       });
     }
@@ -243,14 +219,17 @@ export class ProfileComponent implements OnInit {
     return style;
   }
   formValue(propertyName: IPropertyName) {
-    return this.signupForm.get(propertyName)!;
+    return this.updateProfileForm.get(propertyName)!;
   }
   markAsTouchedAndDirty() {
-    Object.values(this.signupForm.controls).forEach((control) => {
+    Object.values(this.updateProfileForm.controls).forEach((control) => {
       if (!control.disabled) {
         control.markAsTouched();
         control.markAsDirty();
       }
     });
+  }
+  cancel() {
+    this.toggleForm();
   }
 }

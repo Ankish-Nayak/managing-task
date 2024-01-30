@@ -1,15 +1,30 @@
-<div class="card" style="width: 500px">
+<div class="spinner-border" role="status" *ngIf="isLoading">
+  <span class="visually-hidden">Loading...</span>
+</div>
+<div class="card" style="width: 500px" *ngIf="!isLoading">
   <div class="card-body">
     <h5 class="card-title text-center">Profile</h5>
-    <div class="signup-form">
-      <form [formGroup]="signupForm" (submit)="onSubmit($event)">
+    <div [classList]="cardBodyHeader.join(' ')">
+      <button
+        class="btn btn-primary btn-sm edit-button"
+        type="button"
+        (click)="reset()"
+      >
+        reset
+      </button>
+      <button class="btn btn-primary btn-sm" type="button" (click)="cancel()">
+        cancel
+      </button>
+    </div>
+    <div class="update-profile-form">
+      <form [formGroup]="updateProfileForm" (submit)="onSubmit($event)">
         <div class="form-group">
-          <label for="exampleInputEmail1">Email address</label>
+          <label for="email">Email address</label>
           <input
             type="email"
             autofocus
             [class]="validProperty('email')"
-            id="exampleInputEmail1"
+            id="email"
             aria-describedby="emailHelp"
             formControlName="email"
             placeholder="Enter email"
@@ -58,7 +73,9 @@
           </div>
         </div>
 
-        <div class="d-flex justify-content-between">
+        <div
+          class="d-flex justify-content-between container-fuild align-items-center"
+        >
           <div class="form-group">
             <label for="city">City</label>
             <input
@@ -87,69 +104,16 @@
             </div>
           </div>
         </div>
-
-        <label for="departmentID">Department</label>
-        <select
-          name=""
-          id="departmentID"
-          [class]="validProperty('departmentID')"
-          class="form-select"
-          formControlName="departmentID"
-        >
-          <option [value]="null">Select department</option>
-          <option
-            *ngFor="let department of departments"
-            [value]="department.id"
+        <div class="button-container">
+          <button
+            [type]="updatingProfile ? 'submit' : 'button'"
+            class="btn btn-primary"
+            (click)="edit()"
           >
-            {{ department.name }}
-          </option>
-        </select>
-        <div class="invalid-feedback">
-          {{ this.displayFeedback.departmentID }}
+            {{ updatingProfile ? "submit" : "edit" }}
+          </button>
         </div>
-        <div class="form-group" *ngIf="false">
-          <label for="employeeType">Employee Type</label>
-          <select
-            name=""
-            id="employeeType"
-            class="form-select"
-            formControlName="employeeType"
-          >
-            <option [value]="employees[0].value" selected>
-              {{ employees[0].name }}
-            </option>
-            <option [value]="employees[1].value">
-              {{ employees[1].name }}
-            </option>
-          </select>
-          <div class="invalid-feedback">
-            {{ this.displayFeedback.employeeType }}
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input
-            type="password"
-            formControlName="password"
-            [class]="validProperty('password')"
-            id="password"
-            placeholder="password"
-          />
-          <div class="invalid-feedback">
-            {{ this.displayFeedback.password }}
-          </div>
-        </div>
-
-        <a href="#" [routerLink]="['']" *ngIf="!adminRegistration"
-          >Have Account</a
-        >
-        <button type="submit" class="btn btn-primary">
-          {{ adminRegistration ? "Create Admin" : "Signup" }}
-        </button>
       </form>
     </div>
   </div>
 </div>
-
-<h2 *ngIf="adminRegistration" class="text-center">Admin Registration</h2>

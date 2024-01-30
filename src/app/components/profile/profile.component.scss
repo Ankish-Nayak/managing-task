@@ -5,20 +5,44 @@ form {
   width: 500px;
 }
 
-.signup-form {
+.update-profile-form {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  height: 100vh;
 }
 
-.signup-form input {
+.update-profile-form input {
   margin: 5px 0px;
 }
 
-.signup-form a {
+.update-profile-form a {
   text-decoration-line: none;
   align-self: center;
   padding: 10px 0px;
+}
+
+.city,
+.country {
+  margin: 2px;
+}
+.button-container {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 50%;
+  margin: 20px auto;
+}
+.card-body-header {
+  position: sticky;
+  top: 40px;
+  background: inherit;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  background: white;
+  height: 40px;
+  button {
+    margin: 10px;
+  }
 }
