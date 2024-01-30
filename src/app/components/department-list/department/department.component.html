@@ -15,8 +15,11 @@
     <i
       appHighlight
       (highlight)="onHighlight('edit', $event)"
-      [class]="highlight.edit ? ICONS.editFilled : ICONS.edit"
+      [class]="highlight.edit ? ICONS.editFilled.class : ICONS.edit.class"
       (click)="update(department.id)"
+      [ngbTooltip]="ICONS.edit.toolTip"
+      [openDelay]="ICONS.edit.openDelay"
+      [closeDelay]="ICONS.edit.closeDelay"
     >
     </i>
     <i
@@ -24,8 +27,11 @@
       data-bs-target="#deleteConfirmation"
       appHighlight
       (highlight)="onHighlight('delete', $event)"
-      [class]="highlight.delete ? ICONS.deleteFilled : ICONS.delete"
+      [class]="highlight.delete ? ICONS.deleteFilled.class : ICONS.delete.class"
       (click)="delete(department.id)"
+      ngbTooltip="edit"
+      [openDelay]="ICONS.edit.openDelay"
+      [closeDelay]="ICONS.edit.closeDelay"
     >
     </i>
   </div>

@@ -13,23 +13,23 @@
     <i
       appHighlight
       (highlight)="onHighlight('edit', $event)"
-      [class]="highlight.edit ? ICONS.editFilled : ICONS.edit"
+      [class]="highlight.edit ? ICONS.editFilled.class : ICONS.edit.class"
       (click)="update()"
-      ngbTooltip="edit"
-      [openDelay]="1000"
-      [closeDelay]="500"
+      [ngbTooltip]="ICONS.edit.toolTip"
+      [openDelay]="ICONS.edit.openDelay"
+      [closeDelay]="ICONS.edit.closeDelay"
     ></i>
     <i
       appHighlight
       (highlight)="onHighlight('delete', $event)"
-      [class]="highlight.delete ? ICONS.deleteFilled : ICONS.delete"
+      [class]="highlight.delete ? ICONS.deleteFilled.class : ICONS.delete.class"
       (click)="update()"
       (click)="delete()"
       data-bs-toggle="modal"
       data-bs-target="#deleteConfirmation"
-      ngbTooltip="delete"
-      [openDelay]="1000"
-      [closeDelay]="500"
+      [ngbTooltip]="ICONS.delete.toolTip"
+      [openDelay]="ICONS.delete.openDelay"
+      [closeDelay]="ICONS.delete.closeDelay"
     >
     </i>
   </div>

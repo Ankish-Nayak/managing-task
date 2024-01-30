@@ -11,7 +11,12 @@ import { HighlightDirective } from '../../../shared/directives/highlight.directi
 @Component({
   selector: '[app-department]',
   standalone: true,
-  imports: [CommonModule, NgbTooltipModule, HighlightDirective],
+  imports: [
+    CommonModule,
+    NgbTooltipModule,
+    HighlightDirective,
+    NgbTooltipModule,
+  ],
   templateUrl: './department.component.html',
   styleUrl: './department.component.scss',
 })

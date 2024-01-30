@@ -16,10 +16,13 @@
       <i
         appHighlight
         (highlight)="onHightlight($event)"
-        [class]="highlight ? ICONS.deleteFilled : ICONS.delete"
+        [class]="highlight ? ICONS.deleteFilled.class : ICONS.delete.class"
         (click)="delete()"
         data-bs-toggle="modal"
         data-bs-target="#deleteConfirmation"
+        [ngbTooltip]="ICONS.delete.toolTip"
+        [openDelay]="ICONS.delete.openDelay"
+        [closeDelay]="ICONS.delete.closeDelay"
       >
       </i>
     </div>

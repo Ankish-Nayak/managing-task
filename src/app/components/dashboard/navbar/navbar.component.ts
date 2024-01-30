@@ -17,11 +17,18 @@ import {
   TProfileLinks,
 } from './navBarLinks';
 import { END_POINTS } from '../../../utils/constants';
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, CommonModule, RouterLinkActive, UserViewNavLinksPipe],
+  imports: [
+    RouterLink,
+    CommonModule,
+    RouterLinkActive,
+    UserViewNavLinksPipe,
+    NgbTooltipModule,
+  ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
 })
