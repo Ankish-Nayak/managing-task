@@ -15,6 +15,9 @@
       (highlight)="onHighlight('edit', $event)"
       [class]="highlight.edit ? ICONS.editFilled : ICONS.edit"
       (click)="update()"
+      ngbTooltip="edit"
+      [openDelay]="1000"
+      [closeDelay]="500"
     ></i>
     <i
       appHighlight
@@ -24,6 +27,9 @@
       (click)="delete()"
       data-bs-toggle="modal"
       data-bs-target="#deleteConfirmation"
+      ngbTooltip="delete"
+      [openDelay]="1000"
+      [closeDelay]="500"
     >
     </i>
   </div>

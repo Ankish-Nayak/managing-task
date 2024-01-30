@@ -6,11 +6,12 @@ import { CommonModule } from '@angular/common';
 import { USER_ROLES } from '../../../../utils/constants';
 import { HighlightDirective } from '../../../../shared/directives/highlight.directive';
 import { ICONS } from '../../../../shared/icons/icons';
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: '[app-admin]',
   standalone: true,
-  imports: [CommonModule, HighlightDirective],
+  imports: [CommonModule, HighlightDirective, NgbTooltipModule],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.scss',
 })
