@@ -16,6 +16,7 @@ export const END_POINTS = {
   todoDetail: 'todo-detail/:id',
   employeeList: 'employees',
   notAllowedUser: 'not-allowed-user',
+  profile: 'profile',
 };
 
 // 0 -> means employee

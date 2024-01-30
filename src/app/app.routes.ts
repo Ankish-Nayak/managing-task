@@ -13,7 +13,9 @@ import { TodoDetailComponent } from './components/dashboard/todo-list/todo-detai
 import { EmployeeListComponent } from './components/dashboard/employee-list/employee-list.component';
 import { NotAllowedUserComponent } from './components/not-allowed-user/not-allowed-user.component';
 import { userBasedAuthGuard } from './shared/guards/userBasedAuth/user-based-auth.guard';
+import { ProfileComponent } from './components/profile/profile.component';
 
+// TODO: make a class to get url to particular endpoints and also have push, pop as method in it.
 export const routes: Routes = [
   {
     component: LoginComponent,
@@ -87,6 +89,10 @@ export const routes: Routes = [
         },
       },
       { component: NotAllowedUserComponent, path: END_POINTS.notAllowedUser },
+      {
+        component: ProfileComponent,
+        path: END_POINTS.profile,
+      },
     ],
   },
   {

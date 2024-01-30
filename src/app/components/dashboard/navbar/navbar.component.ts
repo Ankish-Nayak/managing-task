@@ -16,6 +16,7 @@ import {
   TNavLinks,
   TProfileLinks,
 } from './navBarLinks';
+import { END_POINTS } from '../../../utils/constants';
 
 @Component({
   selector: 'app-navbar',
@@ -104,6 +105,9 @@ export class NavbarComponent implements OnInit {
     switch (name) {
       case 'profile': {
         //TODO: make profile open
+        this.router.navigateByUrl(
+          `${END_POINTS.dashboard}/${END_POINTS.profile}`,
+        );
         break;
       }
       case 'updateProfile': {

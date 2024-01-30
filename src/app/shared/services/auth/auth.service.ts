@@ -11,6 +11,7 @@ import {
 } from '../../../utils/constants';
 import { TEmployee } from '../../interfaces/employee.type';
 import { ILoginRes } from '../../interfaces/login.interface';
+import { IGetProfile } from '../../interfaces/requests/auth.interface';
 import { ISignupPostData } from '../../interfaces/requests/signup.interface';
 
 @Injectable({
@@ -41,7 +42,21 @@ export class AuthService {
     const token = localStorage.getItem(AUTH_TOKEN);
     return token === null ? false : true;
   }
+  profile() {
+    return this.http
+      .get<IGetProfile>(`${this.apiUrl}/userDetails`, {
+        withCredentials: true,
+        headers: this.Headers,
+      })
+      .pipe(map((res) => res.data));
+  }
 
+  updateProfile(id: number) {
+    return this.http.get(`${this.apiUrl}/updateuser/${id}`, {
+      withCredentials: true,
+      headers: this.Headers,
+    });
+  }
   logout() {
     localStorage.removeItem(AUTH_TOKEN);
     localStorage.removeItem(USER_ROLES_KEY);
