@@ -6,6 +6,7 @@ import { environment } from '../../../../environments/environment.development';
 import {
   AUTH_TOKEN,
   EMPLOYEE_TYPE,
+  USER_KEY,
   USER_ROLES,
   USER_ROLES_KEY,
 } from '../../../utils/constants';
@@ -24,6 +25,17 @@ export class AuthService {
   private _userTypeSource = new BehaviorSubject<TEmployee | null>(
     localStorage.getItem(USER_ROLES_KEY) as TEmployee | null,
   );
+  private _userSource = new BehaviorSubject<Employee | null>(
+    (() => {
+      const data = localStorage.getItem(USER_KEY);
+      if (data === null) {
+        return null;
+      } else {
+        return JSON.parse(data) as Employee;
+      }
+    })(),
+  );
+  userMessageSource = this._userSource.asObservable();
   userTypeMessage$ = this._userTypeSource.asObservable();
 
   constructor(private http: HttpClient) {}
@@ -114,5 +126,18 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/user/ChangePassword`, data, {
       headers: this.Headers,
     });
+  }
+  set userTypeSource(value: number) {
+    const employee = (() => {
+      const d = value;
+      if (d === EMPLOYEE_TYPE.employee) {
+        return USER_ROLES.Employee;
+      } else if (d === EMPLOYEE_TYPE.admin) {
+        return USER_ROLES.Admin;
+      } else {
+        return USER_ROLES.SuperAdmin;
+      }
+    })();
+    localStorage.setItem(USER_ROLES_KEY, employee);
   }
 }

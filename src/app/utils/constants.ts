@@ -1,6 +1,7 @@
 import { TEmployee } from '../shared/interfaces/employee.type';
 export const USER_ROLES_KEY = 'userRole';
 export const AUTH_TOKEN = 'authToken';
+export const USER_KEY = 'user';
 //TODO: to be changed.
 export const END_POINTS = {
   dashboard: 'dashboard',

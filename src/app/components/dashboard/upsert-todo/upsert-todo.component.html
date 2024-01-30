@@ -1,58 +1,63 @@
-<div class="todo-form">
-  <h4>{{ updateForm ? "Update Todo" : "Create Todo" }}</h4>
-  <form [formGroup]="todoForm" (submit)="onSubmit($event)">
-    <div class="form-group">
-      <label for="title">Title</label>
-      <input
-        type="text"
-        formControlName="title"
-        autoFocus
-        [class]="validProperty('title')"
-        id="title"
-        placeholder="Enter title"
-      />
-      <div class="invalid-feedback">
-        {{ this.displayFeedback.title }}
-      </div>
+<app-spinner *ngIf="isLoading"></app-spinner>
+<div class="card" *ngIf="!isLoading">
+  <div class="card-body">
+    <div class="todo-form">
+      <h4>{{ updateForm ? "Update Todo" : "Create Todo" }}</h4>
+      <form [formGroup]="todoForm" (submit)="onSubmit($event)">
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input
+            type="text"
+            formControlName="title"
+            autoFocus
+            [class]="validProperty('title')"
+            id="title"
+            placeholder="Enter title"
+          />
+          <div class="invalid-feedback">
+            {{ this.displayFeedback.title }}
+          </div>
 
-      <label for="description">Description</label>
-      <textarea
-        formControlName="description"
-        [class]="validProperty('description')"
-        id="description"
-        placeholder="Enter description"
-      ></textarea>
-      <div class="invalid-feedback">
-        {{ this.displayFeedback.description }}
-      </div>
-      <!-- <!---TODO: employee selection for assigning task-> -->
-      <label for="employeeID" *ngIf="!updateForm">Assign To</label>
-      <select
-        [class]="validProperty('employeeId')"
-        id="employeeID"
-        formControlName="employeeId"
-        aria-label="Default select example"
-        *ngIf="!updateForm"
-      >
-        <option [value]="null">Select Employee</option>
-        <option *ngFor="let employee of employees" [value]="employee.id">
-          {{ employee.email }}
-        </option>
-      </select>
-      <div class="invalid-feedback">{{ this.displayFeedback.employeeId }}</div>
+          <label for="description">Description</label>
+          <textarea
+            formControlName="description"
+            [class]="validProperty('description')"
+            id="description"
+            placeholder="Enter description"
+          ></textarea>
+          <div class="invalid-feedback">
+            {{ this.displayFeedback.description }}
+          </div>
+          <!-- <!---TODO: employee selection for assigning task-> -->
+          <label for="employeeID" *ngIf="!updateForm">Assign To</label>
+          <select
+            [class]="validProperty('employeeId')"
+            id="employeeID"
+            formControlName="employeeId"
+            aria-label="Default select example"
+            *ngIf="!updateForm"
+          >
+            <option [value]="null">Select Employee</option>
+            <option *ngFor="let employee of employees" [value]="employee.id">
+              {{ employee.email }}
+            </option>
+          </select>
+          <div class="invalid-feedback">
+            {{ this.displayFeedback.employeeId }}
+          </div>
+        </div>
+        <div class="d-flex justify-content-between align-items">
+          <button class="btn btn-primary" type="submit">Submit</button>
+          <button
+            class="btn btn-primary"
+            type="button"
+            *ngIf="updateForm"
+            (click)="reset()"
+          >
+            Reset
+          </button>
+        </div>
+      </form>
     </div>
-    <div class="d-flex justify-content-between align-items">
-      <button class="btn btn-primary" type="submit">
-        {{ updateForm ? "Update Todo" : "Create Todo" }}
-      </button>
-      <button
-        class="btn btn-primary"
-        type="button"
-        *ngIf="updateForm"
-        (click)="reset()"
-      >
-        Reset
-      </button>
-    </div>
-  </form>
+  </div>
 </div>

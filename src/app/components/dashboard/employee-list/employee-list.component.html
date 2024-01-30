@@ -2,7 +2,10 @@
   <span class="visually-hidden">Loading...</span>
 </div>
 
-<table class="table table-hover" *ngIf="!isLoading">
+<h5 class="text-center" *ngIf="!isLoading && employees.length === 0">
+  No Employees Here
+</h5>
+<table class="table table-hover" *ngIf="!isLoading && employees.length !== 0">
   <thead>
     <tr>
       <th scope="col">Sno</th>

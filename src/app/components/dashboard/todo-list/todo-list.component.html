@@ -1,6 +1,7 @@
 <div class="spinner-border" role="status" *ngIf="isLoading">
   <span class="visually-hidden">Loading...</span>
 </div>
+<!-- <app-spinner *ngIf="isLoading">isdf</app-spinner> -->
 
 <div
   class="d-flex flex-row-reverse"
@@ -10,7 +11,7 @@
     Assign Task
   </button>
 </div>
-<form [formGroup]="todoForm">
+<form [formGroup]="todoForm" *ngIf="todos.length !== 0">
   <div class="form">
     <table class="table table-hover" *ngIf="!isLoading">
       <thead>

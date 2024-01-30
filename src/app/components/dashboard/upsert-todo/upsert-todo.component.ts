@@ -20,18 +20,20 @@ import { GenericValidators } from '../../../shared/validators/generic-validator'
 import { notNullValidator } from '../../../shared/validators/not-null-validators';
 import { END_POINTS } from '../../../utils/constants';
 import { ToastService } from '../../../shared/services/toast/toast.service';
+import { SpinnerComponent } from '../../../shared/spinners/spinner/spinner.component';
+import { getActiveEndpoint } from '../../../utils/getActiveEndpoint';
 
 type IPropertyName = 'title' | 'description' | 'employeeId';
 
 @Component({
   selector: 'app-upsert-todo',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, SpinnerComponent],
   templateUrl: './upsert-todo.component.html',
   styleUrl: './upsert-todo.component.scss',
 })
 export class UpsertTodoComponent {
-  isLoading: boolean = false;
+  isLoading: boolean = true;
   todoForm!: FormGroup;
   displayFeedback: { [key in IPropertyName]?: string } = {};
   @ViewChildren(FormControlName, { read: ElementRef })
@@ -86,6 +88,7 @@ export class UpsertTodoComponent {
   getEmployees() {
     this.employeeService.getEmployees(1).subscribe((res) => {
       this.employees = this.employeeAdapter.adaptArray(res.iterableData);
+      this.isLoading = false;
     });
   }
   ngOnInit(): void {
@@ -95,30 +98,14 @@ export class UpsertTodoComponent {
         this.id = id;
       }
     });
-    if (this.getActiveEndpoint() === `./${END_POINTS.createTodo}`) {
+
+    this.getEmployees();
+    if (getActiveEndpoint(this.route) === `./${END_POINTS.createTodo}`) {
       this.updateForm = false;
     } else {
       this.updateForm = true;
     }
-    this.getEmployees();
     this.todoFormInit();
-  }
-
-  getActiveEndpoint() {
-    // Get the current activated route
-    let currentRoute = this.route;
-    while (currentRoute.firstChild) {
-      currentRoute = currentRoute.firstChild;
-    }
-
-    // Get the URL segments of the activated route
-    const urlSegments = currentRoute.snapshot.url.map(
-      (segment) => segment.path,
-    );
-
-    // Determine the active endpoint based on the URL segments
-    const activeEndpoint = '/' + urlSegments.join('/');
-    return `.${activeEndpoint}`;
   }
 
   onSubmit(e: SubmitEvent) {
@@ -134,7 +121,7 @@ export class UpsertTodoComponent {
           description: this.trimValue(description),
           isCompleted: false,
         };
-        this.isLoading = true;
+        this.isLoading = false;
 
         this.todoService.updateTodo(Number(this.id), data).subscribe(
           () => {

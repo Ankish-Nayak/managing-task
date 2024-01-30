@@ -52,7 +52,6 @@ export class TodoComponent {
   }
   userAllowedToView(colName: TcolsName) {
     const col = this.cols.find((e) => e.name === colName);
-    console.log(col);
     return (
       col !== undefined &&
       (col.notAllowedUsers === null ||

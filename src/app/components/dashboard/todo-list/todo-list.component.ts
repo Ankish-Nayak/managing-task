@@ -11,6 +11,9 @@ import { TodoService } from '../../../shared/services/todo/todo.service';
 import { END_POINTS, USER_ROLES } from '../../../utils/constants';
 import { COLS, TCOLS } from './cols';
 import { TodoComponent } from './todo/todo.component';
+import { EmployeeService } from '../../../shared/services/employee/employee.service';
+import { ToastService } from '../../../shared/services/toast/toast.service';
+import { SpinnerComponent } from '../../../shared/spinners/spinner/spinner.component';
 
 @Component({
   selector: 'app-todo-list',
@@ -21,6 +24,7 @@ import { TodoComponent } from './todo/todo.component';
     ConfirmationModalComponent,
     TodoComponent,
     UserViewColsPipe,
+    SpinnerComponent,
   ],
   templateUrl: './todo-list.component.html',
   styleUrl: './todo-list.component.scss',
@@ -38,6 +42,8 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private authService: AuthService,
+    private employeeService: EmployeeService,
+    private toastService: ToastService,
   ) {}
   ngOnInit(): void {
     this.getTodos();
@@ -96,10 +102,24 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this.todoIdTobeDeleted = null;
   }
-  assignTo() {
-    this.router.navigate([`../${END_POINTS.createTodo}`], {
-      relativeTo: this.route,
+  canAssignTask() {
+    this.employeeService.getEmployees(1).subscribe((res) => {
+      if (res.iterableData.length === 0) {
+        this.toastService.show(
+          'Can Assign Task',
+          'No employee in department to assign task',
+          'error',
+          5000,
+        );
+      } else {
+        this.router.navigate([`../${END_POINTS.createTodo}`], {
+          relativeTo: this.route,
+        });
+      }
     });
+  }
+  assignTo() {
+    this.canAssignTask();
   }
 
   allowedToView(allowedUsers: TEmployee[]) {
