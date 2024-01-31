@@ -10,6 +10,10 @@ import { EmployeeComponent } from './employee/employee.component';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { ICONS } from '../../../shared/icons/icons';
 import { HighlightDirective } from '../../../shared/directives/highlight/highlight.directive';
+import { EmployeeListHeaderComponent } from './employee-list-header/employee-list-header.component';
+
+//TODO: add placeholder on every small element which exists like employee todo and alll to make this
+//much better
 
 @Component({
   selector: 'app-employee-list',
@@ -19,6 +23,7 @@ import { HighlightDirective } from '../../../shared/directives/highlight/highlig
     ConfirmationModalComponent,
     EmployeeComponent,
     HighlightDirective,
+    EmployeeListHeaderComponent,
   ],
   templateUrl: './employee-list.component.html',
   styleUrl: './employee-list.component.scss',
@@ -57,5 +62,15 @@ export class EmployeeListComponent implements OnInit {
   }
   delete(id: number) {
     this.employeeToBeDeletedID = id;
+  }
+  onClicked(name: string) {
+    this.employeeService
+      .getEmployees({
+        orderBy: name,
+        orders: 1,
+      })
+      .subscribe((res) => {
+        this.employees = res.iterableData;
+      });
   }
 }

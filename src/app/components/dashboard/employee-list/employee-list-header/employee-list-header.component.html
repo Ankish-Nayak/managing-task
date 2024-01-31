@@ -1,0 +1,8 @@
+<th
+  *ngFor="let col of cols"
+  [class]="col.class"
+  appClicked
+  (clicked)="onClicked($event)"
+>
+  {{ col.name }}
+</th>
