@@ -17,7 +17,10 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
-import { ICreateTodoPostData } from '../../../shared/interfaces/requests/toto.interface';
+import {
+  ICreateTodoPostData,
+  IUpdateTodoPostData,
+} from '../../../shared/interfaces/requests/toto.interface';
 import {
   Employee,
   EmployeeAdapter,
@@ -28,8 +31,6 @@ import { TodoService } from '../../../shared/services/todo/todo.service';
 import { SpinnerComponent } from '../../../shared/spinners/spinner/spinner.component';
 import { GenericValidators } from '../../../shared/validators/generic-validator';
 import { notNullValidator } from '../../../shared/validators/not-null-validators';
-import { END_POINTS } from '../../../utils/constants';
-import { getActiveEndpoint } from '../../../utils/getActiveEndpoint';
 
 type IPropertyName = 'title' | 'description' | 'employeeId';
 
@@ -111,30 +112,24 @@ export class UpsertTodoComponent {
     });
 
     this.getEmployees();
-    // if (getActiveEndpoint(this.route) === `./${END_POINTS.createTodo}`) {
-    //   this.updateForm = false;
-    // } else {
-    //   this.updateForm = true;
-    // }
     this.todoFormInit();
   }
 
   onSubmit(e: SubmitEvent) {
     e.preventDefault();
-    // const trimmedData = Object.values(this.todoForm.value).forEach((value))
-    //
     if (this.updateForm) {
       const { title, description } = this.todoForm.value;
       this.markAsTouchedAndDirty();
       if (this.todoForm.valid) {
-        const data = {
+        const data: IUpdateTodoPostData = {
           title: this.trimValue(title),
           description: this.trimValue(description),
           isCompleted: false,
+          employeeId: Number(this.id),
         };
         this.isLoading = false;
 
-        this.todoService.updateTodo(Number(this.id), data).subscribe(
+        this.todoService.updateTodo(data.employeeId, data).subscribe(
           () => {
             this.updated.emit(true);
             // this.router.navigate(['../../todos'], { relativeTo: this.route });
@@ -170,7 +165,7 @@ export class UpsertTodoComponent {
       this.markAsTouchedAndDirty();
       if (this.todoForm.valid) {
         this.isLoading = true;
-        this.todoService.createTodo(employeeId, data).subscribe(
+        this.todoService.createTodo(data).subscribe(
           () => {
             // this.router.navigate(['../todos'], { relativeTo: this.route });
             this.updated.emit(true);

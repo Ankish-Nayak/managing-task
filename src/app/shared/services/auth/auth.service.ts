@@ -116,11 +116,18 @@ export class AuthService {
   }
   signup(data: ISignupPostData) {
     console.log(data);
-    return this.http.post(`${this.apiUrl}/registration`, data, {
-      headers: {
-        'Content-Type': 'application/json',
+    return this.http.post(
+      `${this.apiUrl}/registration`,
+      {
+        id: 0, // cuz of incapability of backend dev
+        ...data,
       },
-    });
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
   }
   changePassword(data: { newPassword: string }) {
     return this.http.post(`${this.apiUrl}/user/ChangePassword`, data, {

@@ -13,7 +13,7 @@ import { EmployeeService } from '../../../shared/services/employee/employee.serv
 import { ToastService } from '../../../shared/services/toast/toast.service';
 import { TodoService } from '../../../shared/services/todo/todo.service';
 import { SpinnerComponent } from '../../../shared/spinners/spinner/spinner.component';
-import { USER_ROLES } from '../../../utils/constants';
+import { COMPONENT_NAME, USER_ROLES } from '../../../utils/constants';
 import { COLS, TCOLS } from './cols';
 import { TodoComponent } from './todo/todo.component';
 import { UpsertTodoModalComponent } from './upsert-todo-modal/upsert-todo-modal.component';
@@ -73,7 +73,7 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {}
   getTodos() {
     this.isLoading = true;
-    this.todoService.getTodos().subscribe(
+    this.todoService.getTodos({}).subscribe(
       (res) => {
         this.todos = res;
         this.isLoading = false;
@@ -101,6 +101,7 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     ref.componentInstance.update = true;
     ref.componentInstance.id = id;
+    ref.componentInstance.componentName = COMPONENT_NAME.UPSERT_TODO_COMPONENT;
     ref.closed.subscribe((res) => {
       console.log(res);
       this.getTodos();

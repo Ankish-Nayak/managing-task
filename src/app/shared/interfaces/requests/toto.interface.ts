@@ -23,3 +23,40 @@ export interface ICreateTodoPostData {
   isCompleted: boolean;
   employeeId: number;
 }
+
+export interface IGetTodosQueryParams {
+  isPagination: boolean;
+  index: number;
+  take: number;
+  search: string;
+  orders: number;
+  orderBy: string;
+}
+
+export interface IUpdateTodoPostData {
+  title: string;
+  description: string;
+  isCompleted: boolean;
+  employeeId: number;
+}
+
+export interface IMarkTodoPostData {
+  isCompleted: boolean;
+}
+
+export class GetTodosQueryParams implements IGetTodosQueryParams {
+  isPagination: boolean;
+  index: number;
+  take: number;
+  search: string;
+  orders: number;
+  orderBy: string;
+  constructor(params: Partial<IGetTodosQueryParams>) {
+    this.isPagination = params.isPagination ?? false;
+    this.index = params.index ?? 0;
+    this.take = params.take ?? 0;
+    this.search = params.search ?? '';
+    this.orders = params.orders ?? 0;
+    this.orderBy = params.orderBy ?? '';
+  }
+}

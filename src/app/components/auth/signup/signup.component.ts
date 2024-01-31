@@ -22,6 +22,7 @@ import { END_POINTS } from '../../../utils/constants';
 import { Department } from '../../../shared/models/department.model';
 import { DepartmentService } from '../../../shared/services/department/department.service';
 import { notNullValidator } from '../../../shared/validators/not-null-validators';
+import { ISignupPostData } from '../../../shared/interfaces/requests/signup.interface';
 
 type IPropertyName =
   | 'name'
@@ -206,7 +207,28 @@ export class SignupComponent implements OnInit, AfterViewInit {
     //email: "anil1@gmail.com"
     //password: "Anil@123"
     // const data = { ...this.signupForm.value, departmentID: 1 };
-    const data = this.signupForm.value;
+    const {
+      name,
+      email,
+      address,
+      country,
+      phone,
+      departmentID,
+      city,
+      employeeType,
+      password,
+    } = this.signupForm.value;
+    const data: ISignupPostData = {
+      name,
+      email,
+      country,
+      phone,
+      departmentID: Number(departmentID),
+      city,
+      employeeType,
+      password,
+      address,
+    };
 
     if (this.signupForm.valid) {
       console.log('inputs: ', data);

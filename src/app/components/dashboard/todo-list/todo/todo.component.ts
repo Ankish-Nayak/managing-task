@@ -2,14 +2,14 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { HighlightDirective } from '../../../../shared/directives/highlight.directive';
+import { ICONS } from '../../../../shared/icons/icons';
 import { TEmployee } from '../../../../shared/interfaces/employee.type';
 import { ConfirmationModalComponent } from '../../../../shared/modals/confirmation-modal/confirmation-modal.component';
 import { Todo } from '../../../../shared/models/todo.model';
-import { COLS, TCOLS, TcolsName } from '../cols';
-import { USER_ROLES } from '../../../../utils/constants';
 import { TodoService } from '../../../../shared/services/todo/todo.service';
-import { HighlightDirective } from '../../../../shared/directives/highlight.directive';
-import { ICONS } from '../../../../shared/icons/icons';
+import { USER_ROLES } from '../../../../utils/constants';
+import { COLS, TCOLS, TcolsName } from '../cols';
 
 @Component({
   selector: '[app-todo]',
@@ -77,7 +77,7 @@ export class TodoComponent {
         ...this.todo,
         isCompleted: !this.todo.isCompleted,
       })
-      .subscribe((res) => {
+      .subscribe(() => {
         this.todo.isCompleted = !this.todo.isCompleted;
       });
     // this.markTodo.emit({ ...this.todo, isCompleted: !this.todo.isCompleted });

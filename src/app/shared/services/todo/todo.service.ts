@@ -4,8 +4,12 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment.development';
 import { AUTH_TOKEN } from '../../../utils/constants';
 import {
+  GetTodosQueryParams,
   ICreateTodoPostData,
+  IGetTodosQueryParams,
   IGetTodosRes,
+  IMarkTodoPostData,
+  IUpdateTodoPostData,
 } from '../../interfaces/requests/toto.interface';
 
 @Injectable({
@@ -21,9 +25,10 @@ export class TodoService {
       Authorization: `Bearer ${token}`,
     });
   }
-  getTodos() {
+  getTodos(queryParams: Partial<IGetTodosQueryParams>) {
+    const transformedQueryParams = new GetTodosQueryParams(queryParams);
     return this.http
-      .get<IGetTodosRes>(`${this.apiUrl}/tasks/1`, {
+      .post<IGetTodosRes>(`${this.apiUrl}/tasks`, transformedQueryParams, {
         headers: this.Headers,
       })
       .pipe(
@@ -32,20 +37,13 @@ export class TodoService {
         }),
       );
   }
-  updateTodo(
-    todoId: number,
-    data: {
-      title: string;
-      description: string;
-      isCompleted: boolean;
-    },
-  ) {
+  updateTodo(todoId: number, data: IUpdateTodoPostData) {
     return this.http.put(`${this.apiUrl}/update/${todoId}`, data, {
       withCredentials: true,
       headers: this.Headers,
     });
   }
-  createTodo(employeeId: number, data: ICreateTodoPostData) {
+  createTodo(data: ICreateTodoPostData) {
     return this.http.post(`${this.apiUrl}/add`, data, {
       withCredentials: true,
       headers: this.Headers,
@@ -62,18 +60,10 @@ export class TodoService {
     //
     return localStorage.getItem(`todo/${id}`)!;
   }
-  markTodo(
-    id: number,
-    data: {
-      title: string;
-      description: string;
-      isCompleted: boolean;
-    },
-  ) {
-    return this.updateTodo(id, data);
-    // return this.http.put(`${this.apiUrl}/update/${id}`, data, {
-    //   withCredentials: true,
-    //   headers: this.Headers,
-    // });
+  markTodo(id: number, data: IMarkTodoPostData) {
+    return this.http.put(`${this.apiUrl}/SetTodoCompleted/${id}`, data, {
+      withCredentials: true,
+      headers: this.Headers,
+    });
   }
 }

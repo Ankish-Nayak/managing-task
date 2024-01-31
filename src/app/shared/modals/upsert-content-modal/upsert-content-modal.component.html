@@ -1,24 +1,18 @@
 <div class="modal-header">
-  <h4 class="modal-title text-center" id="modal-basic-title">
-    {{ update ? "Todo update" : "Todo create" }}
+  <h4 class="modal-title" id="modal-basic-title">
+    {{ getTitle() }}
   </h4>
 </div>
 <div class="modal-body">
-  <!-- <app-upsert-todo -->
-  <!--   [updateForm]="update" -->
-  <!--   (updated)="closeModal()" -->
-  <!--   [id]="id" -->
-  <!-- ></app-upsert-todo> -->
-
   <ng-container [ngSwitch]="componentName">
     <app-upsert-todo
-      *ngSwitchCase="COMPONENT_NAME.UPSERT_ADMIN_COMPONENT"
+      *ngSwitchCase="COMPONENT_NAME.UPSERT_TODO_COMPONENT"
       [updateForm]="update"
       [id]="id"
       (updated)="closeModal()"
     ></app-upsert-todo>
     <app-upsert-admin
-      *ngSwitchCase="COMPONENT_NAME.UPSERT_TODO_COMPONENT"
+      *ngSwitchCase="COMPONENT_NAME.UPSERT_ADMIN_COMPONENT"
       [updateForm]="update"
       [id]="id"
     ></app-upsert-admin>

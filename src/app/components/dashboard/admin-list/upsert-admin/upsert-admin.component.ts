@@ -30,7 +30,6 @@ import { ToastService } from '../../../../shared/services/toast/toast.service';
 import { GenericValidators } from '../../../../shared/validators/generic-validator';
 import { notNullValidator } from '../../../../shared/validators/not-null-validators';
 import { EMPLOYEE_TYPE, END_POINTS } from '../../../../utils/constants';
-import { getActiveEndpoint } from '../../../../utils/getActiveEndpoint';
 type IPropertyName =
   | 'name'
   | 'email'
@@ -130,7 +129,9 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
     });
 
     this.employeeService.getEmployee(Number(this.id)).subscribe((res) => {
+      console.log('employee', res);
       this.employee = res;
+      // this.signupForm.patchValue(res);
     });
 
     this.getDepartments();

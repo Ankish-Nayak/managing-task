@@ -4,7 +4,6 @@
 <div class="card" *ngIf="!isLoading">
   <div class="card-body">
     <div class="todo-form">
-      <!-- <h4>{{ updateForm ? "Update Todo" : "Create Todo" }}</h4> -->
       <form [formGroup]="todoForm" (submit)="onSubmit($event)">
         <div class="form-group">
           <label for="title">Title</label>
@@ -31,13 +30,12 @@
             {{ this.displayFeedback.description }}
           </div>
           <!-- <!---TODO: employee selection for assigning task-> -->
-          <label for="employeeID" *ngIf="!updateForm">Assign To</label>
+          <label for="employeeID">Assign To</label>
           <select
             [class]="validProperty('employeeId')"
             id="employeeID"
             formControlName="employeeId"
             aria-label="Default select example"
-            *ngIf="!updateForm"
           >
             <option [value]="null">Select Employee</option>
             <option *ngFor="let employee of employees" [value]="employee.id">
@@ -50,14 +48,6 @@
         </div>
         <div class="d-flex justify-content-between align-items">
           <button class="btn btn-primary" type="submit">Submit</button>
-          <!-- <button -->
-          <!--   class="btn btn-primary" -->
-          <!--   type="button" -->
-          <!--   *ngIf="updateForm" -->
-          <!--   (click)="reset()" -->
-          <!-- > -->
-          <!--   Reset -->
-          <!-- </button> -->
         </div>
       </form>
     </div>

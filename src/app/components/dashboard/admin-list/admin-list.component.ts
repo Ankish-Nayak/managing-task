@@ -1,26 +1,21 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { EmployeeService } from '../../../shared/services/employee/employee.service';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { TEmployee } from '../../../shared/interfaces/employee.type';
+import { ConfirmationModalComponent } from '../../../shared/modals/confirmation-modal/confirmation-modal.component';
+import { UpsertContentModalComponent } from '../../../shared/modals/upsert-content-modal/upsert-content-modal.component';
 import {
   Employee,
   EmployeeAdapter,
 } from '../../../shared/models/employee.model';
-import { CommonModule } from '@angular/common';
-import { AdminComponent } from './admin/admin.component';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ConfirmationModalComponent } from '../../../shared/modals/confirmation-modal/confirmation-modal.component';
-import { ActivatedRoute, Router } from '@angular/router';
-import {
-  COMPONENT_NAME,
-  END_POINTS,
-  USER_ROLES,
-} from '../../../utils/constants';
-import { allowedToView } from '../../../utils/allowedToView';
 import { AuthService } from '../../../shared/services/auth/auth.service';
-import { TEmployee } from '../../../shared/interfaces/employee.type';
+import { EmployeeService } from '../../../shared/services/employee/employee.service';
 import { ToastService } from '../../../shared/services/toast/toast.service';
-import { NgbModalWindow } from '@ng-bootstrap/ng-bootstrap/modal/modal-window';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { UpsertContentModalComponent } from '../../../shared/modals/upsert-content-modal/upsert-content-modal.component';
+import { allowedToView } from '../../../utils/allowedToView';
+import { COMPONENT_NAME, USER_ROLES } from '../../../utils/constants';
+import { AdminComponent } from './admin/admin.component';
 
 @Component({
   selector: 'app-admin-list',
@@ -84,7 +79,25 @@ export class AdminListComponent implements OnInit {
     this.adminToBeDeletedID = id;
   }
   update(id: number) {
-    this.router.navigate([`../update-admin/${id}`], { relativeTo: this.route });
+    const ref = this.modalService.open(UpsertContentModalComponent, {
+      size: 'lg',
+      backdrop: 'static',
+    });
+    ref.componentInstance.update = true;
+    ref.componentInstance.id = id;
+    ref.componentInstance.componentName = COMPONENT_NAME.UPSERT_ADMIN_COMPONENT;
+    ref.closed.subscribe((res) => {
+      console.log(res);
+      this.getAdmins();
+    });
+    ref.dismissed.subscribe((res) => {
+      console.log(res);
+      this.toastService.show(
+        'Admin Updation',
+        'Admin updation was cancelled',
+        'info',
+      );
+    });
   }
   createAdmin() {
     const ref = this.modalService.open(UpsertContentModalComponent, {
@@ -106,10 +119,6 @@ export class AdminListComponent implements OnInit {
         'info',
       );
     });
-
-    // this.router.navigate([`../${END_POINTS.createAdmin}`], {
-    //   relativeTo: this.route,
-    // });
   }
   adminFormInit() {
     this.adminForm = new FormGroup({});

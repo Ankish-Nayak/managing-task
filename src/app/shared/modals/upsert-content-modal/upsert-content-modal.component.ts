@@ -15,11 +15,12 @@ import { COMPONENT_NAME } from '../../../utils/constants';
 export class UpsertContentModalComponent {
   @Input() update!: boolean;
   @Input() id!: string;
-  // @ViewChild(UpsertTodoComponent) childComponent!: UpsertTodoComponent;
   @Input({ required: true }) componentName!:
     | COMPONENT_NAME.UPSERT_ADMIN_COMPONENT
     | COMPONENT_NAME.UPSERT_TODO_COMPONENT;
   readonly COMPONENT_NAME = COMPONENT_NAME;
+  @ViewChild(UpsertTodoComponent) upsertTodoComponent!: UpsertTodoComponent;
+  @ViewChild(UpsertAdminComponent) upsertAdminComponent!: UpsertAdminComponent;
   constructor(private modal: NgbActiveModal) {}
   ngOnInit(): void {
     console.log(this.update, this.id);
@@ -30,7 +31,18 @@ export class UpsertContentModalComponent {
   dismissModal() {
     this.modal.dismiss();
   }
+  getTitle() {
+    if (this.componentName === COMPONENT_NAME.UPSERT_ADMIN_COMPONENT) {
+      return this.update ? 'Admin Updation' : 'Admin Registration';
+    } else {
+      return this.update ? 'Todo Creation' : 'Todo Updation';
+    }
+  }
   onReset() {
-    // this.childComponent.reset();
+    if (this.componentName === COMPONENT_NAME.UPSERT_ADMIN_COMPONENT) {
+      this.upsertAdminComponent.reset();
+    } else {
+      this.upsertTodoComponent.reset();
+    }
   }
 }

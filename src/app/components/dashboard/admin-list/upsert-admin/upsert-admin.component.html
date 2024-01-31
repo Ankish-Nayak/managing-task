@@ -1,6 +1,3 @@
-<h2 class="text-center">
-  {{ adminRegistration ? "Admin Registration" : "Update Admin" }}
-</h2>
 <div class="signup-form">
   <form [formGroup]="signupForm" (submit)="onSubmit($event)">
     <div class="form-group">
@@ -146,10 +143,7 @@
       class="d-flex justify-content-between align-items-center"
       *ngIf="!adminRegistration"
     >
-      <button class="btn btn-primary" type="submit">Update Admin</button
-      ><button class="btn btn-primary" type="button" (click)="reset()">
-        Reset
-      </button>
+      <button class="btn btn-primary" type="submit">Update Admin</button>
     </div>
   </form>
 </div>
