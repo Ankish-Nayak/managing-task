@@ -12,6 +12,7 @@ export interface ITask {
 
 export interface IGetTodosRes {
   status: string;
+  count: number; // TODO: user this make pagination work
   message: string;
   statusCode: number;
   iterableData: ITask[];

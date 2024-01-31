@@ -17,6 +17,7 @@ import { SpinnerComponent } from '../../../shared/spinners/spinner/spinner.compo
 import { COMPONENT_NAME, USER_ROLES } from '../../../utils/constants';
 import { sortTasksByProperty } from '../../../utils/sortTasksByPropery';
 import { COLS, TCOLS } from './cols';
+import { TodoListControllerComponent } from './todo-list-controller/todo-list-controller.component';
 import { TodoListHeaderComponent } from './todo-list-header/todo-list-header.component';
 import { TodoPaginationComponent } from './todo-pagination/todo-pagination.component';
 import { TodoComponent } from './todo/todo.component';
@@ -34,6 +35,7 @@ import { TodoComponent } from './todo/todo.component';
     SpinnerComponent,
     UpsertContentModalComponent,
     TodoPaginationComponent,
+    TodoListControllerComponent,
   ],
   templateUrl: './todo-list.component.html',
   styleUrl: './todo-list.component.scss',
@@ -212,6 +214,13 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   allowedToView(allowedUsers: TEmployee[]) {
     return allowedUsers.includes(this.userType);
+  }
+  onSearchBoxChange(updatedPageState: GetEmployeesQueryParams) {
+    this.pageState = updatedPageState;
+    console.log(updatedPageState);
+    this.todoService.getTodos(this.pageState).subscribe((res) => {
+      this.todos = res;
+    });
   }
   ngOnDestroy(): void {}
 }

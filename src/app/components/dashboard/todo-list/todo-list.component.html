@@ -1,47 +1,18 @@
 <div class="spinner-border" role="status" *ngIf="isLoading">
   <span class="visually-hidden">Loading...</span>
 </div>
-<!-- <app-spinner *ngIf="isLoading">isdf</app-spinner> -->
+
 <div
   class="todo-list-top-button"
   *ngIf="!isLoading && allowedToView([USER_ROLES.Admin, USER_ROLES.SuperAdmin])"
->
-  <app-todo-pagination
-    [page]="pageState.index"
-    (selectedPage)="onPageChange($event)"
-  ></app-todo-pagination>
-
-  <form>
-    <div class="d-flex justify-content-center align-items-center flex-column">
-      <h6>Search Use Column</h6>
-      <div class="d-flex justify-content-between align-items-center">
-        <div class="input-group mb-3">
-          <label class="input-group-text" for="inputGroupSelect01"
-            >Columns</label
-          >
-          <select class="form-select" id="inputGroupSelect01">
-            <option [value]="null">Choose...</option>
-            <option *ngFor="let col of searchByCols" [value]="col.name">
-              {{ col.name | uppercase }}
-            </option>
-          </select>
-        </div>
-        <div class="input-group mb-3">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Username"
-            aria-label="Username"
-            aria-describedby="basic-addon1"
-          />
-        </div>
-      </div>
-    </div>
-  </form>
-  <button class="btn btn-primary btn-sm" (click)="assignTo()">
-    Assign Task
-  </button>
-</div>
+  app-todo-list-controller
+  [pageState]="pageState"
+  [searchByCols]="searchByCols"
+  [userType]="userType"
+  (selectedPage)="onPageChange($event)"
+  (assignTask)="assignTo()"
+  (updatedPageState)="onSearchBoxChange($event)"
+></div>
 <form [formGroup]="todoForm" *ngIf="todos && todos.length !== 0">
   <div class="form">
     <table class="table table-hover" *ngIf="!isLoading">
