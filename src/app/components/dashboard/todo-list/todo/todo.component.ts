@@ -10,6 +10,7 @@ import { Todo } from '../../../../shared/models/todo.model';
 import { TodoService } from '../../../../shared/services/todo/todo.service';
 import { USER_ROLES } from '../../../../utils/constants';
 import { COLS, TCOLS, TcolsName } from '../cols';
+import { ToastService } from '../../../../shared/services/toast/toast.service';
 
 @Component({
   selector: '[app-todo]',
@@ -25,6 +26,7 @@ import { COLS, TCOLS, TcolsName } from '../cols';
   styleUrl: './todo.component.scss',
 })
 export class TodoComponent {
+  todoMarkLoading = false;
   @Input({ required: true }) todo!: Todo;
   @Input({ required: true }) sno!: number;
   @Output() deleteTodo = new EventEmitter<number>();
@@ -41,7 +43,10 @@ export class TodoComponent {
   USER_ROLES = USER_ROLES;
   readonly ICONS = ICONS;
 
-  constructor(private todoService: TodoService) {}
+  constructor(
+    private todoService: TodoService,
+    private toastService: ToastService,
+  ) {}
   delete() {
     this.deleteTodo.emit(this.todo.id);
   }
@@ -71,15 +76,29 @@ export class TodoComponent {
     return allowedUsers.includes(this.userType);
   }
   mark() {
-    //TODO: api for todo is not there.
+    this.todoMarkLoading = true;
     this.todoService
-      .updateTodo(this.todo.id, {
-        ...this.todo,
-        isCompleted: !this.todo.isCompleted,
+      .markTodo(this.todo.id, {
+        isCompleted: this.todo.isCompleted,
       })
-      .subscribe(() => {
-        this.todo.isCompleted = !this.todo.isCompleted;
+      .subscribe((res) => {
+        console.log(res);
+        this.toastService.show('Todo', 'Todo marked as done', 'success', 2000);
+        this.todoMarkLoading = false;
+        this.todo = {
+          ...this.todo,
+          isCompleted: !this.todo.isCompleted,
+        };
       });
+    //TODO: api for todo is not there.
+    // this.todoService
+    //   .updateTodo(this.todo.id, {
+    //     ...this.todo,
+    //     isCompleted: !this.todo.isCompleted,
+    //   })
+    //   .subscribe(() => {
+    //     this.todo.isCompleted = !this.todo.isCompleted;
+    //   });
     // this.markTodo.emit({ ...this.todo, isCompleted: !this.todo.isCompleted });
   }
 
