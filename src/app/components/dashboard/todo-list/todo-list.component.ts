@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TEmployee } from '../../../shared/interfaces/employee.type';
 import { ConfirmationModalComponent } from '../../../shared/modals/confirmation-modal/confirmation-modal.component';
+import { UpsertContentModalComponent } from '../../../shared/modals/upsert-content-modal/upsert-content-modal.component';
 import { Todo } from '../../../shared/models/todo.model';
 import { UserViewColsPipe } from '../../../shared/pipes/user-view-cols/user-view-cols.pipe';
 import { AuthService } from '../../../shared/services/auth/auth.service';
@@ -16,7 +17,6 @@ import { USER_ROLES } from '../../../utils/constants';
 import { COLS, TCOLS } from './cols';
 import { TodoComponent } from './todo/todo.component';
 import { UpsertTodoModalComponent } from './upsert-todo-modal/upsert-todo-modal.component';
-import { UpsertContentModalComponent } from '../../../shared/modals/upsert-content-modal/upsert-content-modal.component';
 
 @Component({
   selector: 'app-todo-list',
@@ -132,7 +132,7 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.todoIdTobeDeleted = null;
   }
   canAssignTask() {
-    this.employeeService.getEmployees(1).subscribe((res) => {
+    this.employeeService.getEmployees({}).subscribe((res) => {
       if (res.iterableData.length === 0) {
         this.toastService.show(
           'Can Assign Task',

@@ -38,7 +38,7 @@ export class EmployeeListComponent implements OnInit {
   }
   getEmployees() {
     this.isLoading = true;
-    this.employeeService.getEmployees(1).subscribe((res) => {
+    this.employeeService.getEmployees({}).subscribe((res) => {
       this.employees = this.employeeAdapter.adaptArray(res.iterableData);
       this.isLoading = false;
     });

@@ -35,14 +35,14 @@
   (click)="navigate()"
   *ngIf="userAllowedToView('AssignedTo')"
 >
-  {{ todo.employeeId }}
+  {{ todo.employeeName ? todo.employeeName : "None" }}
 </td>
 <td
   class="todo-assignedBy pointer"
   (click)="navigate()"
   *ngIf="userAllowedToView('AssignedBy')"
 >
-  {{ todo.assignBy }}
+  {{ todo.assignBy === 1 ? "admin" : "super admin" }}
 </td>
 <td *ngIf="userAllowedToView('Actions')">
   <div

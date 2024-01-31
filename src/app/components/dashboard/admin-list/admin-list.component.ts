@@ -63,7 +63,7 @@ export class AdminListComponent implements OnInit {
     });
   }
   getAdmins() {
-    this.employeeService.getAdmins(1).subscribe(
+    this.employeeService.getAdmins({}).subscribe(
       (res) => {
         this.admins = this.adminAdapter.adaptArray(res.iterableData);
         this.isLoading = false;

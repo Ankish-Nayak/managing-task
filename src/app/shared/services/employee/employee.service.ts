@@ -3,8 +3,10 @@ import { environment } from '../../../../environments/environment.development';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AUTH_TOKEN, EMPLOYEE_TYPE } from '../../../utils/constants';
 import {
+  GetEmployeesQueryParams,
   IEmployee,
   IGetEmployees,
+  IGetEmployeesQueryParams,
   IUpdateEmpoyee,
 } from '../../interfaces/requests/employee.interface';
 import { map, of } from 'rxjs';
@@ -29,9 +31,10 @@ export class EmployeeService {
     );
     return of(employee);
   }
-  getAdmins(page: number) {
+  getAdmins(queryParams: Partial<IGetEmployeesQueryParams>) {
+    const transformedQueryParmas = new GetEmployeesQueryParams(queryParams);
     return this.http
-      .get<IGetEmployees>(`${this.apiUrl}/employees/${page}`, {
+      .post<IGetEmployees>(`${this.apiUrl}/employees`, transformedQueryParmas, {
         withCredentials: true,
         headers: this.Headers,
       })
@@ -47,12 +50,17 @@ export class EmployeeService {
         }),
       );
   }
-  getEmployees(page: number) {
+  getEmployees(queryParams: Partial<IGetEmployeesQueryParams>) {
+    const transformedQueryParmas = new GetEmployeesQueryParams(queryParams);
     return this.http
-      .get<IGetEmployees>(`${this.apiUrl}/employees/${page}`, {
-        withCredentials: true,
-        headers: this.Headers,
-      })
+      .post<IGetEmployees>(
+        `${this.apiUrl}/employees/`,
+        transformedQueryParmas,
+        {
+          withCredentials: true,
+          headers: this.Headers,
+        },
+      )
       .pipe(
         map((res) => {
           const newIterableData = res.iterableData.filter(

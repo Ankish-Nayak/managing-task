@@ -17,17 +17,18 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
+import { ICreateTodoPostData } from '../../../shared/interfaces/requests/toto.interface';
 import {
   Employee,
   EmployeeAdapter,
 } from '../../../shared/models/employee.model';
 import { EmployeeService } from '../../../shared/services/employee/employee.service';
+import { ToastService } from '../../../shared/services/toast/toast.service';
 import { TodoService } from '../../../shared/services/todo/todo.service';
+import { SpinnerComponent } from '../../../shared/spinners/spinner/spinner.component';
 import { GenericValidators } from '../../../shared/validators/generic-validator';
 import { notNullValidator } from '../../../shared/validators/not-null-validators';
 import { END_POINTS } from '../../../utils/constants';
-import { ToastService } from '../../../shared/services/toast/toast.service';
-import { SpinnerComponent } from '../../../shared/spinners/spinner/spinner.component';
 import { getActiveEndpoint } from '../../../utils/getActiveEndpoint';
 
 type IPropertyName = 'title' | 'description' | 'employeeId';
@@ -96,7 +97,7 @@ export class UpsertTodoComponent {
       });
   }
   getEmployees() {
-    this.employeeService.getEmployees(1).subscribe((res) => {
+    this.employeeService.getEmployees({}).subscribe((res) => {
       this.employees = this.employeeAdapter.adaptArray(res.iterableData);
       this.isLoading = false;
     });
@@ -159,7 +160,7 @@ export class UpsertTodoComponent {
       }
     } else {
       const { title, description, employeeId } = this.todoForm.value;
-      const data = {
+      const data: ICreateTodoPostData = {
         title: this.trimValue(title),
         description: this.trimValue(description),
         employeeId,
