@@ -2,11 +2,14 @@
   <span class="visually-hidden">Loading...</span>
 </div>
 <!-- <app-spinner *ngIf="isLoading">isdf</app-spinner> -->
-
 <div
-  class="d-flex flex-row-reverse"
+  class="todo-list-top-button"
   *ngIf="!isLoading && allowedToView([USER_ROLES.Admin, USER_ROLES.SuperAdmin])"
 >
+  <app-todo-pagination
+    [page]="pageState.index"
+    (selectedPage)="onPageChange($event)"
+  ></app-todo-pagination>
   <button class="btn btn-primary btn-sm" (click)="assignTo()">
     Assign Task
   </button>

@@ -28,3 +28,13 @@ form {
 #description {
   width: 30%;
 }
+
+.todo-list-top-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  position: sticky;
+  top: 40px;
+  background: white;
+}

@@ -17,6 +17,11 @@ import { COMPONENT_NAME, USER_ROLES } from '../../../utils/constants';
 import { COLS, TCOLS } from './cols';
 import { TodoListHeaderComponent } from './todo-list-header/todo-list-header.component';
 import { TodoComponent } from './todo/todo.component';
+import { TodoPaginationComponent } from './todo-pagination/todo-pagination.component';
+import {
+  GetEmployeesQueryParams,
+  IGetEmployeesQueryParams,
+} from '../../../shared/interfaces/requests/employee.interface';
 
 @Component({
   selector: 'app-todo-list',
@@ -30,6 +35,7 @@ import { TodoComponent } from './todo/todo.component';
     UserViewColsPipe,
     SpinnerComponent,
     UpsertContentModalComponent,
+    TodoPaginationComponent,
   ],
   templateUrl: './todo-list.component.html',
   styleUrl: './todo-list.component.scss',
@@ -42,6 +48,11 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
   userType!: TEmployee;
   cols: TCOLS = COLS;
   USER_ROLES = USER_ROLES;
+  pageState = new GetEmployeesQueryParams({
+    isPagination: true,
+    index: 0,
+    take: 10,
+  });
   constructor(
     private todoService: TodoService,
     private router: Router,
@@ -73,7 +84,7 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {}
   getTodos() {
     this.isLoading = true;
-    this.todoService.getTodos({}).subscribe(
+    this.todoService.getTodos(this.pageState).subscribe(
       (res) => {
         this.todos = res;
         this.isLoading = false;
@@ -187,7 +198,13 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
         this.todos = res;
       });
   }
-
+  onPageChange(pageNumber: number) {
+    this.pageState.index = pageNumber - 1;
+    this.todoService.getTodos(this.pageState).subscribe((res) => {
+      this.todos = res;
+    });
+    this.getTodos;
+  }
   allowedToView(allowedUsers: TEmployee[]) {
     return allowedUsers.includes(this.userType);
   }
