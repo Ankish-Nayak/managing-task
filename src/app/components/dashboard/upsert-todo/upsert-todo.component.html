@@ -1,8 +1,10 @@
-<app-spinner *ngIf="isLoading"></app-spinner>
+<div class="d-flex justify-content-center container-fuild">
+  <app-spinner *ngIf="isLoading"></app-spinner>
+</div>
 <div class="card" *ngIf="!isLoading">
   <div class="card-body">
     <div class="todo-form">
-      <h4>{{ updateForm ? "Update Todo" : "Create Todo" }}</h4>
+      <!-- <h4>{{ updateForm ? "Update Todo" : "Create Todo" }}</h4> -->
       <form [formGroup]="todoForm" (submit)="onSubmit($event)">
         <div class="form-group">
           <label for="title">Title</label>
@@ -48,14 +50,14 @@
         </div>
         <div class="d-flex justify-content-between align-items">
           <button class="btn btn-primary" type="submit">Submit</button>
-          <button
-            class="btn btn-primary"
-            type="button"
-            *ngIf="updateForm"
-            (click)="reset()"
-          >
-            Reset
-          </button>
+          <!-- <button -->
+          <!--   class="btn btn-primary" -->
+          <!--   type="button" -->
+          <!--   *ngIf="updateForm" -->
+          <!--   (click)="reset()" -->
+          <!-- > -->
+          <!--   Reset -->
+          <!-- </button> -->
         </div>
       </form>
     </div>

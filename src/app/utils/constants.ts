@@ -35,6 +35,12 @@ export enum USER_ROLES {
   SuperAdmin = 'superadmin',
 }
 
+export enum COMPONENT_NAME {
+  UPSERT_ADMIN_COMPONENT = 'upsert-admin-component',
+  UPSERT_TODO_COMPONENT = 'upsert-todo-component',
+  UPSERT_EMPLOYEE_COMPONENT = 'upsert_employee_component',
+}
+
 // export const USER_ROLES: {[key: string]: TEmployee} = {
 //   employee: 'employee',
 //   admin: 'admin',

@@ -47,6 +47,7 @@ export class UpsertTodoComponent {
   formInputElements!: ElementRef[];
   @Input() id!: string;
 
+  cardBodyHeader: string[] = ['card-body-header'];
   employees!: Employee[];
 
   @Input({ required: true }) updateForm!: boolean;

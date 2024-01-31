@@ -11,7 +11,7 @@
     Assign Task
   </button>
 </div>
-<form [formGroup]="todoForm" *ngIf="todos.length !== 0">
+<form [formGroup]="todoForm" *ngIf="todos && todos.length !== 0">
   <div class="form">
     <table class="table table-hover" *ngIf="!isLoading">
       <thead>

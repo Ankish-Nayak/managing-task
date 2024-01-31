@@ -3,6 +3,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  Input,
   OnInit,
   ViewChildren,
 } from '@angular/core';
@@ -62,8 +63,9 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
 
   employee!: Employee;
   departments!: Department[];
-  id!: string;
+  @Input() id!: string;
 
+  @Input({ alias: 'updateForm', transform: (value: boolean) => !value })
   adminRegistration: boolean = false;
 
   private validatioMessages!: { [key: string]: { [key: string]: string } };
@@ -132,12 +134,12 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
     });
 
     this.getDepartments();
-    if (getActiveEndpoint(this.route) === `./${END_POINTS.createAdmin}`) {
-      console.log('yess');
-      this.adminRegistration = true;
-    } else {
-      this.adminRegistration = false;
-    }
+    // if (getActiveEndpoint(this.route) === `./${END_POINTS.createAdmin}`) {
+    //   console.log('yess');
+    //   this.adminRegistration = true;
+    // } else {
+    //   this.adminRegistration = false;
+    // }
     this.signupFormInit();
     //FIXME: disabling departmentID has stoped value to detected.
     // this.disabling('departmentID');

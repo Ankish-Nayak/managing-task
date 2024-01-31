@@ -10,7 +10,10 @@
     Create Admin
   </button>
 </div>
-<table class="table table-hover" *ngIf="!isLoading">
+<table
+  class="table table-hover"
+  *ngIf="!isLoading && admins && admins.length !== 0"
+>
   <thead>
     <tr>
       <th scope="col">Sno</th>

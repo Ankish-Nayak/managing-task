@@ -16,6 +16,7 @@ import { USER_ROLES } from '../../../utils/constants';
 import { COLS, TCOLS } from './cols';
 import { TodoComponent } from './todo/todo.component';
 import { UpsertTodoModalComponent } from './upsert-todo-modal/upsert-todo-modal.component';
+import { UpsertContentModalComponent } from '../../../shared/modals/upsert-content-modal/upsert-content-modal.component';
 
 @Component({
   selector: 'app-todo-list',
@@ -28,6 +29,7 @@ import { UpsertTodoModalComponent } from './upsert-todo-modal/upsert-todo-modal.
     UserViewColsPipe,
     SpinnerComponent,
     UpsertTodoModalComponent,
+    UpsertContentModalComponent,
   ],
   templateUrl: './todo-list.component.html',
   styleUrl: './todo-list.component.scss',
@@ -93,7 +95,7 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.router.navigate([`../todo-detail/${id}`], { relativeTo: this.route });
   }
   updateTodo(id: number) {
-    const ref = this.modalService.open(UpsertTodoModalComponent, {
+    const ref = this.modalService.open(UpsertContentModalComponent, {
       size: 'lg',
       backdrop: 'static',
     });
@@ -118,6 +120,12 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
   confirm(confirmation: boolean) {
     if (confirmation && this.todoIdTobeDeleted !== null) {
       this.todoService.deleteTodo(this.todoIdTobeDeleted).subscribe(() => {
+        this.toastService.show(
+          'Todo Deletion',
+          'Todo was deleted',
+          'success',
+          2000,
+        );
         this.getTodos();
       });
     }

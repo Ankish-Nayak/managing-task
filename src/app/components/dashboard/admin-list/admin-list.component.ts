@@ -9,10 +9,18 @@ import { AdminComponent } from './admin/admin.component';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ConfirmationModalComponent } from '../../../shared/modals/confirmation-modal/confirmation-modal.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { END_POINTS, USER_ROLES } from '../../../utils/constants';
+import {
+  COMPONENT_NAME,
+  END_POINTS,
+  USER_ROLES,
+} from '../../../utils/constants';
 import { allowedToView } from '../../../utils/allowedToView';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { TEmployee } from '../../../shared/interfaces/employee.type';
+import { ToastService } from '../../../shared/services/toast/toast.service';
+import { NgbModalWindow } from '@ng-bootstrap/ng-bootstrap/modal/modal-window';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { UpsertContentModalComponent } from '../../../shared/modals/upsert-content-modal/upsert-content-modal.component';
 
 @Component({
   selector: 'app-admin-list',
@@ -40,6 +48,8 @@ export class AdminListComponent implements OnInit {
     private route: ActivatedRoute,
     private adminAdapter: EmployeeAdapter,
     private authService: AuthService,
+    private toastService: ToastService,
+    private modalService: NgbModal,
   ) {}
   ngOnInit(): void {
     this.getAdmins();
@@ -53,10 +63,22 @@ export class AdminListComponent implements OnInit {
     });
   }
   getAdmins() {
-    this.employeeService.getAdmins(1).subscribe((res) => {
-      this.admins = this.adminAdapter.adaptArray(res.iterableData);
-      this.isLoading = false;
-    });
+    this.employeeService.getAdmins(1).subscribe(
+      (res) => {
+        this.admins = this.adminAdapter.adaptArray(res.iterableData);
+        this.isLoading = false;
+      },
+      (e) => {
+        this.isLoading = false;
+        this.toastService.show(
+          'Fetching Todos',
+          'Failed to fetching todos',
+          'error',
+          2000,
+        );
+        console.log(e);
+      },
+    );
   }
   delete(id: number) {
     this.adminToBeDeletedID = id;
@@ -65,9 +87,29 @@ export class AdminListComponent implements OnInit {
     this.router.navigate([`../update-admin/${id}`], { relativeTo: this.route });
   }
   createAdmin() {
-    this.router.navigate([`../${END_POINTS.createAdmin}`], {
-      relativeTo: this.route,
+    const ref = this.modalService.open(UpsertContentModalComponent, {
+      size: 'lg',
+      backdrop: 'static',
     });
+    ref.componentInstance.update = false;
+    ref.componentInstance.componentName = COMPONENT_NAME.UPSERT_ADMIN_COMPONENT;
+    ref.closed.subscribe((res) => {
+      console.log(res);
+      this.getAdmins();
+    });
+
+    ref.dismissed.subscribe((res) => {
+      console.log(res);
+      this.toastService.show(
+        'Create Admin',
+        'Admin creation was cancelled',
+        'info',
+      );
+    });
+
+    // this.router.navigate([`../${END_POINTS.createAdmin}`], {
+    //   relativeTo: this.route,
+    // });
   }
   adminFormInit() {
     this.adminForm = new FormGroup({});
