@@ -55,6 +55,10 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
     name: null,
     dsc: false,
   };
+  searchByCols: { name: keyof Todo }[] = [
+    { name: 'title' },
+    { name: 'description' },
+  ];
   constructor(
     private todoService: TodoService,
     private authService: AuthService,

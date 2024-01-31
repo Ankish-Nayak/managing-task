@@ -11,30 +11,33 @@
     (selectedPage)="onPageChange($event)"
   ></app-todo-pagination>
 
-  <div class="d-flex justify-content-center align-items-center flex-column">
-    <h6>Search Use Column</h6>
-    <div class="d-flex justify-content-between align-items-center">
-      <div class="input-group mb-3">
-        <label class="input-group-text" for="inputGroupSelect01">Columns</label>
-        <select class="form-select" id="inputGroupSelect01">
-          <option selected>Choose...</option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
-        </select>
-      </div>
-      <div class="input-group mb-3">
-        <span class="input-group-text" id="basic-addon1">search</span>
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Username"
-          aria-label="Username"
-          aria-describedby="basic-addon1"
-        />
+  <form>
+    <div class="d-flex justify-content-center align-items-center flex-column">
+      <h6>Search Use Column</h6>
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="input-group mb-3">
+          <label class="input-group-text" for="inputGroupSelect01"
+            >Columns</label
+          >
+          <select class="form-select" id="inputGroupSelect01">
+            <option [value]="null">Choose...</option>
+            <option *ngFor="let col of searchByCols" [value]="col.name">
+              {{ col.name | uppercase }}
+            </option>
+          </select>
+        </div>
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Username"
+            aria-label="Username"
+            aria-describedby="basic-addon1"
+          />
+        </div>
       </div>
     </div>
-  </div>
+  </form>
   <button class="btn btn-primary btn-sm" (click)="assignTo()">
     Assign Task
   </button>
