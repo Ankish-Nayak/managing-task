@@ -15,6 +15,6 @@ export class ClickedDirective {
   constructor(private e: ElementRef) {}
   @HostListener('click', ['$event.target'])
   onClick(target: HTMLElement) {
-    this.clicked.emit(target.innerText);
+    this.clicked.emit(target.id);
   }
 }

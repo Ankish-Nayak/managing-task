@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TEmployee } from '../../../shared/interfaces/employee.type';
+import { GetEmployeesQueryParams } from '../../../shared/interfaces/requests/employee.interface';
+import { ITask } from '../../../shared/interfaces/requests/toto.interface';
 import { ConfirmationModalComponent } from '../../../shared/modals/confirmation-modal/confirmation-modal.component';
 import { UpsertContentModalComponent } from '../../../shared/modals/upsert-content-modal/upsert-content-modal.component';
 import { Todo } from '../../../shared/models/todo.model';
@@ -14,14 +15,11 @@ import { ToastService } from '../../../shared/services/toast/toast.service';
 import { TodoService } from '../../../shared/services/todo/todo.service';
 import { SpinnerComponent } from '../../../shared/spinners/spinner/spinner.component';
 import { COMPONENT_NAME, USER_ROLES } from '../../../utils/constants';
+import { sortTasksByProperty } from '../../../utils/sortTasksByPropery';
 import { COLS, TCOLS } from './cols';
 import { TodoListHeaderComponent } from './todo-list-header/todo-list-header.component';
-import { TodoComponent } from './todo/todo.component';
 import { TodoPaginationComponent } from './todo-pagination/todo-pagination.component';
-import {
-  GetEmployeesQueryParams,
-  IGetEmployeesQueryParams,
-} from '../../../shared/interfaces/requests/employee.interface';
+import { TodoComponent } from './todo/todo.component';
 
 @Component({
   selector: 'app-todo-list',
@@ -53,10 +51,12 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
     index: 0,
     take: 10,
   });
+  columnSortBy: { name: keyof ITask | null; dsc: boolean } = {
+    name: null,
+    dsc: false,
+  };
   constructor(
     private todoService: TodoService,
-    private router: Router,
-    private route: ActivatedRoute,
     private authService: AuthService,
     private employeeService: EmployeeService,
     private toastService: ToastService,
@@ -188,15 +188,16 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
   assignTo() {
     this.canAssignTask();
   }
-  onClickedHeader(name: string) {
-    this.todoService
-      .getTodos({
-        orders: 1,
-        orderBy: name,
-      })
-      .subscribe((res) => {
-        this.todos = res;
-      });
+  onClickedHeader(name: keyof Todo) {
+    if (this.columnSortBy.name === name) {
+      this.columnSortBy.dsc = !this.columnSortBy.dsc;
+    } else {
+      this.columnSortBy.name = name;
+      this.columnSortBy.dsc = false;
+    }
+    this.todoService.getTodos(this.pageState).subscribe((res) => {
+      this.todos = sortTasksByProperty(res, name, this.columnSortBy.dsc);
+    });
   }
   onPageChange(pageNumber: number) {
     this.pageState.index = pageNumber - 1;

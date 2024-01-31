@@ -34,7 +34,8 @@ export class TodoComponent {
   @Output() navigateTo = new EventEmitter<number>();
   @Input({ required: true }) userType!: TEmployee;
   // @Output() markTodo = new EventEmitter<Todo>();
-
+  //
+  @Input({ required: true }) isLoading!: boolean;
   highlight: { edit: boolean; delete: boolean } = {
     edit: false,
     delete: false,

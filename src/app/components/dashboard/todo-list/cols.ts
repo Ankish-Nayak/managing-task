@@ -1,4 +1,5 @@
 import { TEmployee } from '../../../shared/interfaces/employee.type';
+import { Todo } from '../../../shared/models/todo.model';
 
 export type TcolsName =
   | 'sNo'
@@ -11,7 +12,7 @@ export type TcolsName =
 export type TCOLS = {
   name: TcolsName;
   notAllowedUsers: TEmployee[] | null;
-  idName: string;
+  idName: keyof Todo | null;
   render: boolean;
   class?: 'pointer';
 }[];
@@ -19,7 +20,7 @@ export const COLS: TCOLS = [
   {
     name: 'sNo',
     notAllowedUsers: null,
-    idName: 'sNo',
+    idName: null,
     render: true,
   },
   {
@@ -33,7 +34,6 @@ export const COLS: TCOLS = [
     name: 'Description',
     notAllowedUsers: null,
     idName: 'description',
-
     render: true,
     class: 'pointer',
   },
@@ -41,33 +41,27 @@ export const COLS: TCOLS = [
     name: 'IsCompleted',
     notAllowedUsers: null,
     idName: 'isCompleted',
-
     render: true,
-
     class: 'pointer',
   },
   {
     name: 'AssignedTo',
     notAllowedUsers: ['employee'],
-    idName: 'assignedTo',
+    idName: 'employeeName',
     render: true,
-
     class: 'pointer',
   },
   {
     name: 'AssignedBy',
     notAllowedUsers: ['admin'],
-    idName: 'assignedBy',
-
+    idName: 'assignBy',
     render: true,
-
     class: 'pointer',
   },
   {
     name: 'Actions',
     notAllowedUsers: null,
-    idName: 'actions',
-
+    idName: null,
     render: true,
   },
 ];
