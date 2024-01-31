@@ -1,0 +1,31 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">
+    Todo
+    <!-- {{ getTitle() }} -->
+  </h4>
+</div>
+<div class="modal-body">
+  <!-- <app-todo-detail [id]="id"></app-todo-detail> -->
+  <!-- <ng-container [ngSwitch]="componentName"> -->
+  <!--   <app-upsert-todo -->
+  <!--     *ngSwitchCase="COMPONENT_NAME.UPSERT_TODO_COMPONENT" -->
+  <!--     [updateForm]="update" -->
+  <!--     [id]="id" -->
+  <!--     (updated)="closeModal()" -->
+  <!--   ></app-upsert-todo> -->
+  <!--   <app-upsert-admin -->
+  <!--     *ngSwitchCase="COMPONENT_NAME.UPSERT_ADMIN_COMPONENT" -->
+  <!--     [updateForm]="update" -->
+  <!--     [id]="id" -->
+  <!--   ></app-upsert-admin> -->
+  <!--   <div *ngSwitchDefault="">NOT MATCH ANY</div> -->
+  <!-- </ng-container> -->
+</div>
+<div class="modal-footer">
+  <!-- <button class="btn btn-primary btn-sm" (click)="onReset()" *ngIf="update"> -->
+  <!--   reset -->
+  <!-- </button> -->
+  <button class="btn btn-danger btn-sm" type="button" (click)="dismissModal()">
+    cancel
+  </button>
+</div>

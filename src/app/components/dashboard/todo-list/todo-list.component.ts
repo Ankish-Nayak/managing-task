@@ -16,7 +16,6 @@ import { SpinnerComponent } from '../../../shared/spinners/spinner/spinner.compo
 import { COMPONENT_NAME, USER_ROLES } from '../../../utils/constants';
 import { COLS, TCOLS } from './cols';
 import { TodoComponent } from './todo/todo.component';
-import { UpsertTodoModalComponent } from './upsert-todo-modal/upsert-todo-modal.component';
 
 @Component({
   selector: 'app-todo-list',
@@ -28,7 +27,6 @@ import { UpsertTodoModalComponent } from './upsert-todo-modal/upsert-todo-modal.
     TodoComponent,
     UserViewColsPipe,
     SpinnerComponent,
-    UpsertTodoModalComponent,
     UpsertContentModalComponent,
   ],
   templateUrl: './todo-list.component.html',
@@ -92,7 +90,26 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   navigateTo(id: number) {
-    this.router.navigate([`../todo-detail/${id}`], { relativeTo: this.route });
+    const ref = this.modalService.open(UpsertContentModalComponent, {
+      size: 'lg',
+      backdrop: 'static',
+    });
+    ref.componentInstance.id = id;
+    ref.componentInstance.update = true;
+    ref.componentInstance.componentName = COMPONENT_NAME.TODO_DETAIL_COMPONENT;
+    ref.closed.subscribe((res) => {
+      console.log(res);
+      this.getTodos();
+    });
+    // ref.dismissed.subscribe((res) => {
+    //   console.log(res);
+    //   this.toastService.show(
+    //     'Task Updation',
+    //     'Task updation was cancelled',
+    //     'info',
+    //   );
+    // });
+    // this.router.navigate([`../todo-detail/${id}`], { relativeTo: this.route });
   }
   updateTodo(id: number) {
     const ref = this.modalService.open(UpsertContentModalComponent, {
@@ -142,11 +159,13 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
           5000,
         );
       } else {
-        const ref = this.modalService.open(UpsertTodoModalComponent, {
+        const ref = this.modalService.open(UpsertContentModalComponent, {
           size: 'lg',
           backdrop: 'static',
         });
         ref.componentInstance.update = false;
+        ref.componentInstance.componentName =
+          COMPONENT_NAME.UPSERT_TODO_COMPONENT;
         ref.closed.subscribe((res) => {
           console.log(res);
           this.getTodos();

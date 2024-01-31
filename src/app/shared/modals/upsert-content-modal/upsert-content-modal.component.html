@@ -16,13 +16,20 @@
       [updateForm]="update"
       [id]="id"
     ></app-upsert-admin>
+    <app-todo-detail
+      *ngSwitchCase="COMPONENT_NAME.TODO_DETAIL_COMPONENT"
+      [id]="id"
+      (edit)="onEdit($event)"
+    ></app-todo-detail>
     <div *ngSwitchDefault="">NOT MATCH ANY</div>
   </ng-container>
 </div>
 <div class="modal-footer">
-  <button class="btn btn-primary btn-sm" (click)="onReset()" *ngIf="update">
-    reset
-  </button>
+  <ng-container *ngIf="componentName !== COMPONENT_NAME.TODO_DETAIL_COMPONENT">
+    <button class="btn btn-primary btn-sm" (click)="onReset()" *ngIf="update">
+      reset
+    </button>
+  </ng-container>
   <button class="btn btn-danger btn-sm" type="button" (click)="dismissModal()">
     cancel
   </button>

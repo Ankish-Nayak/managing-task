@@ -1,6 +1,7 @@
 .card {
   width: 500px;
   text-align: center;
+  margin: auto;
 }
 
 .card a {
@@ -9,16 +10,17 @@
 
 .card-body-header {
   position: sticky;
-  top: 40px;
+  top: 0px;
   background: inherit;
   width: 100%;
   background: white;
-  height: 40px;
+  padding: 20px 0px;
+  // height: 40px;
 }
 .edit-button {
   position: absolute;
   right: 0px;
-  top: 0px;
+  top: 14px;
 }
 .card-see-more {
   cursor: pointer;

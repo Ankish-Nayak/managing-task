@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UpsertTodoModalComponent } from './upsert-todo-modal.component';
+import { ContentModalComponent } from './content-modal.component';
 
-describe('UpsertTodoModalComponent', () => {
-  let component: UpsertTodoModalComponent;
-  let fixture: ComponentFixture<UpsertTodoModalComponent>;
+describe('ContentModalComponent', () => {
+  let component: ContentModalComponent;
+  let fixture: ComponentFixture<ContentModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UpsertTodoModalComponent]
+      imports: [ContentModalComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(UpsertTodoModalComponent);
+    fixture = TestBed.createComponent(ContentModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
