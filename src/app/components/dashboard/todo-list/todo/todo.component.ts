@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
-import { HighlightDirective } from '../../../../shared/directives/highlight.directive';
+import { HighlightDirective } from '../../../../shared/directives/highlight/highlight.directive';
 import { ICONS } from '../../../../shared/icons/icons';
 import { TEmployee } from '../../../../shared/interfaces/employee.type';
 import { ConfirmationModalComponent } from '../../../../shared/modals/confirmation-modal/confirmation-modal.component';

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { HighlightDirective } from '../../../../shared/directives/highlight.directive';
+import { HighlightDirective } from '../../../../shared/directives/highlight/highlight.directive';
 import { ICONS } from '../../../../shared/icons/icons';
 import { Employee } from '../../../../shared/models/employee.model';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';

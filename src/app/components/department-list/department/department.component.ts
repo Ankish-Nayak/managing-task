@@ -6,7 +6,7 @@ import { TEmployee } from '../../../shared/interfaces/employee.type';
 import { allowedToView } from '../../../utils/allowedToView';
 import { USER_ROLES } from '../../../utils/constants';
 import { ICONS } from '../../../shared/icons/icons';
-import { HighlightDirective } from '../../../shared/directives/highlight.directive';
+import { HighlightDirective } from '../../../shared/directives/highlight/highlight.directive';
 
 @Component({
   selector: '[app-department]',

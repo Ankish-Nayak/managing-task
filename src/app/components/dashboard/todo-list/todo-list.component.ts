@@ -15,6 +15,7 @@ import { TodoService } from '../../../shared/services/todo/todo.service';
 import { SpinnerComponent } from '../../../shared/spinners/spinner/spinner.component';
 import { COMPONENT_NAME, USER_ROLES } from '../../../utils/constants';
 import { COLS, TCOLS } from './cols';
+import { TodoListHeaderComponent } from './todo-list-header/todo-list-header.component';
 import { TodoComponent } from './todo/todo.component';
 
 @Component({
@@ -25,6 +26,7 @@ import { TodoComponent } from './todo/todo.component';
     ReactiveFormsModule,
     ConfirmationModalComponent,
     TodoComponent,
+    TodoListHeaderComponent,
     UserViewColsPipe,
     SpinnerComponent,
     UpsertContentModalComponent,
@@ -101,15 +103,6 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
       console.log(res);
       this.getTodos();
     });
-    // ref.dismissed.subscribe((res) => {
-    //   console.log(res);
-    //   this.toastService.show(
-    //     'Task Updation',
-    //     'Task updation was cancelled',
-    //     'info',
-    //   );
-    // });
-    // this.router.navigate([`../todo-detail/${id}`], { relativeTo: this.route });
   }
   updateTodo(id: number) {
     const ref = this.modalService.open(UpsertContentModalComponent, {
@@ -183,6 +176,16 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   assignTo() {
     this.canAssignTask();
+  }
+  onClickedHeader(name: string) {
+    this.todoService
+      .getTodos({
+        orders: 1,
+        orderBy: name,
+      })
+      .subscribe((res) => {
+        this.todos = res;
+      });
   }
 
   allowedToView(allowedUsers: TEmployee[]) {

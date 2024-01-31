@@ -3,7 +3,6 @@ import {
   ElementRef,
   EventEmitter,
   HostListener,
-  Input,
   Output,
 } from '@angular/core';
 

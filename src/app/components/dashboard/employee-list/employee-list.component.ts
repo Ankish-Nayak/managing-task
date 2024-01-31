@@ -9,7 +9,7 @@ import { ConfirmationModalComponent } from '../../../shared/modals/confirmation-
 import { EmployeeComponent } from './employee/employee.component';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { ICONS } from '../../../shared/icons/icons';
-import { HighlightDirective } from '../../../shared/directives/highlight.directive';
+import { HighlightDirective } from '../../../shared/directives/highlight/highlight.directive';
 
 @Component({
   selector: 'app-employee-list',

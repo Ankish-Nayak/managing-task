@@ -13,6 +13,7 @@ export type TCOLS = {
   notAllowedUsers: TEmployee[] | null;
   idName: string;
   render: boolean;
+  class?: 'pointer';
 }[];
 export const COLS: TCOLS = [
   {
@@ -25,8 +26,8 @@ export const COLS: TCOLS = [
     name: 'Title',
     notAllowedUsers: null,
     idName: 'title',
-
     render: true,
+    class: 'pointer',
   },
   {
     name: 'Description',
@@ -34,6 +35,7 @@ export const COLS: TCOLS = [
     idName: 'description',
 
     render: true,
+    class: 'pointer',
   },
   {
     name: 'IsCompleted',
@@ -41,12 +43,16 @@ export const COLS: TCOLS = [
     idName: 'isCompleted',
 
     render: true,
+
+    class: 'pointer',
   },
   {
     name: 'AssignedTo',
     notAllowedUsers: ['employee'],
     idName: 'assignedTo',
     render: true,
+
+    class: 'pointer',
   },
   {
     name: 'AssignedBy',
@@ -54,6 +60,8 @@ export const COLS: TCOLS = [
     idName: 'assignedBy',
 
     render: true,
+
+    class: 'pointer',
   },
   {
     name: 'Actions',

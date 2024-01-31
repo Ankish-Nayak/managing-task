@@ -4,7 +4,7 @@ import { TEmployee } from '../../../../shared/interfaces/employee.type';
 import { allowedToView } from '../../../../utils/allowedToView';
 import { CommonModule } from '@angular/common';
 import { USER_ROLES } from '../../../../utils/constants';
-import { HighlightDirective } from '../../../../shared/directives/highlight.directive';
+import { HighlightDirective } from '../../../../shared/directives/highlight/highlight.directive';
 import { ICONS } from '../../../../shared/icons/icons';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 

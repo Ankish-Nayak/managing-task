@@ -1,0 +1,10 @@
+<th
+  appClicked
+  (clicked)="onClicked($event)"
+  *ngFor="let col of cols | userViewCols: userType"
+  scope="col"
+  [id]="col.idName"
+  [class]="col.class ?? col.class"
+>
+  {{ col.name }}
+</th>
