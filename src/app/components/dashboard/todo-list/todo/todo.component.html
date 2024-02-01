@@ -4,7 +4,8 @@
   class="pointer"
   *ngIf="userAllowedToView('sNo')"
 >
-  {{ sno }}
+  <span *ngIf="!isLoading">{{ sno }}</span>
+  <span *ngIf="isLoading" class="placeholder col-8"></span>
 </th>
 
 <td

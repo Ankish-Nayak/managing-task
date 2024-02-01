@@ -1,4 +1,8 @@
-<th *ngFor="let col of cols | userViewCols: userType" scope="col">
+<th
+  *ngFor="let col of cols | userViewCols: userType"
+  [id]="col.idName"
+  scope="col"
+>
   <div class="container">
     <span
       appClicked

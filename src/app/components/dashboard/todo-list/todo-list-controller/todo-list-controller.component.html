@@ -1,9 +1,28 @@
-<app-todo-pagination
-  [page]="pageState.index"
-  (pageStateChange)="onPageChange($event)"
-  [totalPagesCount]="totalPagesCount"
-  [selectedPageSize]="pageState.take"
-></app-todo-pagination>
+<!-- <app-todo-pagination -->
+<!--   [page]="pageState.index" -->
+<!--   (pageStateChange)="onPageChange($event)" -->
+<!--   [totalPagesCount]="totalPagesCount" -->
+<!--   [selectedPageSize]="pageState.take" -->
+<!-- ></app-todo-pagination> -->
+
+<div class="d-flex justify-content-between align-items-center">
+  <div class="input-group mb-3">
+    <label class="input-group-text" for="selectPageCount">Page Length</label>
+    <select
+      class="form-select"
+      id="selectPageCount"
+      [(ngModel)]="selectedPageSize"
+      (ngModelChange)="onSelectedPageLengthChange()"
+    >
+      <option
+        *ngFor="let paginatedSize of paginatedSizes"
+        [value]="paginatedSize"
+      >
+        {{ paginatedSize }}
+      </option>
+    </select>
+  </div>
+</div>
 
 <div class="d-flex justify-content-center align-items-center flex-column">
   <h6>Search Use Column</h6>
