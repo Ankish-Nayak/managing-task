@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
 import { GetTodosQueryParams } from '../../../../shared/interfaces/requests/toto.interface';
-import { PaginationComponent } from '../../../pagination/pagination.component';
+import { PaginationComponent } from '../../../../shared/paginations/pagination/pagination.component';
 
 @Component({
   selector: 'app-todo-pagination',
