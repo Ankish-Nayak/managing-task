@@ -31,7 +31,7 @@
           *ngFor="let todo of todos; let i = index"
           app-todo
           [todo]="todo"
-          [sno]="i + 1"
+          [sno]="pageState.index * pageState.take + (i + 1)"
           (updateTodo)="updateTodo($event)"
           (deleteTodo)="deleteTodo($event)"
           (navigateTo)="navigateTo($event)"
