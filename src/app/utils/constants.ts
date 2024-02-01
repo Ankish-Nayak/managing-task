@@ -18,6 +18,7 @@ export const END_POINTS = {
   employeeList: 'employees',
   notAllowedUser: 'not-allowed-user',
   profile: 'profile',
+  test: 'test',
 };
 
 // 0 -> means employee

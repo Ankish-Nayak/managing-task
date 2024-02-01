@@ -14,6 +14,8 @@ import { EmployeeListComponent } from './components/dashboard/employee-list/empl
 import { NotAllowedUserComponent } from './components/not-allowed-user/not-allowed-user.component';
 import { userBasedAuthGuard } from './shared/guards/userBasedAuth/user-based-auth.guard';
 import { ProfileComponent } from './components/profile/profile.component';
+import { TodoPaginationComponent } from './components/dashboard/todo-list/todo-pagination/todo-pagination.component';
+import { PaginationComponent } from './components/pagination/pagination.component';
 
 // TODO: make a class to get url to particular endpoints and also have push, pop as method in it.
 export const routes: Routes = [
@@ -92,6 +94,10 @@ export const routes: Routes = [
       {
         component: ProfileComponent,
         path: END_POINTS.profile,
+      },
+      {
+        component: PaginationComponent,
+        path: END_POINTS.test,
       },
     ],
   },

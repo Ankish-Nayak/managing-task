@@ -15,10 +15,15 @@
   <!--     </option> -->
   <!--   </select> -->
   <!-- </div> -->
-  <ngb-pagination
-    [collectionSize]="70"
-    [(page)]="page"
-    aria-label="Default pagination"
+  <!-- <ngb-pagination -->
+  <!--   [(page)]="page" -->
+  <!--   aria-label="Default pagination" -->
+  <!--   (pageChange)="onPageChange($event)" -->
+  <!--   [collectionSize]="totalPagesCount" -->
+  <!--   [pageSize]="selectedPageSize" -->
+  <!-- /> -->
+  <app-pagination
+    [(selectedPage)]="page"
     (pageChange)="onPageChange($event)"
     [collectionSize]="totalPagesCount"
     [pageSize]="selectedPageSize"
