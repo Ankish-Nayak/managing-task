@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Department } from '../../../shared/models/department.model';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { HighlightDirective } from '../../../shared/directives/highlight/highlight.directive';
+import { ICONS } from '../../../shared/icons/icons';
 import { TEmployee } from '../../../shared/interfaces/employee.type';
+import { Department } from '../../../shared/models/department.model';
 import { allowedToView } from '../../../utils/allowedToView';
 import { USER_ROLES } from '../../../utils/constants';
-import { ICONS } from '../../../shared/icons/icons';
-import { HighlightDirective } from '../../../shared/directives/highlight/highlight.directive';
 
 @Component({
   selector: '[app-department]',

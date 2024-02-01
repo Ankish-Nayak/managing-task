@@ -13,7 +13,7 @@
   (pageStateChange)="onPageChange($event)"
   [totalPagesCount]="totalPagesCount"
 ></div>
-<form [formGroup]="todoForm" *ngIf="todos && todos.length !== 0">
+<form [formGroup]="todoForm">
   <div class="form">
     <table class="table table-hover" *ngIf="!isLoading">
       <thead>
@@ -38,6 +38,9 @@
           [userType]="userType"
           [isLoading]="isLoading"
         ></tr>
+        <tr *ngIf="!(todos && todos.length !== 0)">
+          <th [colSpan]="6">"Nothing Here"</th>
+        </tr>
       </tbody>
     </table>
   </div>

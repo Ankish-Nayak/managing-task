@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { TEmployee } from '../../../../shared/interfaces/employee.type';
 import { GetTodosQueryParams } from '../../../../shared/interfaces/requests/toto.interface';
 import { Todo } from '../../../../shared/models/todo.model';
-import { USER_ROLES } from '../../../../utils/constants';
 import { TodoPaginationComponent } from '../todo-pagination/todo-pagination.component';
 
 @Component({
@@ -21,13 +20,11 @@ export class TodoListControllerComponent implements OnInit {
   @Output() assignTask: EventEmitter<void> = new EventEmitter();
   @Output() pageStateChange: EventEmitter<Partial<GetTodosQueryParams>> =
     new EventEmitter<Partial<GetTodosQueryParams>>();
-  readonly USER_ROLES = USER_ROLES;
-  selectedOption: keyof Todo | null = null;
   selectedPageSize: number = 0;
   searchBox: string = '';
   isSearchBoxDisabled: boolean = true;
   paginatedSizes: number[] = [];
-  placeholder: string = 'Select column to search';
+  placeholder: string = 'Search todos here';
   @Input({ required: true }) totalPagesCount!: number;
   ngOnInit(): void {
     this.selectedPageSize = this.pageState.take;
@@ -54,34 +51,12 @@ export class TodoListControllerComponent implements OnInit {
 
     this.paginatedSizes.sort((a: number, b: number) => a - b);
   }
-  onSelectionChange() {
-    console.log('selected Option', this.selectedOption);
-    if (
-      this.selectedOption === null ||
-      this.selectedOption.toString() === 'null'
-    ) {
-      console.log('d');
-      this.isSearchBoxDisabled = true;
-      this.placeholder = 'Select column to search';
-    } else {
-      this.isSearchBoxDisabled = false;
-      this.placeholder = 'Search using ' + this.selectedOption;
-    }
-  }
-  onSearchBoxChange() {
-    if (this.selectedOption) {
-      this.pageState = {
-        ...this.pageState,
-        orderBy: this.selectedOption,
-        search: this.searchBox,
-      };
-      this.pageStateChange.emit({
-        orderBy: this.selectedOption,
-        search: this.searchBox,
-      });
-    }
-  }
   onSelectedPageLengthChange() {
     this.pageStateChange.emit({ take: this.selectedPageSize });
+  }
+  onSearch(e?: KeyboardEvent) {
+    if (!e || (e && e.key === 'Enter')) {
+      this.pageStateChange.emit({ search: this.searchBox });
+    }
   }
 }

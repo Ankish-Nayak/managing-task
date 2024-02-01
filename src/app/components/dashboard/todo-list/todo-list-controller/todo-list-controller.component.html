@@ -1,10 +1,3 @@
-<!-- <app-todo-pagination -->
-<!--   [page]="pageState.index" -->
-<!--   (pageStateChange)="onPageChange($event)" -->
-<!--   [totalPagesCount]="totalPagesCount" -->
-<!--   [selectedPageSize]="pageState.take" -->
-<!-- ></app-todo-pagination> -->
-
 <div class="d-flex justify-content-between align-items-center">
   <div class="input-group mb-3">
     <label class="input-group-text" for="selectPageCount">Page Length</label>
@@ -25,23 +18,9 @@
 </div>
 
 <div class="d-flex justify-content-center align-items-center flex-column">
-  <h6>Search Use Column</h6>
   <div class="d-flex justify-content-between align-items-center">
     <div class="input-group mb-3">
-      <label class="input-group-text" for="selectColumnName">Columns</label>
-      <select
-        class="form-select"
-        id="selectColumnName"
-        [(ngModel)]="selectedOption"
-        (ngModelChange)="onSelectionChange()"
-      >
-        <option [value]="null">Choose...</option>
-        <option *ngFor="let col of searchByCols" [value]="col.name">
-          {{ col.name | uppercase }}
-        </option>
-      </select>
-    </div>
-    <div class="input-group mb-3">
+      <button class="btn btn-primary" (click)="onSearch()">Search</button>
       <input
         type="text"
         class="form-control"
@@ -49,12 +28,10 @@
         aria-label="Username"
         aria-describedby="basic-addon1"
         [(ngModel)]="searchBox"
-        (input)="onSearchBoxChange()"
         [placeholder]="placeholder"
-        [disabled]="isSearchBoxDisabled"
+        (keydown)="onSearch($event)"
       />
     </div>
   </div>
 </div>
 <button class="btn btn-primary btn-sm" (click)="assignTo()">Assign Task</button>
-<!-- </div> -->

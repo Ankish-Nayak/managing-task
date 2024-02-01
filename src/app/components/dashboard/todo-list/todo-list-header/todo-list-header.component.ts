@@ -9,6 +9,7 @@ import { TCOLS } from '../cols';
 import { ICONS } from '../../../../shared/icons/icons';
 import { GetTodosQueryParams } from '../../../../shared/interfaces/requests/toto.interface';
 
+type TsortBy = keyof Todo | null;
 @Component({
   selector: '[app-todo-list-header]',
   standalone: true,
@@ -30,12 +31,21 @@ export class TodoListHeaderComponent {
   @Output() pageStateChange: EventEmitter<Partial<GetTodosQueryParams>> =
     new EventEmitter<Partial<GetTodosQueryParams>>();
   readonly ICONS = ICONS;
+  sortBy: {
+    name: keyof Todo;
+    asc: boolean;
+  } | null = null;
   onClicked(name: string) {
     if (name.includes('|')) {
       // up -> 0 -> means asc
       // down -> 1 -> means dsc
       const array = name.split('|');
       const colName = array[0] as keyof Todo;
+      this.sortBy = {
+        name: colName,
+        asc: array.includes('up'),
+      };
+      console.log(this.sortBy);
       this.pageStateChange.emit({
         orderBy: colName,
         orders: array.includes('up') ? 0 : 1,
@@ -43,5 +53,16 @@ export class TodoListHeaderComponent {
     } else {
       this.clicked.emit(name as keyof Todo);
     }
+  }
+  isFilled(colName: keyof Todo | null, name: 'up' | 'down', isFilled: boolean) {
+    if (this.sortBy === null) {
+      return !isFilled;
+    }
+    return (
+      colName !== null &&
+      this.sortBy.name === colName &&
+      ((this.sortBy.asc && name === 'up') ||
+        (!this.sortBy.asc && name === 'down'))
+    );
   }
 }

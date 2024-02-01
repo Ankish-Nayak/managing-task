@@ -11,7 +11,7 @@
         formControlName="email"
         placeholder="Enter email"
       />
-      <div class="invalid-feedback">{{ this.displayFeedback.email }}</div>
+      <div class="invalid-feedback">{{ displayFeedback.email }}</div>
     </div>
     <div class="form-group">
       <label for="name">Name</label>
@@ -23,7 +23,7 @@
         placeholder="name"
       />
       <div class="invalid-feedback">
-        {{ this.displayFeedback.name }}
+        {{ displayFeedback.name }}
       </div>
     </div>
 
@@ -37,7 +37,7 @@
         placeholder="phone"
       />
       <div class="invalid-feedback">
-        {{ this.displayFeedback["phone"] }}
+        {{ displayFeedback["phone"] }}
       </div>
     </div>
 
@@ -51,7 +51,7 @@
         placeholder="address"
       />
       <div class="invalid-feedback">
-        {{ this.displayFeedback.address }}
+        {{ displayFeedback.address }}
       </div>
     </div>
 
@@ -66,7 +66,7 @@
           placeholder="city"
         />
         <div class="invalid-feedback">
-          {{ this.displayFeedback.city }}
+          {{ displayFeedback.city }}
         </div>
       </div>
 
@@ -80,7 +80,7 @@
           placeholder="country"
         />
         <div class="invalid-feedback">
-          {{ this.displayFeedback.country }}
+          {{ displayFeedback.country }}
         </div>
       </div>
     </div>
@@ -99,7 +99,7 @@
       </option>
     </select>
     <div class="invalid-feedback">
-      {{ this.displayFeedback.departmentID }}
+      {{ displayFeedback.departmentID }}
     </div>
     <div class="form-group" *ngIf="false">
       <label for="employeeType">Employee Type</label>
@@ -117,7 +117,7 @@
         </option>
       </select>
       <div class="invalid-feedback">
-        {{ this.displayFeedback.employeeType }}
+        {{ displayFeedback.employeeType }}
       </div>
     </div>
 
@@ -131,7 +131,7 @@
         placeholder="password"
       />
       <div class="invalid-feedback">
-        {{ this.displayFeedback.password }}
+        {{ displayFeedback.password }}
       </div>
     </div>
 

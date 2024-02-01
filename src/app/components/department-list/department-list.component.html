@@ -32,16 +32,13 @@
                 placeholder="Enter department name"
               />
               <div class="invalid-feedback">
-                {{ this.displayFeedback.departmentName }}
+                {{ displayFeedback.departmentName }}
               </div>
             </div>
           </form>
         </td>
         <td>
-          <button
-            class="btn btn-primary btn-sm"
-            (click)="this.createDepartment()"
-          >
+          <button class="btn btn-primary btn-sm" (click)="createDepartment()">
             Add Department
           </button>
         </td>
