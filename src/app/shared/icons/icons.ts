@@ -1,47 +1,72 @@
-// export const ICONS = {
-//   delete: 'bi bi-trash3',
-//   deleteFilled: 'bi bi-trash3-fill',
-//   add: '',
-//   addFilled: '',
-//   edit: 'bi bi-pen',
-//   editFilled: 'bi bi-pen-fill',
-// };
-
 export const ICONS = {
   delete: {
     class: 'bi bi-trash3',
     toolTip: 'delete',
+    name: 'delete',
     openDelay: 1000,
     closeDelay: 500,
   },
   deleteFilled: {
     class: 'bi bi-trash3-fill',
     toolTip: 'delete',
+    name: 'delete',
     openDelay: 1000,
     closeDelay: 500,
   },
   add: {
     class: '',
     toolTip: 'delete',
+    name: 'delete',
     openDelay: 1000,
     closeDelay: 500,
   },
   addFilled: {
     class: '',
     toolTip: 'delete',
+    name: 'add',
     openDelay: 1000,
     closeDelay: 500,
   },
   edit: {
     class: 'bi bi-pen',
-    toolTip: 'delete',
+    toolTip: 'edit',
     openDelay: 1000,
+    name: 'edit',
     closeDelay: 500,
   },
   editFilled: {
     class: 'bi bi-pen-fill',
-    toolTip: 'delete',
+    toolTip: 'edit',
     openDelay: 1000,
+    name: 'edit',
+    closeDelay: 500,
+  },
+  up: {
+    class: 'bi bi-caret-up',
+    toolTip: 'sort By Ascending',
+    openDelay: 1000,
+    name: 'up',
+    closeDelay: 500,
+  },
+  upFilled: {
+    class: 'bi bi-caret-up-fill',
+    toolTip: 'sort By Ascending',
+    openDelay: 1000,
+    name: 'up',
+    closeDelay: 500,
+  },
+  down: {
+    class: 'bi bi-caret-down',
+    toolTip: 'sort by Descending',
+    openDelay: 1000,
+    name: 'down',
+    closeDelay: 500,
+  },
+  downFilled: {
+    class: 'bi bi-caret-down-fill',
+    toolTip: 'sort by Descending',
+    openDelay: 1000,
+    name: 'down',
     closeDelay: 500,
   },
 };

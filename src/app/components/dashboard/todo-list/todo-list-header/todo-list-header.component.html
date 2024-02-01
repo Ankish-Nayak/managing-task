@@ -1,10 +1,33 @@
-<th
-  appClicked
-  (clicked)="onClicked($event)"
-  *ngFor="let col of cols | userViewCols: userType"
-  scope="col"
-  [id]="col.idName"
-  [class]="col.class ?? col.class"
->
-  {{ col.name }}
+<th *ngFor="let col of cols | userViewCols: userType" scope="col">
+  <div class="container">
+    <span
+      appClicked
+      (clicked)="onClicked($event)"
+      [class]="col.canSort ?? 'pointer'"
+      [id]="col.idName"
+      >{{ col.name }}</span
+    >
+
+    <div class="icons-container" *ngIf="col.canSort">
+      <i
+        [class]="ICONS.up.class"
+        [ngbTooltip]="ICONS.up.toolTip"
+        [openDelay]="ICONS.up.openDelay"
+        [closeDelay]="ICONS.up.closeDelay"
+        [id]="col.name + '|' + ICONS.up.name"
+        appClicked
+        (clicked)="onClicked($event)"
+      ></i>
+
+      <i
+        [class]="ICONS.down.class"
+        [ngbTooltip]="ICONS.down.toolTip"
+        [openDelay]="ICONS.down.openDelay"
+        [closeDelay]="ICONS.down.closeDelay"
+        [id]="col.name + '|' + ICONS.down.name"
+        appClicked
+        (clicked)="onClicked($event)"
+      ></i>
+    </div>
+  </div>
 </th>

@@ -22,6 +22,8 @@
           [cols]="cols"
           [userType]="userType"
           (clicked)="onClickedHeader($event)"
+          (pageStateChange)="onPageChange($event)"
+          [pageState]="pageState"
         ></tr>
       </thead>
       <tbody>

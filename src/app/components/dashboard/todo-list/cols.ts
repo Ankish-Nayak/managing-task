@@ -14,7 +14,7 @@ export type TCOLS = {
   notAllowedUsers: TEmployee[] | null;
   idName: keyof Todo | null;
   render: boolean;
-  class?: 'pointer';
+  canSort?: 'pointer';
 }[];
 export const COLS: TCOLS = [
   {
@@ -28,35 +28,34 @@ export const COLS: TCOLS = [
     notAllowedUsers: null,
     idName: 'title',
     render: true,
-    class: 'pointer',
+    canSort: 'pointer',
   },
   {
     name: 'Description',
     notAllowedUsers: null,
     idName: 'description',
     render: true,
-    class: 'pointer',
+    canSort: 'pointer',
   },
   {
     name: 'IsCompleted',
     notAllowedUsers: null,
     idName: 'isCompleted',
     render: true,
-    class: 'pointer',
   },
   {
     name: 'AssignedTo',
     notAllowedUsers: ['employee'],
     idName: 'employeeName',
     render: true,
-    class: 'pointer',
+    canSort: 'pointer',
   },
   {
     name: 'AssignedBy',
     notAllowedUsers: ['admin'],
     idName: 'assignBy',
     render: true,
-    class: 'pointer',
+    canSort: 'pointer',
   },
   {
     name: 'Actions',
