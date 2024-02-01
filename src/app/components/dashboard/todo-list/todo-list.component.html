@@ -9,9 +9,8 @@
   [pageState]="pageState"
   [searchByCols]="searchByCols"
   [userType]="userType"
-  (selectedPage)="onPageChange($event)"
   (assignTask)="assignTo()"
-  (updatedPageState)="onSearchBoxChange($event)"
+  (pageStateChange)="onPageChange($event)"
   [totalPagesCount]="totalPagesCount"
 ></div>
 <form [formGroup]="todoForm" *ngIf="todos && todos.length !== 0">

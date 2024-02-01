@@ -1,9 +1,8 @@
 <app-todo-pagination
   [page]="pageState.index"
-  (selectedPage)="onPageChange($event)"
+  (pageStateChange)="onPageChange($event)"
   [totalPagesCount]="totalPagesCount"
-  [selectedOption]="this.pageState.take"
-  []
+  [selectedPageSize]="pageState.take"
 ></app-todo-pagination>
 
 <div class="d-flex justify-content-center align-items-center flex-column">

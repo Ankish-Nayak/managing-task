@@ -18,10 +18,10 @@ export class TodoListControllerComponent {
   @Input({ required: true }) pageState!: GetTodosQueryParams;
   @Input({ required: true }) searchByCols!: { name: keyof Todo }[];
   @Input({ required: true }) userType!: TEmployee;
-  @Output() selectedPage: EventEmitter<number> = new EventEmitter<number>();
+  // @Output() selectedPage: EventEmitter<number> = new EventEmitter<number>();
   @Output() assignTask: EventEmitter<void> = new EventEmitter();
-  @Output() updatedPageState: EventEmitter<GetTodosQueryParams> =
-    new EventEmitter<GetTodosQueryParams>();
+  @Output() pageStateChange: EventEmitter<Partial<GetTodosQueryParams>> =
+    new EventEmitter<Partial<GetTodosQueryParams>>();
   readonly USER_ROLES = USER_ROLES;
   selectedOption: keyof Todo | null = null;
   searchBox: string = 'Select column to search';
@@ -30,8 +30,8 @@ export class TodoListControllerComponent {
   assignTo() {
     this.assignTask.emit();
   }
-  onPageChange(selectedPage: number) {
-    this.selectedPage.emit(selectedPage);
+  onPageChange(pageStateUpdate: Partial<GetTodosQueryParams>) {
+    this.pageStateChange.emit(pageStateUpdate);
   }
   onSelectionChange() {
     console.log('selected Option', this.selectedOption);
@@ -54,7 +54,10 @@ export class TodoListControllerComponent {
         orderBy: this.selectedOption,
         search: this.searchBox,
       };
-      this.updatedPageState.emit(this.pageState);
+      this.pageStateChange.emit({
+        orderBy: this.selectedOption,
+        search: this.searchBox,
+      });
     }
   }
 }

@@ -4,7 +4,7 @@
     <select
       class="form-select"
       id="selectPageCount"
-      [(ngModel)]="selectedOption"
+      [(ngModel)]="selectedPageSize"
       (ngModelChange)="onSelectionChange()"
     >
       <!-- <option [value]="null">Choose...</option> -->
@@ -22,6 +22,6 @@
     aria-label="Default pagination"
     (pageChange)="onPageChange($event)"
     [collectionSize]="totalPagesCount"
-    [pageSize]="this.selectedOption"
+    [pageSize]="selectedPageSize"
   />
 </div>

@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
+import { GetTodosQueryParams } from '../../../../shared/interfaces/requests/toto.interface';
 
 @Component({
   selector: 'app-todo-pagination',
@@ -11,12 +12,14 @@ import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
   styleUrl: './todo-pagination.component.scss',
 })
 export class TodoPaginationComponent implements OnInit {
-  @Output() selectedPage: EventEmitter<number> = new EventEmitter<number>();
+  // @Output() selectedPage: EventEmitter<number> = new EventEmitter<number>();
   @Input({ required: true }) page!: number;
   @Input({ required: true }) totalPagesCount!: number;
   paginatedSizes: number[] = [];
   @Input({ required: true }) selectedPageSize!: number;
-  @Output() pageSizeChange: EventEmitter<number> = new EventEmitter<number>();
+  // @Output() pageSizeChange: EventEmitter<number> = new EventEmitter<number>();
+  @Output() pageStateChange: EventEmitter<Partial<GetTodosQueryParams>> =
+    new EventEmitter<Partial<GetTodosQueryParams>>();
   constructor() {}
   ngOnInit(): void {
     this.configurePaginatedSize();
@@ -37,10 +40,12 @@ export class TodoPaginationComponent implements OnInit {
     this.paginatedSizes.sort((a: number, b: number) => a - b);
   }
   onPageChange(selectedPage: number) {
-    this.selectedPage.emit(selectedPage);
-    console.log(selectedPage);
+    this.pageStateChange.emit({ index: selectedPage - 1 });
+    // this.selectedPage.emit(selectedPage);
+    // console.log(selectedPage);
   }
   onSelectionChange() {
-    this.pageSizeChange.emit(this.selectedPageSize);
+    this.pageStateChange.emit({ take: this.selectedPageSize });
+    // this.pageSizeChange.emit(this.selectedPageSize);
   }
 }

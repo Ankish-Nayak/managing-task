@@ -212,8 +212,12 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
       this.totalPagesCount = res.totalPageCount;
     });
   }
-  onPageChange(pageNumber: number) {
-    this.pageState.index = pageNumber - 1;
+  onPageChange(pageStateUpdates: Partial<GetEmployeesQueryParams>) {
+    this.pageState = {
+      ...this.pageState,
+      ...pageStateUpdates,
+    };
+    // this.pageState.index = pageNumber - 1;
     this.todoService.getTodos(this.pageState).subscribe((res) => {
       this.todos = res.iterableData;
       this.totalPagesCount = res.totalPageCount;
@@ -223,13 +227,13 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
   allowedToView(allowedUsers: TEmployee[]) {
     return allowedUsers.includes(this.userType);
   }
-  onSearchBoxChange(updatedPageState: GetEmployeesQueryParams) {
-    this.pageState = updatedPageState;
-    console.log(updatedPageState);
-    this.todoService.getTodos(this.pageState).subscribe((res) => {
-      this.todos = res.iterableData;
-      this.totalPagesCount = res.totalPageCount;
-    });
-  }
+  // onSearchBoxChange(updatedPageState: GetEmployeesQueryParams) {
+  //   this.pageState = updatedPageState;
+  //   console.log(updatedPageState);
+  //   this.todoService.getTodos(this.pageState).subscribe((res) => {
+  //     this.todos = res.iterableData;
+  //     this.totalPagesCount = res.totalPageCount;
+  //   });
+  // }
   ngOnDestroy(): void {}
 }
