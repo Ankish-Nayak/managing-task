@@ -1,9 +1,9 @@
 <app-todo-pagination
   [page]="pageState.index"
   (selectedPage)="onPageChange($event)"
+  [totalPagesCount]="totalPagesCount"
 ></app-todo-pagination>
 
-<!-- <form> -->
 <div class="d-flex justify-content-center align-items-center flex-column">
   <h6>Search Use Column</h6>
   <div class="d-flex justify-content-between align-items-center">
@@ -31,10 +31,10 @@
         [(ngModel)]="searchBox"
         (input)="onSearchBoxChange()"
         [placeholder]="searchBox"
+        [disabled]="isSearchBoxDisabled"
       />
     </div>
   </div>
 </div>
-<!-- </form> -->
 <button class="btn btn-primary btn-sm" (click)="assignTo()">Assign Task</button>
 <!-- </div> -->

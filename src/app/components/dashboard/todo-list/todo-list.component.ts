@@ -61,6 +61,7 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
     { name: 'title' },
     { name: 'description' },
   ];
+  totalPagesCount: number = 0;
   constructor(
     private todoService: TodoService,
     private authService: AuthService,
@@ -92,7 +93,8 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isLoading = true;
     this.todoService.getTodos(this.pageState).subscribe(
       (res) => {
-        this.todos = res;
+        this.todos = res.iterableData;
+        this.totalPagesCount = res.totalPageCount;
         this.isLoading = false;
       },
       (e) => {
@@ -202,13 +204,19 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
       this.columnSortBy.dsc = false;
     }
     this.todoService.getTodos(this.pageState).subscribe((res) => {
-      this.todos = sortTasksByProperty(res, name, this.columnSortBy.dsc);
+      this.todos = sortTasksByProperty(
+        res.iterableData,
+        name,
+        this.columnSortBy.dsc,
+      );
+      this.totalPagesCount = res.totalPageCount;
     });
   }
   onPageChange(pageNumber: number) {
     this.pageState.index = pageNumber - 1;
     this.todoService.getTodos(this.pageState).subscribe((res) => {
-      this.todos = res;
+      this.todos = res.iterableData;
+      this.totalPagesCount = res.totalPageCount;
     });
     this.getTodos;
   }
@@ -219,7 +227,8 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.pageState = updatedPageState;
     console.log(updatedPageState);
     this.todoService.getTodos(this.pageState).subscribe((res) => {
-      this.todos = res;
+      this.todos = res.iterableData;
+      this.totalPagesCount = res.totalPageCount;
     });
   }
   ngOnDestroy(): void {}

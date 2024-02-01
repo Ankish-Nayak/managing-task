@@ -12,6 +12,7 @@
   (selectedPage)="onPageChange($event)"
   (assignTask)="assignTo()"
   (updatedPageState)="onSearchBoxChange($event)"
+  [totalPagesCount]="totalPagesCount"
 ></div>
 <form [formGroup]="todoForm" *ngIf="todos && todos.length !== 0">
   <div class="form">

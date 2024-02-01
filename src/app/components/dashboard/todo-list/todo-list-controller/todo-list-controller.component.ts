@@ -25,6 +25,8 @@ export class TodoListControllerComponent {
   readonly USER_ROLES = USER_ROLES;
   selectedOption: keyof Todo | null = null;
   searchBox: string = 'Select column to search';
+  isSearchBoxDisabled: boolean = true;
+  @Input({ required: true }) totalPagesCount!: number;
   assignTo() {
     this.assignTask.emit();
   }
@@ -38,8 +40,10 @@ export class TodoListControllerComponent {
       this.selectedOption.toString() === 'null'
     ) {
       console.log('d');
+      this.isSearchBoxDisabled = true;
       this.searchBox = 'Select column to search';
     } else {
+      this.isSearchBoxDisabled = false;
       this.searchBox = 'Search using ' + this.selectedOption;
     }
   }

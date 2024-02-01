@@ -33,7 +33,10 @@ export class TodoService {
       })
       .pipe(
         map((res) => {
-          return res.iterableData;
+          return {
+            iterableData: res.iterableData,
+            totalPageCount: res.count,
+          };
         }),
       );
   }
