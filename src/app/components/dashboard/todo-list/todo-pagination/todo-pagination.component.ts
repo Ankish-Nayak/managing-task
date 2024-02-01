@@ -12,12 +12,11 @@ import { GetTodosQueryParams } from '../../../../shared/interfaces/requests/toto
   styleUrl: './todo-pagination.component.scss',
 })
 export class TodoPaginationComponent implements OnInit {
-  // @Output() selectedPage: EventEmitter<number> = new EventEmitter<number>();
-  @Input({ required: true }) page!: number;
+  @Input({ required: true, transform: (value: number) => value + 1 })
+  page!: number;
   @Input({ required: true }) totalPagesCount!: number;
   paginatedSizes: number[] = [];
   @Input({ required: true }) selectedPageSize!: number;
-  // @Output() pageSizeChange: EventEmitter<number> = new EventEmitter<number>();
   @Output() pageStateChange: EventEmitter<Partial<GetTodosQueryParams>> =
     new EventEmitter<Partial<GetTodosQueryParams>>();
   constructor() {}

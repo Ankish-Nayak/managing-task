@@ -7,7 +7,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { Todo } from '../../../../shared/models/todo.model';
 import { TodoService } from '../../../../shared/services/todo/todo.service';
 import { END_POINTS } from '../../../../utils/constants';
@@ -27,11 +27,7 @@ export class TodoDetailComponent implements OnInit, OnDestroy {
   END_POINTS = END_POINTS;
   @Input({ required: true }) id!: string;
   @Output() edit: EventEmitter<boolean> = new EventEmitter<boolean>();
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private todoService: TodoService,
-  ) {}
+  constructor(private todoService: TodoService) {}
 
   ngOnInit(): void {
     this.getTodo();
@@ -40,10 +36,6 @@ export class TodoDetailComponent implements OnInit, OnDestroy {
   getTodo() {
     const todo = JSON.parse(this.todoService.getTodo(this.id.toString()));
     this.todo = todo;
-    // this.route.paramMap.subscribe((params) => {
-    //   const id = params.get('id');
-    //   if (id !== null) {
-    //   }
   }
   getDescription() {
     const words = this.todo.description.split(' ');
@@ -62,9 +54,6 @@ export class TodoDetailComponent implements OnInit, OnDestroy {
   }
   editTodo() {
     this.edit.emit(true);
-    // this.router.navigate([`../../update-todo/${this.todo.id}`], {
-    //   relativeTo: this.route,
-    // });
   }
   ngOnDestroy(): void {}
 }

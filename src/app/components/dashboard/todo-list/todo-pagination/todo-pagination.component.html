@@ -7,7 +7,6 @@
       [(ngModel)]="selectedPageSize"
       (ngModelChange)="onSelectionChange()"
     >
-      <!-- <option [value]="null">Choose...</option> -->
       <option
         *ngFor="let paginatedSize of paginatedSizes"
         [value]="paginatedSize"

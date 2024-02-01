@@ -7,10 +7,10 @@ import { ICONS } from '../../../../shared/icons/icons';
 import { TEmployee } from '../../../../shared/interfaces/employee.type';
 import { ConfirmationModalComponent } from '../../../../shared/modals/confirmation-modal/confirmation-modal.component';
 import { Todo } from '../../../../shared/models/todo.model';
+import { ToastService } from '../../../../shared/services/toast/toast.service';
 import { TodoService } from '../../../../shared/services/todo/todo.service';
 import { USER_ROLES } from '../../../../utils/constants';
 import { COLS, TCOLS, TcolsName } from '../cols';
-import { ToastService } from '../../../../shared/services/toast/toast.service';
 
 @Component({
   selector: '[app-todo]',
@@ -33,8 +33,6 @@ export class TodoComponent {
   @Output() updateTodo = new EventEmitter<number>();
   @Output() navigateTo = new EventEmitter<number>();
   @Input({ required: true }) userType!: TEmployee;
-  // @Output() markTodo = new EventEmitter<Todo>();
-  //
   @Input({ required: true }) isLoading!: boolean;
   highlight: { edit: boolean; delete: boolean } = {
     edit: false,
@@ -91,16 +89,6 @@ export class TodoComponent {
           isCompleted: !this.todo.isCompleted,
         };
       });
-    //TODO: api for todo is not there.
-    // this.todoService
-    //   .updateTodo(this.todo.id, {
-    //     ...this.todo,
-    //     isCompleted: !this.todo.isCompleted,
-    //   })
-    //   .subscribe(() => {
-    //     this.todo.isCompleted = !this.todo.isCompleted;
-    //   });
-    // this.markTodo.emit({ ...this.todo, isCompleted: !this.todo.isCompleted });
   }
 
   onHighlight(type: 'edit' | 'delete', binary: boolean) {
