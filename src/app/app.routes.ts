@@ -15,6 +15,8 @@ import { authGuard } from './shared/guards/auth/auth.guard';
 import { userBasedAuthGuard } from './shared/guards/userBasedAuth/user-based-auth.guard';
 import { PaginationComponent } from './shared/paginations/pagination/pagination.component';
 import { END_POINTS, USER_ROLES } from './utils/constants';
+import { UpsertProfileComponent } from './components/dashboard/upsert-profile/upsert-profile.component';
+import { notSavedChangesGuard } from './shared/guards/notSavedChanges/not-saved-changes.guard';
 
 // TODO: make a class to get url to particular endpoints and also have push, pop as method in it.
 export const routes: Routes = [
@@ -97,6 +99,11 @@ export const routes: Routes = [
       {
         component: PaginationComponent,
         path: END_POINTS.test,
+      },
+      {
+        component: UpsertProfileComponent,
+        path: END_POINTS.upsertProfile,
+        canDeactivate: [notSavedChangesGuard],
       },
     ],
   },

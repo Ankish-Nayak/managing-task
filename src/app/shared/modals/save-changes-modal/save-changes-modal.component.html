@@ -1,0 +1,24 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Unsaved Changes</h4>
+</div>
+<div class="modal-body">You have unsaved changes,want to leave?</div>
+<div class="modal-footer">
+  <button
+    #noButton
+    type="button"
+    class="btn btn-secondary"
+    data-bs-dismiss="modal"
+    (click)="closeModal(false)"
+  >
+    No
+  </button>
+  <button
+    #yesButton
+    type="button"
+    data-bs-dismiss="modal"
+    class="btn btn-primary"
+    (click)="closeModal(true)"
+  >
+    Yes
+  </button>
+</div>

@@ -112,8 +112,11 @@ export class NavbarComponent implements OnInit {
     switch (name) {
       case 'profile': {
         //TODO: make profile open
+        // this.router.navigateByUrl(
+        //   `${END_POINTS.dashboard}/${END_POINTS.profile}`,
+        // );
         this.router.navigateByUrl(
-          `${END_POINTS.dashboard}/${END_POINTS.profile}`,
+          `${END_POINTS.dashboard}/${END_POINTS.upsertProfile}`,
         );
         break;
       }

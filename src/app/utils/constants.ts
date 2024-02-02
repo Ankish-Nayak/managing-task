@@ -20,6 +20,7 @@ export const END_POINTS = {
   notAllowedUser: 'not-allowed-user',
   profile: 'profile',
   test: 'test',
+  upsertProfile: 'upsert-profile',
 };
 
 // 0 -> means employee
