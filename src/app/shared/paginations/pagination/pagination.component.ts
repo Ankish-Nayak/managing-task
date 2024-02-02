@@ -29,21 +29,20 @@ export class PaginationComponent implements OnInit, OnChanges {
   @Output() pageChange: EventEmitter<number> = new EventEmitter<number>();
   @Input({ required: true }) selectedPaginatedSize: number = 10;
   @Output() selectedPaginatedSizeChange = new EventEmitter<number>();
-  @Input() span: number = 3;
+  @Input() viewPages: number = 3;
+  span: number = 3;
+
   paginatedSizes: number[] = [];
   left: number = 1;
   right: number = 1;
 
   ngOnInit(): void {
-    this.left = 1;
-    this.right = this.span;
-    this.configurePaginatedSize();
-
     this.pagesInit();
+    this.configurePaginatedSize();
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes) {
-      this.pagesInit();
+      this.renderPages();
     }
   }
 
@@ -70,15 +69,15 @@ export class PaginationComponent implements OnInit, OnChanges {
   }
 
   pagesInit() {
-    this.pagesCount = 0;
     this.pages = [];
     this.pagesCount = Math.ceil(
       this.collectionSize / this.selectedPaginatedSize,
     );
+    this.left = 1;
+    this.span = Math.min(this.viewPages, this.pagesCount);
+    this.right = this.span;
     this.renderPages();
-    // for (let i = 0; i < this.pagesCount; ++i) {
-    //   this.pages.push(i + 1);
-    // }
+    this.selectedPage = 1;
     this.whetherDisableButtons();
   }
   renderPages() {
@@ -91,11 +90,10 @@ export class PaginationComponent implements OnInit, OnChanges {
     e.preventDefault();
     if (!this.rightDisabled) {
       if (this.selectedPage === this.right) {
-        this.left = this.left + this.span;
-        this.right = this.right + this.span - 1;
+        this.left = this.right + 1;
+        this.right = this.right + this.span;
         this.left = Math.min(this.left, this.pagesCount);
         this.right = Math.min(this.right, this.pagesCount);
-
         this.renderPages();
       }
       this.selectedPage++;
