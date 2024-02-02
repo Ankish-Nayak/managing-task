@@ -23,16 +23,23 @@ export class PaginationComponent implements OnInit, OnChanges {
   @Input({ required: true }) collectionSize!: number;
   pages: number[] = [];
   pagesCount: number = 0;
-  @Input() selectedPage: number = 1;
+  @Input({ transform: (value: number) => value + 1 }) selectedPage: number = 1;
   leftDisabled: boolean = false;
   rightDisabled: boolean = false;
   @Output() pageChange: EventEmitter<number> = new EventEmitter<number>();
   @Input({ required: true }) selectedPaginatedSize: number = 10;
   @Output() selectedPaginatedSizeChange = new EventEmitter<number>();
+  @Input() span: number = 3;
   paginatedSizes: number[] = [];
+  left: number = 1;
+  right: number = 1;
 
   ngOnInit(): void {
+    this.left = 1;
+    this.right = this.span;
     this.configurePaginatedSize();
+
+    this.pagesInit();
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes) {
@@ -46,7 +53,6 @@ export class PaginationComponent implements OnInit, OnChanges {
   }
 
   configurePaginatedSize() {
-    console.log(this.collectionSize);
     this.paginatedSizes.push(this.selectedPaginatedSize);
     let i = 5;
     while (i < this.collectionSize) {
@@ -69,14 +75,29 @@ export class PaginationComponent implements OnInit, OnChanges {
     this.pagesCount = Math.ceil(
       this.collectionSize / this.selectedPaginatedSize,
     );
-    for (let i = 0; i < this.pagesCount; ++i) {
-      this.pages.push(i + 1);
-    }
+    this.renderPages();
+    // for (let i = 0; i < this.pagesCount; ++i) {
+    //   this.pages.push(i + 1);
+    // }
     this.whetherDisableButtons();
+  }
+  renderPages() {
+    this.pages = [];
+    for (let i = this.left; i <= this.right; ++i) {
+      this.pages.push(i);
+    }
   }
   onNext(e: MouseEvent) {
     e.preventDefault();
     if (!this.rightDisabled) {
+      if (this.selectedPage === this.right) {
+        this.left = this.left + this.span;
+        this.right = this.right + this.span - 1;
+        this.left = Math.min(this.left, this.pagesCount);
+        this.right = Math.min(this.right, this.pagesCount);
+
+        this.renderPages();
+      }
       this.selectedPage++;
       this.onPageChange();
       this.whetherDisableButtons();
@@ -85,6 +106,13 @@ export class PaginationComponent implements OnInit, OnChanges {
   onPrev(e: MouseEvent) {
     e.preventDefault();
     if (!this.leftDisabled) {
+      if (this.selectedPage === this.left) {
+        this.right = this.left - 1;
+        this.left = this.left - this.span;
+        this.left = Math.max(1, this.left);
+        this.right = Math.max(1, this.right);
+        this.renderPages();
+      }
       this.selectedPage--;
       this.onPageChange();
       this.whetherDisableButtons();
@@ -99,8 +127,8 @@ export class PaginationComponent implements OnInit, OnChanges {
     }
   }
   onPageChange() {
-    this.selectedPageChange.emit(this.selectedPage);
-    this.pageChange.emit(this.selectedPage);
+    this.selectedPageChange.emit(this.selectedPage - 1);
+    this.pageChange.emit(this.selectedPage - 1);
   }
   whetherDisableButtons() {
     if (this.selectedPage === 1) {
