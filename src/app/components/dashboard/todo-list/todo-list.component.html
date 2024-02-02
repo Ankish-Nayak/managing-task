@@ -18,6 +18,7 @@
     <table class="table table-hover" *ngIf="!isLoading">
       <thead>
         <tr
+          class="todo-list-header"
           app-todo-list-header
           [cols]="cols"
           [userType]="userType"
@@ -45,9 +46,11 @@
     </table>
   </div>
 </form>
+
+<!-- class="d-flex justify-content-between container-fluid align-items-center" -->
 <div
-  class="d-flex justify-content-between container-fluid align-items-center"
   *ngIf="!isLoading"
+  class="todo-list-navigation"
   app-todo-pagination
   [page]="pageState.index"
   (pageStateChange)="onPageChange($event)"

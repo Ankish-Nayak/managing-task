@@ -28,6 +28,11 @@ form {
 #description {
   width: 30%;
 }
+.todo-list-header {
+  position: sticky;
+  top: 94px;
+  z-index: 100;
+}
 
 .todo-list-top-button {
   display: flex;
@@ -37,4 +42,14 @@ form {
   position: sticky;
   top: 40px;
   background: white;
+}
+
+.todo-list-navigation {
+  position: sticky;
+  bottom: 0px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin: 20px auto;
 }

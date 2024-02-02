@@ -2,14 +2,14 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgbPopover, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { ClickedDirective } from '../../../../shared/directives/clicked/clicked.directive';
+import { ICONS } from '../../../../shared/icons/icons';
 import { TEmployee } from '../../../../shared/interfaces/employee.type';
+import { GetTodosQueryParams } from '../../../../shared/interfaces/requests/toto.interface';
 import { Todo } from '../../../../shared/models/todo.model';
 import { UserViewColsPipe } from '../../../../shared/pipes/user-view-cols/user-view-cols.pipe';
 import { TCOLS } from '../cols';
-import { ICONS } from '../../../../shared/icons/icons';
-import { GetTodosQueryParams } from '../../../../shared/interfaces/requests/toto.interface';
 
-type TsortBy = keyof Todo | null;
+// type TsortBy = keyof Todo | null;
 @Component({
   selector: '[app-todo-list-header]',
   standalone: true,

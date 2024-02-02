@@ -42,11 +42,8 @@ export class TodoPaginationComponent implements OnInit {
   }
   onPageChange(selectedPage: number) {
     this.pageStateChange.emit({ index: selectedPage - 1 });
-    // this.selectedPage.emit(selectedPage);
-    // console.log(selectedPage);
   }
   onSelectionChange() {
     this.pageStateChange.emit({ take: this.selectedPageSize });
-    // this.pageSizeChange.emit(this.selectedPageSize);
   }
 }
