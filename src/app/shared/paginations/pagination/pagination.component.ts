@@ -8,18 +8,18 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-pagination',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './pagination.component.html',
   styleUrl: './pagination.component.scss',
 })
 export class PaginationComponent implements OnInit, OnChanges {
   @Output() selectedPageChange: EventEmitter<number> =
     new EventEmitter<number>();
-  @Input({ required: true }) pageSize!: number;
   @Input({ required: true }) collectionSize!: number;
   pages: number[] = [];
   pagesCount: number = 0;
@@ -27,18 +27,48 @@ export class PaginationComponent implements OnInit, OnChanges {
   leftDisabled: boolean = false;
   rightDisabled: boolean = false;
   @Output() pageChange: EventEmitter<number> = new EventEmitter<number>();
+  @Input({ required: true }) selectedPaginatedSize: number = 10;
+  @Output() selectedPaginatedSizeChange = new EventEmitter<number>();
+  paginatedSizes: number[] = [];
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.configurePaginatedSize();
+  }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes) {
       this.pagesInit();
     }
   }
 
+  onSelectedPaginatedSizeChange() {
+    this.selectedPaginatedSizeChange.emit(this.selectedPaginatedSize);
+    this.pagesInit();
+  }
+
+  configurePaginatedSize() {
+    console.log(this.collectionSize);
+    this.paginatedSizes.push(this.selectedPaginatedSize);
+    let i = 5;
+    while (i < this.collectionSize) {
+      this.paginatedSizes.push(i);
+      i += 5;
+    }
+    if (!this.paginatedSizes.includes(this.collectionSize)) {
+      this.paginatedSizes.push(this.collectionSize);
+    }
+    this.paginatedSizes.push(1);
+    this.paginatedSizes.sort();
+    this.paginatedSizes = Array.from(new Set(this.paginatedSizes));
+
+    this.paginatedSizes.sort((a: number, b: number) => a - b);
+  }
+
   pagesInit() {
     this.pagesCount = 0;
     this.pages = [];
-    this.pagesCount = Math.ceil(this.collectionSize / this.pageSize);
+    this.pagesCount = Math.ceil(
+      this.collectionSize / this.selectedPaginatedSize,
+    );
     for (let i = 0; i < this.pagesCount; ++i) {
       this.pages.push(i + 1);
     }

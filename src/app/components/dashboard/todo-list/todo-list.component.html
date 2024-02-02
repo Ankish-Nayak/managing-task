@@ -45,18 +45,14 @@
     </tbody>
   </table>
 </div>
-
-<!-- class="d-flex justify-content-between container-fluid align-items-center" -->
-<div
+<app-pagination
   *ngIf="!isLoading"
-  class="todo-list-navigation"
-  app-todo-pagination
-  [page]="pageState.index"
-  (pageStateChange)="onPageChange($event)"
-  [totalPagesCount]="totalPagesCount"
-  [selectedPageSize]="pageState.take"
-  [isLoading]="isLoading"
-></div>
+  [(selectedPage)]="pageState.index"
+  (pageChange)="onPageChange({ index: $event })"
+  [collectionSize]="totalPagesCount"
+  [selectedPaginatedSize]="pageState.take"
+  (selectedPaginatedSizeChange)="onPageChange({ take: $event })"
+/>
 
 <app-confirmation-modal
   (confirmation)="confirm($event)"

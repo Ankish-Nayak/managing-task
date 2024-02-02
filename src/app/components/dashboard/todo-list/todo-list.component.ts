@@ -8,6 +8,7 @@ import { ITask } from '../../../shared/interfaces/requests/toto.interface';
 import { ConfirmationModalComponent } from '../../../shared/modals/confirmation-modal/confirmation-modal.component';
 import { UpsertContentModalComponent } from '../../../shared/modals/upsert-content-modal/upsert-content-modal.component';
 import { Todo } from '../../../shared/models/todo.model';
+import { PaginationComponent } from '../../../shared/paginations/pagination/pagination.component';
 import { UserViewColsPipe } from '../../../shared/pipes/user-view-cols/user-view-cols.pipe';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { EmployeeService } from '../../../shared/services/employee/employee.service';
@@ -19,7 +20,6 @@ import { sortTasksByProperty } from '../../../utils/sortTasksByPropery';
 import { COLS, TCOLS } from './cols';
 import { TodoListControllerComponent } from './todo-list-controller/todo-list-controller.component';
 import { TodoListHeaderComponent } from './todo-list-header/todo-list-header.component';
-import { TodoPaginationComponent } from './todo-pagination/todo-pagination.component';
 import { TodoComponent } from './todo/todo.component';
 
 @Component({
@@ -34,8 +34,8 @@ import { TodoComponent } from './todo/todo.component';
     UserViewColsPipe,
     SpinnerComponent,
     UpsertContentModalComponent,
-    TodoPaginationComponent,
     TodoListControllerComponent,
+    PaginationComponent,
   ],
   templateUrl: './todo-list.component.html',
   styleUrl: './todo-list.component.scss',
