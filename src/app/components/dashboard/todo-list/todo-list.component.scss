@@ -1,27 +1,16 @@
-.input-row-d {
-  display: flex;
-  justify-content: center;
-  flex-direction: row;
-  align-items: center;
-}
-form {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .table {
   width: 1500px;
   margin: auto;
   text-align: center;
 }
-
+.scroll {
+  overflow: scroll;
+  height: 600px;
+}
 .assign-task {
   position: sticky;
   top: 40px;
 }
-
 #title {
   width: 20%;
 }
@@ -30,7 +19,7 @@ form {
 }
 .todo-list-header {
   position: sticky;
-  top: 94px;
+  top: 0px;
   z-index: 100;
 }
 

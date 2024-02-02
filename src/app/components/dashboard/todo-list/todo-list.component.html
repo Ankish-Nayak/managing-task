@@ -11,41 +11,40 @@
   (assignTask)="assignTo()"
   (pageStateChange)="onPageChange($event)"
   [totalPagesCount]="totalPagesCount"
+  [isLoading]="isLoading"
 ></div>
 
-<form [formGroup]="todoForm">
-  <div class="form">
-    <table class="table table-hover" *ngIf="!isLoading">
-      <thead>
-        <tr
-          class="todo-list-header"
-          app-todo-list-header
-          [cols]="cols"
-          [userType]="userType"
-          (clicked)="onClickedHeader($event)"
-          (pageStateChange)="onPageChange($event)"
-          [pageState]="pageState"
-        ></tr>
-      </thead>
-      <tbody>
-        <tr
-          *ngFor="let todo of todos; let i = index"
-          app-todo
-          [todo]="todo"
-          [sno]="pageState.index * pageState.take + (i + 1)"
-          (updateTodo)="updateTodo($event)"
-          (deleteTodo)="deleteTodo($event)"
-          (navigateTo)="navigateTo($event)"
-          [userType]="userType"
-          [isLoading]="isLoading"
-        ></tr>
-        <tr *ngIf="!(todos && todos.length !== 0)">
-          <th [colSpan]="6">"Nothing Here"</th>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</form>
+<div class="scroll">
+  <table class="table table-hover" *ngIf="!isLoading">
+    <thead>
+      <tr
+        class="todo-list-header"
+        app-todo-list-header
+        [cols]="cols"
+        [userType]="userType"
+        (clicked)="onClickedHeader($event)"
+        (pageStateChange)="onPageChange($event)"
+        [pageState]="pageState"
+      ></tr>
+    </thead>
+    <tbody class="scroll">
+      <tr
+        *ngFor="let todo of todos; let i = index"
+        app-todo
+        [todo]="todo"
+        [sno]="pageState.index * pageState.take + (i + 1)"
+        (updateTodo)="updateTodo($event)"
+        (deleteTodo)="deleteTodo($event)"
+        (navigateTo)="navigateTo($event)"
+        [userType]="userType"
+        [isLoading]="isLoading"
+      ></tr>
+      <tr *ngIf="!(todos && todos.length !== 0)">
+        <th [colSpan]="7">"Nothing Here"</th>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 <!-- class="d-flex justify-content-between container-fluid align-items-center" -->
 <div
@@ -56,6 +55,7 @@
   (pageStateChange)="onPageChange($event)"
   [totalPagesCount]="totalPagesCount"
   [selectedPageSize]="pageState.take"
+  [isLoading]="isLoading"
 ></div>
 
 <app-confirmation-modal

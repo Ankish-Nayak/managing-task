@@ -13,6 +13,7 @@ import { TodoPaginationComponent } from '../todo-pagination/todo-pagination.comp
   styleUrl: './todo-list-controller.component.scss',
 })
 export class TodoListControllerComponent implements OnInit {
+  @Input() isLoading: boolean = false;
   @Input({ required: true }) pageState!: GetTodosQueryParams;
   @Input({ required: true }) userType!: TEmployee;
   @Output() assignTask: EventEmitter<void> = new EventEmitter();

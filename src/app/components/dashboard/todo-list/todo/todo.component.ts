@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { HighlightDirective } from '../../../../shared/directives/highlight/highlight.directive';
@@ -25,7 +25,7 @@ import { COLS, TCOLS, TcolsName } from '../cols';
   templateUrl: './todo.component.html',
   styleUrl: './todo.component.scss',
 })
-export class TodoComponent {
+export class TodoComponent implements OnInit {
   todoMarkLoading = false;
   @Input({ required: true }) todo!: Todo;
   @Input({ required: true }) sno!: number;
@@ -48,6 +48,9 @@ export class TodoComponent {
   ) {}
   delete() {
     this.deleteTodo.emit(this.todo.id);
+  }
+  ngOnInit(): void {
+    console.log(this.isLoading);
   }
   getDescription(description: string) {
     return description.length > 115

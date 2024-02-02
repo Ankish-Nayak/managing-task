@@ -1,6 +1,12 @@
 .pointer {
   cursor: pointer;
 }
+td {
+  vertical-align: middle;
+}
+th {
+  vertical-align: middle;
+}
 
 .todo-description p {
   margin: auto 0px;

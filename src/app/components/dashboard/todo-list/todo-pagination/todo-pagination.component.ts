@@ -8,11 +8,18 @@ import { PaginationComponent } from '../../../../shared/paginations/pagination/p
 @Component({
   selector: '[app-todo-pagination]',
   standalone: true,
-  imports: [CommonModule, NgbPagination, FormsModule, PaginationComponent],
+  imports: [
+    CommonModule,
+    NgbPagination,
+    FormsModule,
+    PaginationComponent,
+    CommonModule,
+  ],
   templateUrl: './todo-pagination.component.html',
   styleUrl: './todo-pagination.component.scss',
 })
 export class TodoPaginationComponent implements OnInit {
+  @Input() isLoading: boolean = false;
   @Input({ required: true, transform: (value: number) => value + 1 })
   page!: number;
   @Input({ required: true }) totalPagesCount!: number;
@@ -35,6 +42,7 @@ export class TodoPaginationComponent implements OnInit {
     if (!this.paginatedSizes.includes(this.totalPagesCount)) {
       this.paginatedSizes.push(this.totalPagesCount);
     }
+    this.paginatedSizes.push(1);
     this.paginatedSizes.sort();
     this.paginatedSizes = Array.from(new Set(this.paginatedSizes));
 

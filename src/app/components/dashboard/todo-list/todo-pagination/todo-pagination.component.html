@@ -1,4 +1,7 @@
-<div class="d-flex-justify-content-center align-items-center">
+<div
+  class="d-flex-justify-content-center align-items-center"
+  *ngIf="!isLoading"
+>
   <div class="input-group mb-3">
     <label class="input-group-text" for="selectPageCount">Page Length</label>
     <select
@@ -22,3 +25,26 @@
   [collectionSize]="totalPagesCount"
   [pageSize]="selectedPageSize"
 />
+
+<!-- placeholder -->
+<div class="d-flex-justify-content-center align-items-center" *ngIf="isLoading">
+  <div class="input-group mb-3">
+    <label class="input-group-text" for="selectPageCount">
+      <span class="placeholder col-4"></span>
+    </label>
+    <p class="placeholder col-6"></p>
+    <!-- <select -->
+    <!--   class="form-select" -->
+    <!--   id="selectPageCount" -->
+    <!--   [(ngModel)]="selectedPageSize" -->
+    <!--   (ngModelChange)="onSelectionChange()" -->
+    <!-- > -->
+    <!--   <option -->
+    <!--     *ngFor="let paginatedSize of paginatedSizes" -->
+    <!--     [value]="paginatedSize" -->
+    <!--   > -->
+    <!--     {{ paginatedSize }} -->
+    <!--   </option> -->
+    <!-- </select> -->
+  </div>
+</div>
