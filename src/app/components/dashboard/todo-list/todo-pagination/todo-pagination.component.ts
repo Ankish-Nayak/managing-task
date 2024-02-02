@@ -6,7 +6,7 @@ import { GetTodosQueryParams } from '../../../../shared/interfaces/requests/toto
 import { PaginationComponent } from '../../../../shared/paginations/pagination/pagination.component';
 
 @Component({
-  selector: 'app-todo-pagination',
+  selector: '[app-todo-pagination]',
   standalone: true,
   imports: [CommonModule, NgbPagination, FormsModule, PaginationComponent],
   templateUrl: './todo-pagination.component.html',
@@ -25,6 +25,7 @@ export class TodoPaginationComponent implements OnInit {
     this.configurePaginatedSize();
   }
   configurePaginatedSize() {
+    console.log(this.totalPagesCount);
     this.paginatedSizes.push(this.selectedPageSize);
     let i = 5;
     while (i < this.totalPagesCount) {

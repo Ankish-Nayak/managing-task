@@ -7,12 +7,12 @@
   *ngIf="!isLoading && allowedToView([USER_ROLES.Admin, USER_ROLES.SuperAdmin])"
   app-todo-list-controller
   [pageState]="pageState"
-  [searchByCols]="searchByCols"
   [userType]="userType"
   (assignTask)="assignTo()"
   (pageStateChange)="onPageChange($event)"
   [totalPagesCount]="totalPagesCount"
 ></div>
+
 <form [formGroup]="todoForm">
   <div class="form">
     <table class="table table-hover" *ngIf="!isLoading">
@@ -45,14 +45,15 @@
     </table>
   </div>
 </form>
-<div class="d-flex flex-row-reverse">
-  <app-todo-pagination
-    [page]="pageState.index"
-    (pageStateChange)="onPageChange($event)"
-    [totalPagesCount]="totalPagesCount"
-    [selectedPageSize]="pageState.take"
-  ></app-todo-pagination>
-</div>
+<div
+  class="d-flex justify-content-between container-fluid align-items-center"
+  *ngIf="!isLoading"
+  app-todo-pagination
+  [page]="pageState.index"
+  (pageStateChange)="onPageChange($event)"
+  [totalPagesCount]="totalPagesCount"
+  [selectedPageSize]="pageState.take"
+></div>
 
 <app-confirmation-modal
   (confirmation)="confirm($event)"
