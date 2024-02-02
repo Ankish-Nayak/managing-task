@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { DataTableControlPanelComponent } from '../../../shared/controlPanels/data-table-control-panel/data-table-control-panel.component';
 import { TEmployee } from '../../../shared/interfaces/employee.type';
 import { GetEmployeesQueryParams } from '../../../shared/interfaces/requests/employee.interface';
 import { ITask } from '../../../shared/interfaces/requests/toto.interface';
@@ -15,13 +16,15 @@ import { EmployeeService } from '../../../shared/services/employee/employee.serv
 import { ToastService } from '../../../shared/services/toast/toast.service';
 import { TodoService } from '../../../shared/services/todo/todo.service';
 import { SpinnerComponent } from '../../../shared/spinners/spinner/spinner.component';
-import { COMPONENT_NAME, USER_ROLES } from '../../../utils/constants';
+import {
+  COMPONENT_NAME,
+  GET_TODOS_KEY,
+  USER_ROLES,
+} from '../../../utils/constants';
 import { sortTasksByProperty } from '../../../utils/sortTasksByPropery';
 import { COLS, TCOLS } from './cols';
-import { TodoListControllerComponent } from './todo-list-controller/todo-list-controller.component';
 import { TodoListHeaderComponent } from './todo-list-header/todo-list-header.component';
 import { TodoComponent } from './todo/todo.component';
-import { DataTableControlPanelComponent } from '../../../shared/controlPanels/data-table-control-panel/data-table-control-panel.component';
 
 @Component({
   selector: 'app-todo-list',
@@ -35,7 +38,6 @@ import { DataTableControlPanelComponent } from '../../../shared/controlPanels/da
     UserViewColsPipe,
     SpinnerComponent,
     UpsertContentModalComponent,
-    TodoListControllerComponent,
     PaginationComponent,
     DataTableControlPanelComponent,
   ],
@@ -50,11 +52,20 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
   userType!: TEmployee;
   cols: TCOLS = COLS;
   USER_ROLES = USER_ROLES;
-  pageState = new GetEmployeesQueryParams({
-    isPagination: true,
-    index: 0,
-    take: 10,
-  });
+  pageState = new GetEmployeesQueryParams(
+    (() => {
+      const data = localStorage.getItem(GET_TODOS_KEY);
+      if (data) {
+        return JSON.parse(data);
+      } else {
+        return {
+          isPagination: true,
+          index: 0,
+          take: 10,
+        };
+      }
+    })(),
+  );
   columnSortBy: { name: keyof ITask | null; dsc: boolean } = {
     name: null,
     dsc: false,
@@ -222,6 +233,7 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
       ...this.pageState,
       ...pageStateUpdates,
     };
+    localStorage.setItem(GET_TODOS_KEY, JSON.stringify(this.pageState));
     this.todoService.getTodos(this.pageState).subscribe((res) => {
       this.todos = res.iterableData;
       this.totalPagesCount = res.totalPageCount;
@@ -231,5 +243,7 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
   allowedToView(allowedUsers: TEmployee[]) {
     return allowedUsers.includes(this.userType);
   }
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    localStorage.removeItem(GET_TODOS_KEY);
+  }
 }
