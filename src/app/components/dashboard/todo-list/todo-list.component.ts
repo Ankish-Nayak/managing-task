@@ -21,6 +21,7 @@ import { COLS, TCOLS } from './cols';
 import { TodoListControllerComponent } from './todo-list-controller/todo-list-controller.component';
 import { TodoListHeaderComponent } from './todo-list-header/todo-list-header.component';
 import { TodoComponent } from './todo/todo.component';
+import { DataTableControlPanelComponent } from '../../../shared/controlPanels/data-table-control-panel/data-table-control-panel.component';
 
 @Component({
   selector: 'app-todo-list',
@@ -36,6 +37,7 @@ import { TodoComponent } from './todo/todo.component';
     UpsertContentModalComponent,
     TodoListControllerComponent,
     PaginationComponent,
+    DataTableControlPanelComponent,
   ],
   templateUrl: './todo-list.component.html',
   styleUrl: './todo-list.component.scss',

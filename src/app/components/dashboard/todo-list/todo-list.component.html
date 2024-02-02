@@ -2,17 +2,14 @@
   <span class="visually-hidden">Loading...</span>
 </div>
 
-<div
-  class="todo-list-top-button"
+<app-data-table-control-panel
   *ngIf="!isLoading && allowedToView([USER_ROLES.Admin, USER_ROLES.SuperAdmin])"
-  app-todo-list-controller
-  [pageState]="pageState"
+  (createRow)="assignTo()"
   [userType]="userType"
-  (assignTask)="assignTo()"
-  (pageStateChange)="onPageChange($event)"
-  [totalPagesCount]="totalPagesCount"
-  [isLoading]="isLoading"
-></div>
+  [createRowLabel]="'Assign Task'"
+  (searchBoxChange)="onPageChange({ search: $event })"
+  [searchBoxPlaceholder]="'Search todos here'"
+></app-data-table-control-panel>
 
 <div class="scroll" *ngIf="!isLoading">
   <table class="table table-hover">
