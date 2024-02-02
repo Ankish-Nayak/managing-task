@@ -213,6 +213,9 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
   onPageChange(pageStateUpdates: Partial<GetEmployeesQueryParams>) {
+    if (pageStateUpdates.take) {
+      this.pageState.index = 0;
+    }
     this.pageState = {
       ...this.pageState,
       ...pageStateUpdates,
