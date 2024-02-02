@@ -48,14 +48,14 @@ export const COLS: TCOLS = [
     notAllowedUsers: ['employee'],
     idName: 'employeeName',
     render: true,
-    canSort: 'pointer',
+    // canSort: 'pointer',
   },
   {
     name: 'AssignedBy',
     notAllowedUsers: ['admin'],
     idName: 'assignBy',
     render: true,
-    canSort: 'pointer',
+    // canSort: 'pointer',
   },
   {
     name: 'Actions',

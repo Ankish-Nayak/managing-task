@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgbPopover, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { ClickedDirective } from '../../../../shared/directives/clicked/clicked.directive';
 import { ICONS } from '../../../../shared/icons/icons';
@@ -23,7 +23,7 @@ import { TCOLS } from '../cols';
   templateUrl: './todo-list-header.component.html',
   styleUrl: './todo-list-header.component.scss',
 })
-export class TodoListHeaderComponent {
+export class TodoListHeaderComponent implements OnInit {
   @Input({ required: true }) cols!: TCOLS;
   @Input({ required: true }) userType!: TEmployee;
   @Input({ required: true }) pageState!: GetTodosQueryParams;
@@ -35,6 +35,13 @@ export class TodoListHeaderComponent {
     name: keyof Todo;
     asc: boolean;
   } | null = null;
+  ngOnInit(): void {
+    if (this.pageState.orderBy.length > 0)
+      this.sortBy = {
+        name: this.pageState.orderBy as keyof Todo,
+        asc: this.pageState.orders === 0 ? true : false,
+      };
+  }
   onClicked(name: string) {
     if (name.includes('|')) {
       // up -> 0 -> means asc

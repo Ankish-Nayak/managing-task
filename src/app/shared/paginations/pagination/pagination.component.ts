@@ -77,7 +77,7 @@ export class PaginationComponent implements OnInit, OnChanges {
     this.span = Math.min(this.viewPages, this.pagesCount);
     this.right = this.span;
     this.renderPages();
-    this.selectedPage = 1;
+    this.selectedPage = Math.min(this.selectedPage, this.pagesCount);
     this.whetherDisableButtons();
   }
   renderPages() {

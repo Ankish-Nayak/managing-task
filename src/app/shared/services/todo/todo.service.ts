@@ -27,6 +27,9 @@ export class TodoService {
   }
   getTodos(queryParams: Partial<IGetTodosQueryParams>) {
     const transformedQueryParams = new GetTodosQueryParams(queryParams);
+    transformedQueryParams.orderBy =
+      transformedQueryParams.orderBy.charAt(0).toUpperCase() +
+      transformedQueryParams.orderBy.substring(1);
     return this.http
       .post<IGetTodosRes>(`${this.apiUrl}/tasks`, transformedQueryParams, {
         headers: this.Headers,
