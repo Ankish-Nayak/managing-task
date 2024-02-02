@@ -60,6 +60,7 @@ export class UpsertProfileComponent
   // returns the query list of FormControlName
   @ViewChildren(FormControlName, { read: ElementRef })
   formInputElements!: ElementRef[];
+  private formInitialValue: any;
   private _hasUnSavedChangesSource = new BehaviorSubject<boolean>(false);
   hasUnSavedChanges$: Observable<boolean> =
     this._hasUnSavedChangesSource.asObservable();
@@ -97,13 +98,15 @@ export class UpsertProfileComponent
       (formControl: ElementRef) => fromEvent(formControl.nativeElement, 'blur'),
     );
     this.profileForm.valueChanges.subscribe(() => {
-      // const value =
-      //   JSON.stringify(this.profile) !== JSON.stringify(this.profileForm.value);
-      // console.log('changed: value', value);
-      // this._hasUnSavedChangesSource.next(
-      //   JSON.stringify(this.profile) !== JSON.stringify(this.profileForm.value),
-      // );
-      this._hasUnSavedChangesSource.next(this.profileForm.dirty);
+      const currentValue = JSON.stringify(this.profileForm.value);
+      console.log(
+        JSON.stringify(this.profile),
+        JSON.stringify(this.profileForm.value),
+      );
+      console.log('same', this.formInitialValue === currentValue);
+      this._hasUnSavedChangesSource.next(
+        this.formInitialValue !== currentValue,
+      );
     });
 
     merge(this.profileForm.valueChanges, ...controlsBlurs)
@@ -146,6 +149,7 @@ export class UpsertProfileComponent
         Validators.required,
       ]),
     });
+    this.formInitialValue = JSON.stringify(this.profileForm.value);
   }
   save() {
     this._hasUnSavedChangesSource.next(false);
