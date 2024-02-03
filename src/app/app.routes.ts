@@ -17,24 +17,17 @@ import { PaginationComponent } from './shared/paginations/pagination/pagination.
 import { END_POINTS, USER_ROLES } from './utils/constants';
 import { UpsertProfileComponent } from './components/dashboard/upsert-profile/upsert-profile.component';
 import { notSavedChangesGuard } from './shared/guards/notSavedChanges/not-saved-changes.guard';
+import { PortalComponent } from './components/portal/portal.component';
 
 // TODO: make a class to get url to particular endpoints and also have push, pop as method in it.
 export const routes: Routes = [
   {
-    component: LoginComponent,
-    path: END_POINTS.login,
-  },
-  {
-    component: SignupComponent,
-    path: END_POINTS.sigup,
-  },
-  {
-    component: DashboardComponent,
-    path: END_POINTS.dashboard,
+    component: PortalComponent,
+    path: END_POINTS.portal,
     canActivate: [authGuard],
     canActivateChild: [authGuard],
     children: [
-      { component: DepartmentListComponent, path: '' },
+      { component: DepartmentListComponent, path: END_POINTS.departmentList },
       {
         component: TodoListComponent,
         path: END_POINTS.todoList,
@@ -106,6 +99,99 @@ export const routes: Routes = [
         canDeactivate: [notSavedChangesGuard],
       },
     ],
+  },
+  {
+    component: DashboardComponent,
+    path: END_POINTS.dashboard,
+    //   canActivate: [authGuard],
+    //   canActivateChild: [authGuard],
+    //   children: [
+    //     { component: DepartmentListComponent, path: END_POINTS.departmentList },
+    //     {
+    //       component: TodoListComponent,
+    //       path: END_POINTS.todoList,
+    //     },
+    //     {
+    //       component: TodoDetailComponent,
+    //       path: END_POINTS.todoDetail,
+    //     },
+    //     {
+    //       component: UpsertTodoComponent,
+    //       path: END_POINTS.createTodo,
+    //       canActivate: [userBasedAuthGuard],
+    //       data: {
+    //         roles: [USER_ROLES.Admin, USER_ROLES.SuperAdmin],
+    //       },
+    //     },
+    //     {
+    //       component: UpsertTodoComponent,
+    //       path: END_POINTS.updateTodo,
+    //       canActivate: [userBasedAuthGuard],
+    //       data: {
+    //         roles: [USER_ROLES.Admin, USER_ROLES.SuperAdmin],
+    //       },
+    //     },
+    //     {
+    //       component: UpsertAdminComponent,
+    //       path: END_POINTS.createAdmin,
+    //       canActivate: [userBasedAuthGuard],
+    //       data: {
+    //         roles: [USER_ROLES.Admin, USER_ROLES.SuperAdmin],
+    //       },
+    //     },
+    //     {
+    //       component: AdminListComponent,
+    //       path: END_POINTS.adminList,
+    //       canActivate: [userBasedAuthGuard],
+    //       data: {
+    //         roles: [USER_ROLES.Admin, USER_ROLES.SuperAdmin],
+    //       },
+    //     },
+    //     {
+    //       component: UpsertAdminComponent,
+    //       path: END_POINTS.updateAdmin,
+    //       canActivate: [userBasedAuthGuard],
+    //       data: {
+    //         roles: [USER_ROLES.Admin, USER_ROLES.SuperAdmin],
+    //       },
+    //     },
+    //     {
+    //       component: EmployeeListComponent,
+    //       path: END_POINTS.employeeList,
+    //       canActivate: [userBasedAuthGuard],
+    //       data: {
+    //         roles: [USER_ROLES.Admin, USER_ROLES.SuperAdmin],
+    //       },
+    //     },
+    //     { component: NotAllowedUserComponent, path: END_POINTS.notAllowedUser },
+    //     {
+    //       component: ProfileComponent,
+    //       path: END_POINTS.profile,
+    //     },
+    //     {
+    //       component: PaginationComponent,
+    //       path: END_POINTS.test,
+    //     },
+    //     {
+    //       component: UpsertProfileComponent,
+    //       path: END_POINTS.upsertProfile,
+    //       canDeactivate: [notSavedChangesGuard],
+    //     },
+    //   ],
+  },
+  {
+    component: LoginComponent,
+    path: END_POINTS.login,
+  },
+  {
+    component: SignupComponent,
+    path: END_POINTS.sigup,
+  },
+  {
+    path: '**',
+    canActivate: [authGuard],
+    component: DashboardComponent,
+    pathMatch: 'full',
   },
   {
     path: '**',

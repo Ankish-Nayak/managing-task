@@ -21,7 +21,7 @@
   (click)="navigate()"
   *ngIf="userAllowedToView('Description')"
 >
-  <p placement="top" ngbTooltip="view in detail" [openDelay]="300">
+  <p placement="top" ngbTooltip="view in detail" [openDelay]="1000">
     {{ getDescription(todo.description) }}
   </p>
 </td>

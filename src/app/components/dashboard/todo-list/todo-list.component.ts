@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  DoCheck,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DataTableControlPanelComponent } from '../../../shared/controlPanels/data-table-control-panel/data-table-control-panel.component';
@@ -44,7 +50,9 @@ import { TodoComponent } from './todo/todo.component';
   templateUrl: './todo-list.component.html',
   styleUrl: './todo-list.component.scss',
 })
-export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
+export class TodoListComponent
+  implements OnInit, AfterViewInit, OnDestroy, DoCheck
+{
   isLoading: boolean = true;
   todoForm!: FormGroup;
   todos!: Todo[];
@@ -93,6 +101,9 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
         this.userType = res;
       }
     });
+  }
+  ngDoCheck(): void {
+    console.log('changed');
   }
   todoFormInit() {
     this.todoForm = new FormGroup({
@@ -241,8 +252,8 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.getTodos;
   }
   allowedToView(allowedUsers: TEmployee[]) {
-    console.log("changed");
-    
+    console.log('changed');
+
     return allowedUsers.includes(this.userType);
   }
   ngOnDestroy(): void {

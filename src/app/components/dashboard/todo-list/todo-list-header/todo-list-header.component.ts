@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { NgbPopover, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
+import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { ClickedDirective } from '../../../../shared/directives/clicked/clicked.directive';
 import { ICONS } from '../../../../shared/icons/icons';
 import { TEmployee } from '../../../../shared/interfaces/employee.type';
@@ -13,13 +13,7 @@ import { TCOLS } from '../cols';
 @Component({
   selector: '[app-todo-list-header]',
   standalone: true,
-  imports: [
-    CommonModule,
-    UserViewColsPipe,
-    ClickedDirective,
-    NgbPopover,
-    NgbTooltip,
-  ],
+  imports: [CommonModule, UserViewColsPipe, ClickedDirective, NgbTooltip],
   templateUrl: './todo-list-header.component.html',
   styleUrl: './todo-list-header.component.scss',
 })
@@ -48,15 +42,34 @@ export class TodoListHeaderComponent implements OnInit {
       // down -> 1 -> means dsc
       const array = name.split('|');
       const colName = array[0] as keyof Todo;
-      this.sortBy = {
-        name: colName,
-        asc: array.includes('up'),
-      };
+      if (
+        this.sortBy &&
+        this.sortBy.name === colName &&
+        ((this.sortBy.asc && array.includes('up')) ||
+          (!this.sortBy.asc && array.includes('down')))
+      ) {
+        console.log('has to toggle it');
+        this.sortBy = null;
+      } else {
+        this.sortBy = {
+          name: colName,
+          asc: array.includes('up'),
+        };
+      }
+
       console.log(this.sortBy);
-      this.pageStateChange.emit({
-        orderBy: colName,
-        orders: array.includes('up') ? 0 : 1,
-      });
+      if (this.sortBy)
+        this.pageStateChange.emit({
+          orderBy: this.sortBy.name,
+          // orders: array.includes('up') ? 0 : 1,
+          orders: this.sortBy.asc ? 0 : 1,
+        });
+      else {
+        this.pageStateChange.emit({
+          orderBy: '',
+          orders: 0,
+        });
+      }
     } else {
       this.clicked.emit(name as keyof Todo);
     }

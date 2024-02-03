@@ -8,7 +8,7 @@ export const END_POINTS = {
   dashboard: 'dashboard',
   login: '',
   sigup: 'signup',
-  departmentList: '',
+  departmentList: 'departments',
   todoList: 'todos',
   createTodo: 'create-todo',
   createAdmin: 'create-admin',
@@ -21,6 +21,7 @@ export const END_POINTS = {
   profile: 'profile',
   test: 'test',
   upsertProfile: 'upsert-profile',
+  portal: 'portal',
 };
 
 // 0 -> means employee
