@@ -22,7 +22,6 @@
     <li [class]="leftDisabled ? 'page-item disabled' : 'page-item'">
       <a
         class="page-link"
-        href="#"
         aria-label="Previous"
         (click)="onPrev($event)"
       >
@@ -31,7 +30,6 @@
     </li>
     <li *ngFor="let page of pages" class="page-item">
       <a
-        href=""
         [class]="selectedPage === page ? 'page-link active' : 'page-link'"
         (click)="onSelectPage($event, page)"
       >
@@ -39,7 +37,7 @@
       </a>
     </li>
     <li [class]="rightDisabled ? 'page-item disabled' : 'page-item'">
-      <a class="page-link" href="#" aria-label="Next" (click)="onNext($event)">
+      <a class="page-link"  aria-label="Next" (click)="onNext($event)">
         <span aria-hidden="true">&raquo;</span>
       </a>
     </li>

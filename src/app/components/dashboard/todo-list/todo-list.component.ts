@@ -241,6 +241,8 @@ export class TodoListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.getTodos;
   }
   allowedToView(allowedUsers: TEmployee[]) {
+    console.log("changed");
+    
     return allowedUsers.includes(this.userType);
   }
   ngOnDestroy(): void {

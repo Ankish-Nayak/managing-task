@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  DoCheck,
   EventEmitter,
   Input,
   OnChanges,
@@ -17,7 +18,11 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './pagination.component.html',
   styleUrl: './pagination.component.scss',
 })
-export class PaginationComponent implements OnInit, OnChanges {
+export class PaginationComponent implements OnInit, OnChanges,DoCheck {
+  ngDoCheck(): void {
+    console.log("changed");
+    
+  }
   @Output() selectedPageChange: EventEmitter<number> =
     new EventEmitter<number>();
   @Input({ required: true }) collectionSize!: number;
@@ -87,7 +92,7 @@ export class PaginationComponent implements OnInit, OnChanges {
     }
   }
   onNext(e: MouseEvent) {
-    e.preventDefault();
+    // e.preventDefault();
     if (!this.rightDisabled) {
       if (this.selectedPage === this.right) {
         this.left = this.right + 1;
@@ -140,4 +145,5 @@ export class PaginationComponent implements OnInit, OnChanges {
       this.rightDisabled = false;
     }
   }
+
 }
