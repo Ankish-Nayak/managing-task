@@ -248,6 +248,7 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
           new Department(
             this.employee.departmentID,
             this.employee.departmentName,
+            0,
           ),
         );
         console.log(this.departments);
@@ -277,7 +278,7 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
       } else {
         const departmentName = this.departments.find(
           (d) => d.id.toString() === this.signupForm.value.departmentID,
-        )?.name;
+        )?.departmentName;
         const data: IUpdateEmpoyee = {
           ...this.signupForm.value,
           id: this.id,

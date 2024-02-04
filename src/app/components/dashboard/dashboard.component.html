@@ -2,11 +2,14 @@
 <div
   class="dashboard-body d-flex justify-content-around flex-row align-items-center container-fluid"
 >
-  <app-dashboard-detail-card
-    *ngFor="let card of cards"
-    [count]="card.count"
-    [description]="card.description"
-    [title]="card.title"
-    [cardLinks]="card.cardLinks"
-  ></app-dashboard-detail-card>
+  <app-spinner *ngIf="isLoading"></app-spinner>
+  <ng-container *ngIf="!isLoading">
+    <app-dashboard-detail-card
+      *ngFor="let card of cards"
+      [count]="card.count"
+      [description]="card.description"
+      [title]="card.title"
+      [cardLinks]="card.cardLinks"
+    ></app-dashboard-detail-card>
+  </ng-container>
 </div>

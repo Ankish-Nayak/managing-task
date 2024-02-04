@@ -1,6 +1,7 @@
 export interface IDepartment {
   id: number;
   departmentName: string;
+  employeesCount: number;
 }
 
 export interface IGetDepartmentRes {

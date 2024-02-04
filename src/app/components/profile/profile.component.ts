@@ -165,7 +165,9 @@ export class ProfileComponent implements OnInit {
 
   getDepartments() {
     this.departmentService.getDepartments().subscribe((res) => {
-      this.departments = res.map((d) => new Department(d.id, d.departmentName));
+      this.departments = res.map(
+        (d) => new Department(d.id, d.departmentName, d.employeesCount),
+      );
     });
   }
   onSubmit(e: SubmitEvent) {

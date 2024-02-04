@@ -6,18 +6,19 @@ import {
   RouterLink,
   RouterLinkActive,
 } from '@angular/router';
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { TEmployee } from '../../../shared/interfaces/employee.type';
 import { UserViewNavLinksPipe } from '../../../shared/pipes/user-view-nav-links/user-view-nav-links.pipe';
 import { ActiveEndpointService } from '../../../shared/services/activeEndpoint/active-endpoint.service';
 import { AuthService } from '../../../shared/services/auth/auth.service';
+import { END_POINTS } from '../../../utils/constants';
+import { getActiveEndpoint } from '../../../utils/getActiveEndpoint';
 import {
   NAV_LINKS,
   PROFILE_LINKS,
   TNavLinks,
   TProfileLinks,
 } from './navBarLinks';
-import { END_POINTS } from '../../../utils/constants';
-import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-navbar',
@@ -37,10 +38,19 @@ export class NavbarComponent implements OnInit {
   profileLinks: TProfileLinks = PROFILE_LINKS;
   userType!: TEmployee;
   readonly END_POINTS = END_POINTS;
+  activeEndPoint!: string;
+
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private authService: AuthService,
+    private activeEndpoint: ActiveEndpointService,
+  ) {}
   ngOnInit(): void {
+    this.activeEndPoint = getActiveEndpoint(this.route);
     this.getEmployeeType();
     this.route.data.subscribe(() => {
-      console.log(this.getActiveEndpoint());
+      console.log(getActiveEndpoint(this.route));
     });
     this.activeEndpoint.activeEndpointMessage$.subscribe((endPoint) => {
       this.updateNavLinks(endPoint);
@@ -60,12 +70,6 @@ export class NavbarComponent implements OnInit {
     });
     console.log(this.navLinks);
   }
-  getCurrentPath() {
-    return this.router.url;
-  }
-  processPath(path: string) {
-    return `./${path}`;
-  }
   processClass(id: number) {
     let style = 'nav-link';
     const navLink = this.navLinks.at(id);
@@ -76,30 +80,6 @@ export class NavbarComponent implements OnInit {
       style = style + ' active';
     }
     return style;
-  }
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private authService: AuthService,
-    private activeEndpoint: ActiveEndpointService,
-  ) {}
-
-  getActiveEndpoint() {
-    // Get the current activated route
-    let currentRoute = this.route;
-    while (currentRoute.firstChild) {
-      currentRoute = currentRoute.firstChild;
-    }
-
-    // Get the URL segments of the activated route
-    const urlSegments = currentRoute.snapshot.url.map(
-      (segment) => segment.path,
-    );
-    console.log(urlSegments);
-
-    // Determine the active endpoint based on the URL segments
-    const activeEndpoint = '/' + urlSegments.join('/');
-    return `.${activeEndpoint}`;
   }
   getEmployeeType() {
     this.authService.userTypeMessage$.subscribe((res) => {

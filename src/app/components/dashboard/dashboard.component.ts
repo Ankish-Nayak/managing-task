@@ -6,6 +6,7 @@ import { TodoService } from '../../shared/services/todo/todo.service';
 import { END_POINTS } from '../../utils/constants';
 import { DashboardDetailCardComponent } from './dashboard-detail-card/dashboard-detail-card.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { SpinnerComponent } from '../../shared/spinners/spinner/spinner.component';
 //TODO: make user based rendering of dashboard component
 
 interface ICard {
@@ -22,12 +23,15 @@ interface ICard {
     NavbarComponent,
     DashboardDetailCardComponent,
     CommonModule,
+    SpinnerComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent implements OnInit {
+  isLoading: boolean = true;
   cards: ICard[] = [];
+  requestCount = 3;
   constructor(
     private employeeService: EmployeeService,
     private todoService: TodoService,
@@ -53,6 +57,7 @@ export class DashboardComponent implements OnInit {
           },
         ],
       });
+      this.onRequestComplete();
     });
   }
   getTodosDetails() {
@@ -66,8 +71,14 @@ export class DashboardComponent implements OnInit {
             label: 'View todos',
             endPoint: `${END_POINTS.portal}/${END_POINTS.todoList}`,
           },
+          {
+            label: 'Create todos',
+            endPoint: `${END_POINTS.portal}/${END_POINTS.createTodo}`,
+          },
         ],
       });
+
+      this.onRequestComplete();
     });
   }
   getAdminsDetails() {
@@ -83,6 +94,14 @@ export class DashboardComponent implements OnInit {
           },
         ],
       });
+
+      this.onRequestComplete();
     });
+  }
+  onRequestComplete() {
+    this.requestCount--;
+    if (this.requestCount === 0) {
+      this.isLoading = false;
+    }
   }
 }

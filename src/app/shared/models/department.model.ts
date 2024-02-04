@@ -3,12 +3,14 @@ import { Injectable } from '@angular/core';
 import { Adapter } from './adapter';
 import { IDepartment } from '../interfaces/requests/department.interface';
 
-export class Department {
+export class Department implements IDepartment {
   id: number;
-  name: string;
-  constructor(id: number, name: string) {
+  departmentName: string;
+  employeesCount: number;
+  constructor(id: number, name: string, employeesCount: number) {
     this.id = id;
-    this.name = name;
+    this.departmentName = name;
+    this.employeesCount = employeesCount;
   }
 }
 
@@ -17,7 +19,11 @@ export class Department {
 })
 export class DepartmentAdapter implements Adapter<Department> {
   adapt(department: IDepartment) {
-    return new Department(department.id, department.departmentName);
+    return new Department(
+      department.id,
+      department.departmentName,
+      department.employeesCount,
+    );
   }
   adaptArray(departments: IDepartment[]) {
     return departments.map((department) => this.adapt(department));

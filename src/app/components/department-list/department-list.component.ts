@@ -167,7 +167,7 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
       (res) => {
         this.isLoading = false;
         this.departments = res.map(
-          (d) => new Department(d.id, d.departmentName),
+          (d) => new Department(d.id, d.departmentName, d.employeesCount),
         );
         console.log(res);
       },

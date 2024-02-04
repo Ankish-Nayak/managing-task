@@ -2,11 +2,34 @@
   <div class="spinner-border" role="status" *ngIf="isLoading">
     <span class="visually-hidden">Loading...</span>
   </div>
+  <div
+    class="create-department d-flex justify-content-between align-items-center container-fluid"
+    *ngIf="userType === USER_ROLES.SuperAdmin && !isLoading"
+  >
+    <form [formGroup]="departmentForm">
+      <div class="form-group">
+        <input
+          type="text"
+          formControlName="departmentName"
+          [class]="validProperty('departmentName')"
+          id="departmentName"
+          placeholder="Enter department name"
+        />
+        <div class="invalid-feedback">
+          {{ displayFeedback.departmentName }}
+        </div>
+      </div>
+    </form>
+    <button class="btn btn-primary btn-sm" (click)="createDepartment()">
+      Add Department
+    </button>
+  </div>
   <table class="table table-hover" *ngIf="!isLoading">
     <thead>
       <tr>
         <th scope="col">Sno</th>
         <th scope="col">Department</th>
+        <th scope="col">Employees</th>
         <th
           scope="col"
           *ngIf="allowedToView([USER_ROLES.SuperAdmin], userType)"
@@ -16,34 +39,6 @@
       </tr>
     </thead>
     <tbody>
-      <tr
-        class="create-department"
-        *ngIf="allowedToView([USER_ROLES.SuperAdmin], userType)"
-      >
-        <th scope="row">{{ departments.length + 1 }}</th>
-        <td>
-          <form [formGroup]="departmentForm">
-            <div class="form-group">
-              <input
-                type="text"
-                formControlName="departmentName"
-                [class]="validProperty('departmentName')"
-                id="departmentName"
-                placeholder="Enter department name"
-              />
-              <div class="invalid-feedback">
-                {{ displayFeedback.departmentName }}
-              </div>
-            </div>
-          </form>
-        </td>
-        <td>
-          <button class="btn btn-primary btn-sm" (click)="createDepartment()">
-            Add Department
-          </button>
-        </td>
-      </tr>
-
       <tr
         *ngFor="let department of departments; let i = index"
         app-department
