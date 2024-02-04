@@ -36,6 +36,7 @@ export class NavbarComponent implements OnInit {
   navLinks: TNavLinks = NAV_LINKS;
   profileLinks: TProfileLinks = PROFILE_LINKS;
   userType!: TEmployee;
+  readonly END_POINTS = END_POINTS;
   ngOnInit(): void {
     this.getEmployeeType();
     this.route.data.subscribe(() => {
