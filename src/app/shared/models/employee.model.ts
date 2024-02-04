@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { IEmployee } from '../interfaces/requests/employee.interface';
 import { Adapter } from './adapter';
 
-export class Employee {
+export class Employee implements IEmployee {
   id: number;
   name: string;
   email: string;
@@ -13,6 +13,8 @@ export class Employee {
   phone: string;
   departmentID: number;
   departmentName: string;
+  createdAt: string;
+  updatedAt: string;
 
   constructor(
     id: number,
@@ -25,6 +27,8 @@ export class Employee {
     phone: string,
     departmentID: number,
     departmentName: string,
+    createdAt: string,
+    updatedAt: string,
   ) {
     this.id = id;
     this.name = name;
@@ -36,6 +40,8 @@ export class Employee {
     this.phone = phone;
     this.departmentID = departmentID;
     this.departmentName = departmentName;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
   }
 }
 
@@ -55,6 +61,8 @@ export class EmployeeAdapter implements Adapter<Employee> {
       item.phone,
       item.departmentID,
       item.departmentName,
+      item.createdAt,
+      item.updatedAt,
     );
   }
 

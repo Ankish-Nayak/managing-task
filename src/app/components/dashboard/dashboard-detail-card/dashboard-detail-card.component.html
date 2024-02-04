@@ -1,0 +1,15 @@
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">{{ title }}</h5>
+    <h6 class="card-subtitle text-muted">
+      {{ description }}
+    </h6>
+    <p class="card-text">{{ title }} Count: {{ count }}</p>
+    <a
+      class="card-link"
+      *ngFor="let cardlink of cardLinks"
+      [href]="cardlink.endPoint"
+      >{{ cardlink.label }}</a
+    >
+  </div>
+</div>

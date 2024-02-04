@@ -39,7 +39,7 @@ type IPropertyName =
 })
 export class ProfileComponent implements OnInit {
   isLoading: boolean = true;
-  profile: Employee = new Employee(0, '', '', 0, '', '', '', '', 0, '');
+  profile: Employee = new Employee(0, '', '', 0, '', '', '', '', 0, '', '', '');
   updateProfileForm!: FormGroup;
   // returns the query list of FormControlName
   @ViewChildren(FormControlName, { read: ElementRef })
@@ -193,6 +193,8 @@ export class ProfileComponent implements OnInit {
       city,
       employeeType,
       email,
+      createdAt: '', // incapablitly of backend dev
+      updatedAt: '', // incapablitly of backend dev
       id: this.profile.id,
     };
 

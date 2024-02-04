@@ -3,6 +3,7 @@ export interface IGetEmployees {
   message: string;
   statusCode: number;
   iterableData: IEmployee[];
+  count: number;
 }
 
 export interface IEmployee {
@@ -16,6 +17,8 @@ export interface IEmployee {
   phone: string;
   departmentID: number;
   departmentName: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface IUpdateEmpoyee {

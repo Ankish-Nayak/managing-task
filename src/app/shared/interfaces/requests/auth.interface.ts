@@ -1,3 +1,4 @@
+import { IEmployee } from './employee.interface';
 export interface IGetProfile {
   status: string;
   message: string;
@@ -5,15 +6,15 @@ export interface IGetProfile {
   data: IEmployee;
 }
 
-interface IEmployee {
-  id: number;
-  name: string;
-  email: string;
-  employeeType: number;
-  address: string;
-  city: string;
-  country: string;
-  phone: string;
-  departmentID: number;
-  departmentName: string;
-}
+// interface IEmployee {
+//   id: number;
+//   name: string;
+//   email: string;
+//   employeeType: number;
+//   address: string;
+//   city: string;
+//   country: string;
+//   phone: string;
+//   departmentID: number;
+//   departmentName: string;
+// }

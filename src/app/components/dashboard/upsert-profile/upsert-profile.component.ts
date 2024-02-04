@@ -55,7 +55,7 @@ export class UpsertProfileComponent
   implements OnInit, AfterViewInit, BlockNavigationIfChange
 {
   isLoading: boolean = false;
-  profile: Employee = new Employee(0, '', '', 0, '', '', '', '', 0, '');
+  profile: Employee = new Employee(0, '', '', 0, '', '', '', '', 0, '', '', '');
   profileForm!: FormGroup;
   // returns the query list of FormControlName
   @ViewChildren(FormControlName, { read: ElementRef })
@@ -179,6 +179,8 @@ export class UpsertProfileComponent
       city,
       employeeType,
       email,
+      createdAt: '', // incapability of backend develper
+      updatedAt: '', // incapability of backend develper
       id: this.profile.id,
     };
 

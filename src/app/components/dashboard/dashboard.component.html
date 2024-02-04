@@ -1,2 +1,12 @@
 <app-navbar></app-navbar>
-<div class="dashboard-body"></div>
+<div
+  class="dashboard-body d-flex justify-content-around flex-row align-items-center container-fluid"
+>
+  <app-dashboard-detail-card
+    *ngFor="let card of cards"
+    [count]="card.count"
+    [description]="card.description"
+    [title]="card.title"
+    [cardLinks]="card.cardLinks"
+  ></app-dashboard-detail-card>
+</div>
