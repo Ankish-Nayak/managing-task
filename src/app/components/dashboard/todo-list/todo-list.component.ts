@@ -35,7 +35,7 @@ import { COLS, TCOLS } from './cols';
 import { TodoListHeaderComponent } from './todo-list-header/todo-list-header.component';
 import { TodoComponent } from './todo/todo.component';
 
-enum TodoTab {
+export enum TodoTab {
   All = 'All',
   Completed = 'Completed',
   Pending = 'Active',
@@ -114,6 +114,7 @@ export class TodoListComponent
         return TodoTab.Pending;
       }
     })();
+    this.processCols();
   }
   getUserType() {
     this.authService.userTypeMessage$.subscribe((res) => {
@@ -162,8 +163,7 @@ export class TodoListComponent
     ref.componentInstance.id = id;
     ref.componentInstance.update = true;
     ref.componentInstance.componentName = COMPONENT_NAME.TODO_DETAIL_COMPONENT;
-    ref.closed.subscribe((res) => {
-      console.log(res);
+    ref.closed.subscribe(() => {
       this.getTodos();
     });
   }
@@ -175,12 +175,10 @@ export class TodoListComponent
     ref.componentInstance.update = true;
     ref.componentInstance.id = id;
     ref.componentInstance.componentName = COMPONENT_NAME.UPSERT_TODO_COMPONENT;
-    ref.closed.subscribe((res) => {
-      console.log(res);
+    ref.closed.subscribe(() => {
       this.getTodos();
     });
-    ref.dismissed.subscribe((res) => {
-      console.log(res);
+    ref.dismissed.subscribe(() => {
       this.toastService.show(
         'Task Updation',
         'Task updation was cancelled',
@@ -222,12 +220,10 @@ export class TodoListComponent
         ref.componentInstance.update = false;
         ref.componentInstance.componentName =
           COMPONENT_NAME.UPSERT_TODO_COMPONENT;
-        ref.closed.subscribe((res) => {
-          console.log(res);
+        ref.closed.subscribe(() => {
           this.getTodos();
         });
-        ref.dismissed.subscribe((res) => {
-          console.log(res);
+        ref.dismissed.subscribe(() => {
           this.toastService.show(
             'Assign Task',
             'Task assignment was cancelled',
@@ -290,6 +286,25 @@ export class TodoListComponent
         }
       })(),
     };
+
+    this.processCols();
     this.onPageChange(this.pageState);
+  }
+  processCols() {
+    if (this.todoTab !== TodoTab.All) {
+      this.cols = this.cols.map((col) => {
+        if (col.name === 'IsCompleted') {
+          col.render = false;
+        }
+        return col;
+      });
+    } else {
+      this.cols = this.cols.map((col) => {
+        if (col.name === 'IsCompleted') {
+          col.render = true;
+        }
+        return col;
+      });
+    }
   }
 }

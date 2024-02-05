@@ -46,6 +46,7 @@
         (navigateTo)="navigateTo($event)"
         [userType]="userType"
         [isLoading]="isLoading"
+        [todoTab]="todoTab"
       ></tr>
       <tr *ngIf="!(todos && todos.length !== 0)">
         <th [colSpan]="7">"Nothing Here"</th>

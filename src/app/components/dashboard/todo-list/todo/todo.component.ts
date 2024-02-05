@@ -18,6 +18,7 @@ import { ToastService } from '../../../../shared/services/toast/toast.service';
 import { TodoService } from '../../../../shared/services/todo/todo.service';
 import { UserRole } from '../../../../utils/constants';
 import { COLS, TCOLS, TcolsName } from '../cols';
+import { TodoTab } from '../todo-list.component';
 
 @Component({
   selector: '[app-todo]',
@@ -41,6 +42,8 @@ export class TodoComponent implements OnInit {
   @Output() navigateTo = new EventEmitter<number>();
   @Input({ required: true }) userType!: TEmployee;
   @Input({ required: true }) isLoading!: boolean;
+  @Input({ required: true }) todoTab!: TodoTab;
+  readonly TodoTab = TodoTab;
   highlight: { edit: boolean; delete: boolean } = {
     edit: false,
     delete: false,

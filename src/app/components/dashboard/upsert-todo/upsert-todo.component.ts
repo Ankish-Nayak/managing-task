@@ -59,6 +59,7 @@ export class UpsertTodoComponent {
   cardBodyHeader: string[] = ['card-body-header'];
   employees!: Employee[];
 
+  employeeId: number | undefined;
   @Input({ required: true }) updateForm!: boolean;
   @Output() updated: EventEmitter<boolean> = new EventEmitter<boolean>();
   // updateForm: boolean = false;
@@ -121,9 +122,11 @@ export class UpsertTodoComponent {
     this.getEmployees();
     this.todoFormInit();
     this.route.paramMap.subscribe((params) => {
-      const id = params.get('id');
+      const id = params.get('employeeId');
       if (id !== null) {
         this.todoForm.patchValue({ employeeId: id });
+        this.employeeId = Number(id);
+        this.todoForm.get('employeeId')?.disable();
       }
     });
   }
@@ -181,6 +184,9 @@ export class UpsertTodoComponent {
         this.todoService.createTodo(data).subscribe(
           () => {
             // this.router.navigate(['../todos'], { relativeTo: this.route });
+            if (this.employeeId) {
+              this.router.navigate(['../'], { relativeTo: this.route });
+            }
             this.updated.emit(true);
             this.toastService.show(
               'Todo',

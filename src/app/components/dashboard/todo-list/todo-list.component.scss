@@ -4,8 +4,8 @@
   text-align: center;
 }
 .scroll {
-  overflow-y: scroll;
-  height: 600px;
+  overflow-y: auto;
+  max-height: 600px;
 }
 .assign-task {
   position: sticky;

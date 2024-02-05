@@ -28,7 +28,7 @@
 <td
   class="todo-isCompeleted pointer"
   (click)="navigate()"
-  *ngIf="userAllowedToView('IsCompleted')"
+  *ngIf="userAllowedToView('IsCompleted') && todoTab === TodoTab.All"
 >
   {{ todo.isCompleted }}
 </td>

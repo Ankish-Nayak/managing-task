@@ -23,7 +23,7 @@ export const END_POINTS = {
   upsertProfile: 'upsert-profile',
   portal: 'portal',
   employeesByDepartment: 'employees-by-department/:id',
-  assignTask: 'assign-task/:id',
+  assignTask: 'assign-task/:employeeId',
 };
 
 // 0 -> means employee

@@ -8,10 +8,14 @@ import { TEmployee } from '../../interfaces/employee.type';
 })
 export class UserViewColsPipe implements PipeTransform {
   transform(cols: TCOLS, userType: TEmployee): TCOLS {
-    return cols.filter(
-      (col) =>
+    return cols.filter((col) => {
+      if (!col.render) {
+        return false;
+      }
+      return (
         col.notAllowedUsers === null ||
-        (col.notAllowedUsers && !col.notAllowedUsers.includes(userType)),
-    );
+        (col.notAllowedUsers && !col.notAllowedUsers.includes(userType))
+      );
+    });
   }
 }

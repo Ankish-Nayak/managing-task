@@ -9,12 +9,9 @@ export const userBasedAuthGuard: CanActivateFn = (route) => {
   const authService = inject(AuthService);
   const allowedRoles = route.data['roles'] as Array<TEmployee>;
   const router = inject(Router);
-  console.log(allowedRoles);
   return authService.userTypeMessage$.pipe(
     map((res) => {
-      console.log(res);
       if (res !== null && allowedRoles.includes(res)) {
-        console.log('yes');
         return true;
       } else {
         router.navigate(['dashboard', END_POINTS.notAllowedUser]);
