@@ -102,9 +102,9 @@ export const routes: Routes = [
         path: END_POINTS.test,
       },
       {
-        component: UpsertProfileComponent,
+        component: ProfileComponent,
         path: END_POINTS.upsertProfile,
-        canDeactivate: [notSavedChangesGuard],
+        // canDeactivate: [notSavedChangesGuard],
       },
     ],
   },

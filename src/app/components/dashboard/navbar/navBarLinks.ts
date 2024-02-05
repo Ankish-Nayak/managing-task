@@ -42,7 +42,7 @@ export type TProfileLinks = {
 
 export const PROFILE_LINKS: TProfileLinks = [
   { name: 'profile' },
-  { name: 'updateProfile' },
+  // { name: 'updateProfile' },
   {
     name: 'logout',
   },
