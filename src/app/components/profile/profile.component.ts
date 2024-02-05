@@ -9,8 +9,17 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import {
+  BehaviorSubject,
+  Observable,
+  debounceTime,
+  fromEvent,
+  merge,
+} from 'rxjs';
+import { BlockNavigationIfChange } from '../../shared/interfaces/hasChanges/BlockNavigationIfChange';
 import { IEmployee } from '../../shared/interfaces/requests/employee.interface';
+import { SaveChangesModalComponent } from '../../shared/modals/save-changes-modal/save-changes-modal.component';
 import { Department } from '../../shared/models/department.model';
 import { Employee } from '../../shared/models/employee.model';
 import { AuthService } from '../../shared/services/auth/auth.service';
@@ -37,13 +46,20 @@ type IPropertyName =
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, BlockNavigationIfChange {
   isLoading: boolean = true;
   profile: Employee = new Employee(0, '', '', 0, '', '', '', '', 0, '', '', '');
   updateProfileForm!: FormGroup;
   // returns the query list of FormControlName
   @ViewChildren(FormControlName, { read: ElementRef })
   formInputElements!: ElementRef[];
+
+  formInitailValue!: string;
+
+  private _hasUnSavedChangesSource = new BehaviorSubject<boolean>(false);
+
+  hasUnSavedChanges$: Observable<boolean> =
+    this._hasUnSavedChangesSource.asObservable();
 
   displayFeedback: { [key in IPropertyName]?: string } = {};
   employees: { name: string; value: number }[] = [
@@ -62,9 +78,8 @@ export class ProfileComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private router: Router,
     private departmentService: DepartmentService,
-    private route: ActivatedRoute,
+    private modalService: NgbModal,
   ) {
     // defining validation messages here.
     this.validatioMessages = UPDATE_PROFILE_VALIDAION_MESSAGES;
@@ -92,6 +107,13 @@ export class ProfileComponent implements OnInit {
       (formControl: ElementRef) => fromEvent(formControl.nativeElement, 'blur'),
     );
 
+    this.updateProfileForm.valueChanges.subscribe(() => {
+      const currentValue = JSON.stringify(this.updateProfileForm.value);
+      this._hasUnSavedChangesSource.next(
+        this.formInitailValue !== currentValue,
+      );
+    });
+
     merge(this.updateProfileForm.valueChanges, ...controlsBlurs)
       .pipe(debounceTime(800))
       .subscribe(() => {
@@ -102,6 +124,13 @@ export class ProfileComponent implements OnInit {
   }
   disabling(propertyName: IPropertyName) {
     this.updateProfileForm.get(propertyName)?.disable();
+  }
+  enableAllowedField(fields: IPropertyName[]) {
+    fields.forEach((field) => {
+      if (this.updateProfileForm.get(field)?.disabled) {
+        this.updateProfileForm.get(field)?.enable();
+      }
+    });
   }
   toggleForm() {
     if (!this.updateProfileForm.disabled) {
@@ -119,7 +148,9 @@ export class ProfileComponent implements OnInit {
       this.cardBodyHeader.push('visible');
       this.updatingProfile = true;
       console.log(this.cardBodyHeader);
-      this.updateProfileForm.enable();
+
+      this.enableAllowedField(['phone', 'city', 'country', 'address']);
+      // this.updateProfileForm.enable();
     }
     console.log(this.updatingProfile);
   }
@@ -152,6 +183,7 @@ export class ProfileComponent implements OnInit {
         Validators.required,
       ]),
     });
+    this.formInitailValue = JSON.stringify(this.updateProfileForm.value);
   }
   edit() {
     if (!this.updatingProfile) {
@@ -174,36 +206,21 @@ export class ProfileComponent implements OnInit {
     e.preventDefault();
     // Mark all form as touched to trigger validation messages
     this.markAsTouchedAndDirty();
-    const {
-      name,
-      email,
-      address,
-      country,
-      phone,
-      departmentID,
-      city,
-      employeeType,
-      departmentName,
-    } = this.updateProfileForm.value;
+    const { address, country, phone, city } = this.updateProfileForm.value;
     const data: IEmployee = {
-      name,
+      ...this.profile,
       address,
+      city,
       country,
       phone,
-      departmentID,
-      departmentName,
-      city,
-      employeeType,
-      email,
-      createdAt: '', // incapablitly of backend dev
-      updatedAt: '', // incapablitly of backend dev
-      id: this.profile.id,
     };
 
     if (this.updateProfileForm.valid) {
       console.log('inputs: ', data);
       this.authService.updateProfile(this.profile.id, data).subscribe((res) => {
+        this._hasUnSavedChangesSource.next(false);
         console.log(res);
+        this.toggleForm();
       });
     }
   }
@@ -232,6 +249,11 @@ export class ProfileComponent implements OnInit {
         control.markAsDirty();
       }
     });
+  }
+
+  canDeactivate() {
+    const ref = this.modalService.open(SaveChangesModalComponent);
+    return ref.closed;
   }
   cancel() {
     this.toggleForm();
