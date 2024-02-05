@@ -83,4 +83,11 @@ export const ICONS = {
     name: 'eye',
     closeDelay: 500,
   },
+  assignTask: {
+    class: 'bi bi-person-workspace',
+    name: 'assignTask',
+    toolTip: 'Assign Task',
+    openDelay: 1000,
+    closeDelay: 500,
+  },
 };

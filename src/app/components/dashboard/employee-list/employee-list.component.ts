@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HighlightDirective } from '../../../shared/directives/highlight/highlight.directive';
 import { ICONS } from '../../../shared/icons/icons';
 import { GetEmployeesQueryParams } from '../../../shared/interfaces/requests/employee.interface';
@@ -12,6 +12,7 @@ import {
 import { EmployeeService } from '../../../shared/services/employee/employee.service';
 import { EmployeeListHeaderComponent } from './employee-list-header/employee-list-header.component';
 import { EmployeeComponent } from './employee/employee.component';
+import { END_POINTS } from '../../../utils/constants';
 
 //TODO: add placeholder on every small element which exists like employee todo and alll to make this
 //much better
@@ -39,6 +40,7 @@ export class EmployeeListComponent implements OnInit {
     private employeeService: EmployeeService,
     private employeeAdapter: EmployeeAdapter,
     private route: ActivatedRoute,
+    private router: Router,
   ) {}
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
@@ -89,5 +91,8 @@ export class EmployeeListComponent implements OnInit {
       .subscribe((res) => {
         this.employees = res.iterableData;
       });
+  }
+  onAssignTask(id: number) {
+    this.router.navigate([`../assign-task/${id}`], { relativeTo: this.route });
   }
 }

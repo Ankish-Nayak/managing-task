@@ -105,12 +105,16 @@
           </div>
         </div>
         <div class="button-container">
+          <button type="submit" *ngIf="updatingProfile" class="btn btn-primary">
+            submit
+          </button>
           <button
-            [type]="updatingProfile ? 'submit' : 'button'"
+            *ngIf="!updatingProfile"
+            [type]="'button'"
             class="btn btn-primary"
             (click)="edit()"
           >
-            {{ updatingProfile ? "submit" : "edit" }}
+            edit
           </button>
         </div>
       </form>

@@ -17,6 +17,7 @@ export class EmployeeComponent {
   @Output() updateEmployee = new EventEmitter<number>();
   @Output() deleteEmployee = new EventEmitter<number>();
   @Output() viewEmployeeByDepartment = new EventEmitter<number>();
+  @Output() assignTask = new EventEmitter<number>();
   highlight: {
     eye: boolean;
     delete: boolean;
@@ -42,5 +43,8 @@ export class EmployeeComponent {
   onViewEmployeeByDepartment() {
     this.viewEmployeeByDepartment.emit(this.employee.id);
     console.log(this.employee.id);
+  }
+  assinTask() {
+    this.assignTask.emit(this.employee.id);
   }
 }

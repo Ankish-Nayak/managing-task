@@ -106,6 +106,10 @@ export const routes: Routes = [
         path: END_POINTS.upsertProfile,
         canDeactivate: [notSavedChangesGuard],
       },
+      {
+        component: UpsertTodoComponent,
+        path: END_POINTS.assignTask,
+      },
     ],
   },
   {

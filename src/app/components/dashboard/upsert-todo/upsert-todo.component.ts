@@ -120,6 +120,12 @@ export class UpsertTodoComponent {
 
     this.getEmployees();
     this.todoFormInit();
+    this.route.paramMap.subscribe((params) => {
+      const id = params.get('id');
+      if (id !== null) {
+        this.todoForm.patchValue({ employeeId: id });
+      }
+    });
   }
 
   onSubmit() {
