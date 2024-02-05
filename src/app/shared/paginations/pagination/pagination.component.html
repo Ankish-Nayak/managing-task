@@ -21,7 +21,7 @@
   <ul class="pagination">
     <li [class]="leftDisabled ? 'page-item disabled' : 'page-item'">
       <a
-        class="page-link"
+        class="page-link pointer"
         aria-label="Previous"
         (click)="onPrev($event)"
       >
@@ -30,14 +30,18 @@
     </li>
     <li *ngFor="let page of pages" class="page-item">
       <a
-        [class]="selectedPage === page ? 'page-link active' : 'page-link'"
+        [class]="
+          selectedPage === page
+            ? 'page-link pointer active'
+            : 'page-link pointer'
+        "
         (click)="onSelectPage($event, page)"
       >
         {{ page }}
       </a>
     </li>
     <li [class]="rightDisabled ? 'page-item disabled' : 'page-item'">
-      <a class="page-link"  aria-label="Next" (click)="onNext($event)">
+      <a class="page-link pointer" aria-label="Next" (click)="onNext($event)">
         <span aria-hidden="true">&raquo;</span>
       </a>
     </li>

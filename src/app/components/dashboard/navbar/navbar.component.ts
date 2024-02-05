@@ -97,7 +97,7 @@ export class NavbarComponent implements OnInit {
         //   `${END_POINTS.dashboard}/${END_POINTS.profile}`,
         // );
         this.router.navigateByUrl(
-          `${END_POINTS.dashboard}/${END_POINTS.upsertProfile}`,
+          `${END_POINTS.portal}/${END_POINTS.upsertProfile}`,
         );
         break;
       }

@@ -9,7 +9,7 @@
       <a
         class="card-link"
         *ngFor="let cardlink of cardLinks"
-        [href]="cardlink.endPoint"
+        [routerLink]="'../' + cardlink.endPoint"
         >{{ cardlink.label }}</a
       >
     </div>
