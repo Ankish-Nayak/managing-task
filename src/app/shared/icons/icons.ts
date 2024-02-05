@@ -69,4 +69,18 @@ export const ICONS = {
     name: 'down',
     closeDelay: 500,
   },
+  eye: {
+    class: 'bi bi-eye',
+    toolTip: 'view employees by department',
+    openDelay: 1000,
+    name: 'eye',
+    closeDelay: 500,
+  },
+  eyeFilled: {
+    class: 'bi bi-eye-fill',
+    toolTip: 'view employees by department',
+    openDelay: 1000,
+    name: 'eye',
+    closeDelay: 500,
+  },
 };

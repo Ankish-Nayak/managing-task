@@ -30,10 +30,7 @@
         <th scope="col">Sno</th>
         <th scope="col">Department</th>
         <th scope="col">Employees</th>
-        <th
-          scope="col"
-          *ngIf="allowedToView([UserRole.SuperAdmin], userType)"
-        >
+        <th scope="col" *ngIf="allowedToView([UserRole.SuperAdmin], userType)">
           Actions
         </th>
       </tr>
@@ -46,6 +43,7 @@
         [sNo]="i + 1"
         (updateDepartment)="updateDepartment($event)"
         (deleteDepartment)="deleteDepartment($event)"
+        (employeesByDepartment)="onViewEmployeesByDepartment($event)"
         [userType]="userType"
       ></tr>
     </tbody>

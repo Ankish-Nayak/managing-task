@@ -11,7 +11,10 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DataTableControlPanelComponent } from '../../../shared/controlPanels/data-table-control-panel/data-table-control-panel.component';
 import { TEmployee } from '../../../shared/interfaces/employee.type';
 import { GetEmployeesQueryParams } from '../../../shared/interfaces/requests/employee.interface';
-import { ITask } from '../../../shared/interfaces/requests/toto.interface';
+import {
+  GetTodosQueryParams,
+  ITask,
+} from '../../../shared/interfaces/requests/toto.interface';
 import { ConfirmationModalComponent } from '../../../shared/modals/confirmation-modal/confirmation-modal.component';
 import { UpsertContentModalComponent } from '../../../shared/modals/upsert-content-modal/upsert-content-modal.component';
 import { Todo } from '../../../shared/models/todo.model';
@@ -60,7 +63,7 @@ export class TodoListComponent
   userType!: TEmployee;
   cols: TCOLS = COLS;
   UserRole = UserRole;
-  pageState = new GetEmployeesQueryParams(
+  pageState = new GetTodosQueryParams(
     (() => {
       const data = localStorage.getItem(GET_TODOS_KEY);
       if (data) {

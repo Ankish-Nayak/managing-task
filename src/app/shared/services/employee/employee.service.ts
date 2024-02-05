@@ -51,6 +51,18 @@ export class EmployeeService {
         }),
       );
   }
+  getEmployeesByDepartment(departmentId: number) {
+    return this.getEmployees({}).pipe(
+      map((res) => {
+        return {
+          ...res,
+          iterableData: res.iterableData.filter(
+            (employee) => employee.departmentID === departmentId,
+          ),
+        };
+      }),
+    );
+  }
   getEmployees(queryParams: Partial<IGetEmployeesQueryParams>) {
     const transformedQueryParmas = new GetEmployeesQueryParams(queryParams);
     return this.http

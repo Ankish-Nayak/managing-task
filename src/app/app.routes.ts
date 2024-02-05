@@ -84,6 +84,14 @@ export const routes: Routes = [
           roles: [UserRole.Admin, UserRole.SuperAdmin],
         },
       },
+      {
+        component: EmployeeListComponent,
+        path: END_POINTS.employeesByDepartment,
+        canActivate: [userBasedAuthGuard],
+        data: {
+          roles: [UserRole.Admin, UserRole.SuperAdmin],
+        },
+      },
       { component: NotAllowedUserComponent, path: END_POINTS.notAllowedUser },
       {
         component: ProfileComponent,

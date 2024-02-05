@@ -1,10 +1,6 @@
-<th scope="row" class="pointer">{{ sNo }}</th>
-<td class="pointer">
-  <p
-    placement="top"
-    ngbTooltip="group employees by department"
-    [openDelay]="300"
-  >
+<th scope="row">{{ sNo }}</th>
+<td>
+  <p placement="top">
     {{ department.departmentName }}
   </p>
 </td>
@@ -33,6 +29,16 @@
       ngbTooltip="edit"
       [openDelay]="ICONS.edit.openDelay"
       [closeDelay]="ICONS.edit.closeDelay"
+    >
+    </i>
+    <i
+      appHighlight
+      (highlight)="onHighlight('eye', $event)"
+      [class]="highlight.eye ? ICONS.eyeFilled.class : ICONS.eye.class"
+      (click)="onEye(department.id)"
+      [ngbTooltip]="ICONS.eye.toolTip"
+      [openDelay]="ICONS.eye.openDelay"
+      [closeDelay]="ICONS.eye.closeDelay"
     >
     </i>
   </div>

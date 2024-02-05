@@ -15,7 +15,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
 import { ConfirmationModalComponent } from '../../shared/modals/confirmation-modal/confirmation-modal.component';
 import { Department } from '../../shared/models/department.model';
@@ -24,7 +24,7 @@ import { DepartmentService } from '../../shared/services/department/department.s
 import { GenericValidators } from '../../shared/validators/generic-validator';
 import { DepartmentComponent } from './department/department.component';
 import { TEmployee } from '../../shared/interfaces/employee.type';
-import { UserRole } from '../../utils/constants';
+import { END_POINTS, UserRole } from '../../utils/constants';
 import { allowedToView } from '../../utils/allowedToView';
 
 type IPropertyName = 'departmentName';
@@ -62,6 +62,7 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
   constructor(
     private departmentService: DepartmentService,
     private route: ActivatedRoute,
+    private router: Router,
     private authService: AuthService,
   ) {
     this.validatioMessages = {
@@ -137,6 +138,11 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
         Validators.required,
         Validators.pattern(/^[a-zA-Z]+$/),
       ]),
+    });
+  }
+  onViewEmployeesByDepartment(id: number) {
+    this.router.navigate([`../employees-by-department/${id}`], {
+      relativeTo: this.route,
     });
   }
 

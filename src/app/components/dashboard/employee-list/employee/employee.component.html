@@ -11,18 +11,30 @@
   <td>{{ employee.country }}</td>
   <td>
     <div
-      class="d-flex justify-content-center container-fuild align-items-center"
+      class="d-flex justify-content-between container-fuild align-items-center"
     >
       <i
         appHighlight
-        (highlight)="onHightlight($event)"
-        [class]="highlight ? ICONS.deleteFilled.class : ICONS.delete.class"
+        (highlight)="onHightlight('delete', $event)"
+        [class]="
+          highlight.delete ? ICONS.deleteFilled.class : ICONS.delete.class
+        "
         (click)="delete()"
         data-bs-toggle="modal"
         data-bs-target="#deleteConfirmation"
         [ngbTooltip]="ICONS.delete.toolTip"
         [openDelay]="ICONS.delete.openDelay"
         [closeDelay]="ICONS.delete.closeDelay"
+      >
+      </i>
+      <i
+        appHighlight
+        (highlight)="onHightlight('eye', $event)"
+        [class]="highlight.eye ? ICONS.eyeFilled.class : ICONS.eye.class"
+        (click)="onViewEmployeeByDepartment()"
+        [ngbTooltip]="'View Todos'"
+        [openDelay]="ICONS.eye.openDelay"
+        [closeDelay]="ICONS.eye.closeDelay"
       >
       </i>
     </div>

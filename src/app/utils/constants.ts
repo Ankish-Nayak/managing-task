@@ -22,6 +22,7 @@ export const END_POINTS = {
   test: 'test',
   upsertProfile: 'upsert-profile',
   portal: 'portal',
+  employeesByDepartment: 'employees-by-department/:id',
 };
 
 // 0 -> means employee

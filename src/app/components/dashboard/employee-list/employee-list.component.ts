@@ -1,16 +1,17 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { HighlightDirective } from '../../../shared/directives/highlight/highlight.directive';
+import { ICONS } from '../../../shared/icons/icons';
+import { GetEmployeesQueryParams } from '../../../shared/interfaces/requests/employee.interface';
+import { ConfirmationModalComponent } from '../../../shared/modals/confirmation-modal/confirmation-modal.component';
 import {
   Employee,
   EmployeeAdapter,
 } from '../../../shared/models/employee.model';
 import { EmployeeService } from '../../../shared/services/employee/employee.service';
-import { CommonModule } from '@angular/common';
-import { ConfirmationModalComponent } from '../../../shared/modals/confirmation-modal/confirmation-modal.component';
-import { EmployeeComponent } from './employee/employee.component';
-import { AuthService } from '../../../shared/services/auth/auth.service';
-import { ICONS } from '../../../shared/icons/icons';
-import { HighlightDirective } from '../../../shared/directives/highlight/highlight.directive';
 import { EmployeeListHeaderComponent } from './employee-list-header/employee-list-header.component';
+import { EmployeeComponent } from './employee/employee.component';
 
 //TODO: add placeholder on every small element which exists like employee todo and alll to make this
 //much better
@@ -32,18 +33,33 @@ export class EmployeeListComponent implements OnInit {
   employees!: Employee[];
   isLoading: boolean = true;
   employeeToBeDeletedID: number | null = null;
+  pageState = new GetEmployeesQueryParams({});
   readonly ICONS = ICONS;
   constructor(
     private employeeService: EmployeeService,
     private employeeAdapter: EmployeeAdapter,
-    private authService: AuthService,
+    private route: ActivatedRoute,
   ) {}
   ngOnInit(): void {
-    this.getEmployees();
+    this.route.paramMap.subscribe((params) => {
+      const id = params.get('id');
+      if (id !== null) {
+        this.getEmployeesByDepartment(Number(id));
+      } else {
+        this.getEmployees();
+      }
+    });
+  }
+  getEmployeesByDepartment(id: number) {
+    this.isLoading = true;
+    this.employeeService.getEmployeesByDepartment(id).subscribe((res) => {
+      this.employees = this.employeeAdapter.adaptArray(res.iterableData);
+      this.isLoading = false;
+    });
   }
   getEmployees() {
     this.isLoading = true;
-    this.employeeService.getEmployees({}).subscribe((res) => {
+    this.employeeService.getEmployees(this.pageState).subscribe((res) => {
       this.employees = this.employeeAdapter.adaptArray(res.iterableData);
       this.isLoading = false;
     });
@@ -57,6 +73,7 @@ export class EmployeeListComponent implements OnInit {
         });
     }
   }
+  onViewEmployeesByDepartment(id: number) {}
   print() {
     console.log('enter');
   }

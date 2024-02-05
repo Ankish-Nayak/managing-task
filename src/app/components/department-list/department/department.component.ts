@@ -31,9 +31,10 @@ export class DepartmentComponent {
   readonly ICONS = ICONS;
   readonly UserRole = UserRole;
 
-  highlight: { edit: boolean; delete: boolean } = {
+  highlight: { edit: boolean; delete: boolean; eye: boolean } = {
     edit: false,
     delete: false,
+    eye: false,
   };
   update(id: number) {
     this.updateDepartment.emit(id);
@@ -41,7 +42,10 @@ export class DepartmentComponent {
   delete(id: number) {
     this.deleteDepartment.emit(id);
   }
-  onHighlight(type: 'edit' | 'delete', binary: boolean) {
+  onHighlight(type: 'edit' | 'delete' | 'eye', binary: boolean) {
     this.highlight[type] = binary;
+  }
+  onEye(id: number) {
+    this.employeesByDepartment.emit(id);
   }
 }

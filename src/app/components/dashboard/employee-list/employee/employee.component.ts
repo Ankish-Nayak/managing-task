@@ -16,7 +16,14 @@ export class EmployeeComponent {
   @Input({ required: true }) sno!: number;
   @Output() updateEmployee = new EventEmitter<number>();
   @Output() deleteEmployee = new EventEmitter<number>();
-  highlight: boolean = false;
+  @Output() viewEmployeeByDepartment = new EventEmitter<number>();
+  highlight: {
+    eye: boolean;
+    delete: boolean;
+  } = {
+    eye: false,
+    delete: false,
+  };
   readonly ICONS = ICONS;
   update() {
     localStorage.setItem(
@@ -29,7 +36,11 @@ export class EmployeeComponent {
     this.deleteEmployee.emit(this.employee.id);
   }
 
-  onHightlight(binary: boolean) {
-    this.highlight = binary;
+  onHightlight(type: 'delete' | 'eye', binary: boolean) {
+    this.highlight[type] = binary;
+  }
+  onViewEmployeeByDepartment() {
+    this.viewEmployeeByDepartment.emit(this.employee.id);
+    console.log(this.employee.id);
   }
 }
