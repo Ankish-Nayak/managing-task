@@ -32,6 +32,7 @@ export interface IGetTodosQueryParams {
   search: string;
   orders: number;
   orderBy: string;
+  isCompleted: boolean | null;
 }
 
 export interface IUpdateTodoPostData {
@@ -52,6 +53,7 @@ export class GetTodosQueryParams implements IGetTodosQueryParams {
   search: string;
   orders: number;
   orderBy: string;
+  isCompleted: boolean | null;
   constructor(params: Partial<IGetTodosQueryParams>) {
     this.isPagination = params.isPagination ?? false;
     this.index = params.index ?? 0;
@@ -59,5 +61,6 @@ export class GetTodosQueryParams implements IGetTodosQueryParams {
     this.search = params.search ?? '';
     this.orders = params.orders ?? 0;
     this.orderBy = params.orderBy ?? '';
+    this.isCompleted = params.isCompleted ?? null;
   }
 }

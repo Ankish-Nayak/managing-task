@@ -35,6 +35,11 @@ import { COLS, TCOLS } from './cols';
 import { TodoListHeaderComponent } from './todo-list-header/todo-list-header.component';
 import { TodoComponent } from './todo/todo.component';
 
+enum TodoTab {
+  All = 'All',
+  Completed = 'Completed',
+  Pending = 'Active',
+}
 @Component({
   selector: 'app-todo-list',
   standalone: true,
@@ -73,10 +78,12 @@ export class TodoListComponent
           isPagination: true,
           index: 0,
           take: 10,
+          isCompleted: null,
         };
       }
     })(),
   );
+  todoTab: TodoTab = TodoTab.All;
   columnSortBy: { name: keyof ITask | null; dsc: boolean } = {
     name: null,
     dsc: false,
@@ -85,6 +92,7 @@ export class TodoListComponent
     { name: 'title' },
     { name: 'description' },
   ];
+  todosTabs: TodoTab[] = [TodoTab.All, TodoTab.Completed, TodoTab.Pending];
   totalPagesCount: number = 0;
   constructor(
     private todoService: TodoService,
@@ -97,6 +105,15 @@ export class TodoListComponent
     this.getTodos();
     this.todoFormInit();
     this.getUserType();
+    this.todoTab = (() => {
+      if (this.pageState.isCompleted === null) {
+        return TodoTab.All;
+      } else if (this.pageState.isCompleted) {
+        return TodoTab.Completed;
+      } else {
+        return TodoTab.Pending;
+      }
+    })();
   }
   getUserType() {
     this.authService.userTypeMessage$.subscribe((res) => {
@@ -252,14 +269,27 @@ export class TodoListComponent
       this.todos = res.iterableData;
       this.totalPagesCount = res.totalPageCount;
     });
-    this.getTodos;
   }
   allowedToView(allowedUsers: TEmployee[]) {
-    // console.log('changed');
-
     return allowedUsers.includes(this.userType);
   }
   ngOnDestroy(): void {
     localStorage.removeItem(GET_TODOS_KEY);
+  }
+  handleTabChange(tab: TodoTab) {
+    this.todoTab = tab;
+    this.pageState = {
+      ...this.pageState,
+      isCompleted: (() => {
+        if (this.todoTab === TodoTab.All) {
+          return null;
+        } else if (this.todoTab === TodoTab.Completed) {
+          return true;
+        } else {
+          return false;
+        }
+      })(),
+    };
+    this.onPageChange(this.pageState);
   }
 }

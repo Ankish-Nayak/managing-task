@@ -47,6 +47,9 @@ export class PaginationComponent implements OnInit, OnChanges, DoCheck {
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes) {
+      if (changes['collectionSize']) {
+        this.pagesInit();
+      }
       this.renderPages();
     }
   }

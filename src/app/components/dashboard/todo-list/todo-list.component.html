@@ -11,6 +11,16 @@
   (searchBoxChange)="onPageChange({ search: $event })"
   [searchBoxPlaceholder]="'Search todos here'"
 ></app-data-table-control-panel>
+<ul class="nav nav-tabs" *ngIf="!isLoading">
+  <li class="nav-item" *ngFor="let tab of todosTabs">
+    <a
+      [class]="'nav-link pointer ' + (tab === todoTab ? 'active' : '')"
+      aria-current="page"
+      (click)="handleTabChange(tab)"
+      >{{ tab }}</a
+    >
+  </li>
+</ul>
 
 <div class="scroll" *ngIf="!isLoading">
   <table class="table table-hover">
