@@ -14,7 +14,7 @@ import { AuthService } from '../../../shared/services/auth/auth.service';
 import { EmployeeService } from '../../../shared/services/employee/employee.service';
 import { ToastService } from '../../../shared/services/toast/toast.service';
 import { allowedToView } from '../../../utils/allowedToView';
-import { COMPONENT_NAME, USER_ROLES } from '../../../utils/constants';
+import { COMPONENT_NAME, UserRole } from '../../../utils/constants';
 import { AdminComponent } from './admin/admin.component';
 
 @Component({
@@ -35,7 +35,7 @@ export class AdminListComponent implements OnInit {
   adminForm!: FormGroup;
   adminToBeDeletedID: number | null = null;
   readonly allowedToview = allowedToView;
-  readonly USER_ROLES = USER_ROLES;
+  readonly UserRole = UserRole;
   userType!: TEmployee;
   constructor(
     private employeeService: EmployeeService,

@@ -4,7 +4,7 @@
   </div>
   <div
     class="create-department d-flex justify-content-between align-items-center container-fluid"
-    *ngIf="userType === USER_ROLES.SuperAdmin && !isLoading"
+    *ngIf="userType === UserRole.SuperAdmin && !isLoading"
   >
     <form [formGroup]="departmentForm">
       <div class="form-group">
@@ -32,7 +32,7 @@
         <th scope="col">Employees</th>
         <th
           scope="col"
-          *ngIf="allowedToView([USER_ROLES.SuperAdmin], userType)"
+          *ngIf="allowedToView([UserRole.SuperAdmin], userType)"
         >
           Actions
         </th>

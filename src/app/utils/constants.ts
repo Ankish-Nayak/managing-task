@@ -1,5 +1,5 @@
 import { TEmployee } from '../shared/interfaces/employee.type';
-export const USER_ROLES_KEY = 'userRole';
+export const UserRole_KEY = 'userRole';
 export const AUTH_TOKEN = 'authToken';
 export const USER_KEY = 'user';
 export const GET_TODOS_KEY = 'getTodosKey';
@@ -33,7 +33,7 @@ export const EMPLOYEE_TYPE = {
   superAdmin: 2,
 };
 
-export enum USER_ROLES {
+export enum UserRole {
   Employee = 'employee',
   Admin = 'admin',
   SuperAdmin = 'superadmin',
@@ -46,7 +46,7 @@ export enum COMPONENT_NAME {
   TODO_DETAIL_COMPONENT = 'todo-detail-component',
 }
 
-// export const USER_ROLES: {[key: string]: TEmployee} = {
+// export const UserRole: {[key: string]: TEmployee} = {
 //   employee: 'employee',
 //   admin: 'admin',
 //   superAdmin: 'superadmin',

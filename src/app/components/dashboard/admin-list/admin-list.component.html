@@ -4,7 +4,7 @@
 
 <div
   class="d-flex flex-row-reverse"
-  *ngIf="!isLoading && allowedToview([USER_ROLES.SuperAdmin], userType)"
+  *ngIf="!isLoading && allowedToview([UserRole.SuperAdmin], userType)"
 >
   <button class="btn btn-primary btn-sm" (click)="createAdmin()">
     Create Admin
@@ -24,7 +24,7 @@
       <th scope="col">Address</th>
       <th scope="col">City</th>
       <th scope="col">Country</th>
-      <th scope="col" *ngIf="allowedToview([USER_ROLES.SuperAdmin], userType)">
+      <th scope="col" *ngIf="allowedToview([UserRole.SuperAdmin], userType)">
         Actions
       </th>
     </tr>

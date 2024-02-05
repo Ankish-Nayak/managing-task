@@ -1,5 +1,5 @@
 import { TEmployee } from '../../../shared/interfaces/employee.type';
-import { END_POINTS, USER_ROLES } from '../../../utils/constants';
+import { END_POINTS, UserRole } from '../../../utils/constants';
 export type TNavLinks = {
   name: string;
   path: string;
@@ -26,13 +26,13 @@ export const NAV_LINKS: TNavLinks = [
     name: 'AdminList',
     path: processPath(END_POINTS.adminList),
     active: false,
-    notAllowedUsers: [USER_ROLES.Employee],
+    notAllowedUsers: [UserRole.Employee],
   },
   {
     name: 'EmployeeList',
     path: processPath(END_POINTS.employeeList),
     active: false,
-    notAllowedUsers: [USER_ROLES.Employee],
+    notAllowedUsers: [UserRole.Employee],
   },
 ];
 

@@ -3,7 +3,7 @@
 </div>
 
 <app-data-table-control-panel
-  *ngIf="!isLoading && allowedToView([USER_ROLES.Admin, USER_ROLES.SuperAdmin])"
+  *ngIf="!isLoading && allowedToView([UserRole.Admin, UserRole.SuperAdmin])"
   (createRow)="assignTo()"
   [userType]="userType"
   [createRowLabel]="'Assign Task'"

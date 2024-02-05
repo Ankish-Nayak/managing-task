@@ -25,7 +25,7 @@ import { SpinnerComponent } from '../../../shared/spinners/spinner/spinner.compo
 import {
   COMPONENT_NAME,
   GET_TODOS_KEY,
-  USER_ROLES,
+  UserRole,
 } from '../../../utils/constants';
 import { sortTasksByProperty } from '../../../utils/sortTasksByPropery';
 import { COLS, TCOLS } from './cols';
@@ -59,7 +59,7 @@ export class TodoListComponent
   todoIdTobeDeleted: null | number = null;
   userType!: TEmployee;
   cols: TCOLS = COLS;
-  USER_ROLES = USER_ROLES;
+  UserRole = UserRole;
   pageState = new GetEmployeesQueryParams(
     (() => {
       const data = localStorage.getItem(GET_TODOS_KEY);

@@ -14,7 +14,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { authGuard } from './shared/guards/auth/auth.guard';
 import { userBasedAuthGuard } from './shared/guards/userBasedAuth/user-based-auth.guard';
 import { PaginationComponent } from './shared/paginations/pagination/pagination.component';
-import { END_POINTS, USER_ROLES } from './utils/constants';
+import { END_POINTS, UserRole } from './utils/constants';
 import { UpsertProfileComponent } from './components/dashboard/upsert-profile/upsert-profile.component';
 import { notSavedChangesGuard } from './shared/guards/notSavedChanges/not-saved-changes.guard';
 import { PortalComponent } from './components/portal/portal.component';
@@ -41,7 +41,7 @@ export const routes: Routes = [
         path: END_POINTS.createTodo,
         canActivate: [userBasedAuthGuard],
         data: {
-          roles: [USER_ROLES.Admin, USER_ROLES.SuperAdmin],
+          roles: [UserRole.Admin, UserRole.SuperAdmin],
         },
       },
       {
@@ -49,7 +49,7 @@ export const routes: Routes = [
         path: END_POINTS.updateTodo,
         canActivate: [userBasedAuthGuard],
         data: {
-          roles: [USER_ROLES.Admin, USER_ROLES.SuperAdmin],
+          roles: [UserRole.Admin, UserRole.SuperAdmin],
         },
       },
       {
@@ -57,7 +57,7 @@ export const routes: Routes = [
         path: END_POINTS.createAdmin,
         canActivate: [userBasedAuthGuard],
         data: {
-          roles: [USER_ROLES.Admin, USER_ROLES.SuperAdmin],
+          roles: [UserRole.Admin, UserRole.SuperAdmin],
         },
       },
       {
@@ -65,7 +65,7 @@ export const routes: Routes = [
         path: END_POINTS.adminList,
         canActivate: [userBasedAuthGuard],
         data: {
-          roles: [USER_ROLES.Admin, USER_ROLES.SuperAdmin],
+          roles: [UserRole.Admin, UserRole.SuperAdmin],
         },
       },
       {
@@ -73,7 +73,7 @@ export const routes: Routes = [
         path: END_POINTS.updateAdmin,
         canActivate: [userBasedAuthGuard],
         data: {
-          roles: [USER_ROLES.Admin, USER_ROLES.SuperAdmin],
+          roles: [UserRole.Admin, UserRole.SuperAdmin],
         },
       },
       {
@@ -81,7 +81,7 @@ export const routes: Routes = [
         path: END_POINTS.employeeList,
         canActivate: [userBasedAuthGuard],
         data: {
-          roles: [USER_ROLES.Admin, USER_ROLES.SuperAdmin],
+          roles: [UserRole.Admin, UserRole.SuperAdmin],
         },
       },
       { component: NotAllowedUserComponent, path: END_POINTS.notAllowedUser },
@@ -120,7 +120,7 @@ export const routes: Routes = [
     //       path: END_POINTS.createTodo,
     //       canActivate: [userBasedAuthGuard],
     //       data: {
-    //         roles: [USER_ROLES.Admin, USER_ROLES.SuperAdmin],
+    //         roles: [UserRole.Admin, UserRole.SuperAdmin],
     //       },
     //     },
     //     {
@@ -128,7 +128,7 @@ export const routes: Routes = [
     //       path: END_POINTS.updateTodo,
     //       canActivate: [userBasedAuthGuard],
     //       data: {
-    //         roles: [USER_ROLES.Admin, USER_ROLES.SuperAdmin],
+    //         roles: [UserRole.Admin, UserRole.SuperAdmin],
     //       },
     //     },
     //     {
@@ -136,7 +136,7 @@ export const routes: Routes = [
     //       path: END_POINTS.createAdmin,
     //       canActivate: [userBasedAuthGuard],
     //       data: {
-    //         roles: [USER_ROLES.Admin, USER_ROLES.SuperAdmin],
+    //         roles: [UserRole.Admin, UserRole.SuperAdmin],
     //       },
     //     },
     //     {
@@ -144,7 +144,7 @@ export const routes: Routes = [
     //       path: END_POINTS.adminList,
     //       canActivate: [userBasedAuthGuard],
     //       data: {
-    //         roles: [USER_ROLES.Admin, USER_ROLES.SuperAdmin],
+    //         roles: [UserRole.Admin, UserRole.SuperAdmin],
     //       },
     //     },
     //     {
@@ -152,7 +152,7 @@ export const routes: Routes = [
     //       path: END_POINTS.updateAdmin,
     //       canActivate: [userBasedAuthGuard],
     //       data: {
-    //         roles: [USER_ROLES.Admin, USER_ROLES.SuperAdmin],
+    //         roles: [UserRole.Admin, UserRole.SuperAdmin],
     //       },
     //     },
     //     {
@@ -160,7 +160,7 @@ export const routes: Routes = [
     //       path: END_POINTS.employeeList,
     //       canActivate: [userBasedAuthGuard],
     //       data: {
-    //         roles: [USER_ROLES.Admin, USER_ROLES.SuperAdmin],
+    //         roles: [UserRole.Admin, UserRole.SuperAdmin],
     //       },
     //     },
     //     { component: NotAllowedUserComponent, path: END_POINTS.notAllowedUser },

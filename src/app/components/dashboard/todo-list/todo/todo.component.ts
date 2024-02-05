@@ -16,7 +16,7 @@ import { ConfirmationModalComponent } from '../../../../shared/modals/confirmati
 import { Todo } from '../../../../shared/models/todo.model';
 import { ToastService } from '../../../../shared/services/toast/toast.service';
 import { TodoService } from '../../../../shared/services/todo/todo.service';
-import { USER_ROLES } from '../../../../utils/constants';
+import { UserRole } from '../../../../utils/constants';
 import { COLS, TCOLS, TcolsName } from '../cols';
 
 @Component({
@@ -46,7 +46,7 @@ export class TodoComponent implements OnInit {
     delete: false,
   };
   cols: TCOLS = COLS;
-  USER_ROLES = USER_ROLES;
+  UserRole = UserRole;
   readonly ICONS = ICONS;
 
   constructor(

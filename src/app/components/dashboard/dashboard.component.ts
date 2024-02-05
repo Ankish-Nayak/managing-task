@@ -6,7 +6,7 @@ import { AuthService } from '../../shared/services/auth/auth.service';
 import { EmployeeService } from '../../shared/services/employee/employee.service';
 import { TodoService } from '../../shared/services/todo/todo.service';
 import { SpinnerComponent } from '../../shared/spinners/spinner/spinner.component';
-import { END_POINTS, USER_ROLES } from '../../utils/constants';
+import { END_POINTS, UserRole } from '../../utils/constants';
 import { DashboardDetailCardComponent } from './dashboard-detail-card/dashboard-detail-card.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { UserViewDashboardDetailPipe } from '../../shared/pipes/user-view-dashboard-detail-card/user-view-dashboard-detail.pipe';
@@ -17,7 +17,7 @@ export interface ICard {
   count: number;
   description: string;
   cardLinks: { label: string; endPoint: string }[];
-  allowedUsers: USER_ROLES[];
+  allowedUsers: UserRole[];
 }
 @Component({
   selector: 'app-dashboard',
@@ -37,7 +37,7 @@ export class DashboardComponent implements OnInit {
   isLoading: boolean = true;
   cards: ICard[] = [];
   requestCount = 3;
-  userType!: USER_ROLES;
+  userType!: UserRole;
   constructor(
     private employeeService: EmployeeService,
     private todoService: TodoService,
@@ -72,7 +72,7 @@ export class DashboardComponent implements OnInit {
             endPoint: `${END_POINTS.portal}/${END_POINTS.employeeList}`,
           },
         ],
-        allowedUsers: [USER_ROLES.Admin, USER_ROLES.SuperAdmin],
+        allowedUsers: [UserRole.Admin, UserRole.SuperAdmin],
       });
       this.onRequestComplete();
     });
@@ -103,9 +103,9 @@ export class DashboardComponent implements OnInit {
           },
         ],
         allowedUsers: [
-          USER_ROLES.Admin,
-          USER_ROLES.SuperAdmin,
-          USER_ROLES.Employee,
+          UserRole.Admin,
+          UserRole.SuperAdmin,
+          UserRole.Employee,
         ],
       });
 
@@ -128,7 +128,7 @@ export class DashboardComponent implements OnInit {
             endPoint: `${END_POINTS.portal}/${END_POINTS.createAdmin}`,
           },
         ],
-        allowedUsers: [USER_ROLES.SuperAdmin],
+        allowedUsers: [UserRole.SuperAdmin],
       });
 
       this.onRequestComplete();

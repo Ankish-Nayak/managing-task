@@ -9,7 +9,7 @@
   </p>
 </td>
 <td>{{ department.employeesCount }}</td>
-<td *ngIf="allowedToView([USER_ROLES.SuperAdmin], userType)">
+<td *ngIf="allowedToView([UserRole.SuperAdmin], userType)">
   <div
     class="d-flex justify-content-between container-fuild align-items-center"
   >

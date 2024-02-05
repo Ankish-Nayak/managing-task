@@ -7,10 +7,10 @@ import {
   AUTH_TOKEN,
   EMPLOYEE_TYPE,
   USER_KEY,
-  USER_ROLES,
-  USER_ROLES_KEY,
+  UserRole,
+  UserRole_KEY,
 } from '../../../utils/constants';
-// import { USER_ROLES } from '../../interfaces/employee.type';
+// import { UserRole } from '../../interfaces/employee.type';
 import { ILoginRes } from '../../interfaces/login.interface';
 import { IGetProfile } from '../../interfaces/requests/auth.interface';
 import { ISignupPostData } from '../../interfaces/requests/signup.interface';
@@ -22,8 +22,8 @@ import { IEmployee } from '../../interfaces/requests/employee.interface';
 })
 export class AuthService {
   private apiUrl = `${environment.BASE_URL}`;
-  private _userTypeSource = new BehaviorSubject<USER_ROLES | null>(
-    localStorage.getItem(USER_ROLES_KEY) as USER_ROLES | null,
+  private _userTypeSource = new BehaviorSubject<UserRole | null>(
+    localStorage.getItem(UserRole_KEY) as UserRole | null,
   );
   private _userSource = new BehaviorSubject<Employee | null>(
     (() => {
@@ -74,7 +74,7 @@ export class AuthService {
   }
   logout() {
     localStorage.removeItem(AUTH_TOKEN);
-    localStorage.removeItem(USER_ROLES_KEY);
+    localStorage.removeItem(UserRole_KEY);
     return of();
   }
   login(email: string, password: string) {
@@ -99,14 +99,14 @@ export class AuthService {
               const employee = (() => {
                 const d = res.data.employeeType;
                 if (d === EMPLOYEE_TYPE.employee) {
-                  return USER_ROLES.Employee;
+                  return UserRole.Employee;
                 } else if (d === EMPLOYEE_TYPE.admin) {
-                  return USER_ROLES.Admin;
+                  return UserRole.Admin;
                 } else {
-                  return USER_ROLES.SuperAdmin;
+                  return UserRole.SuperAdmin;
                 }
               })();
-              localStorage.setItem(USER_ROLES_KEY, employee);
+              localStorage.setItem(UserRole_KEY, employee);
               return employee;
             })(),
           );
@@ -138,13 +138,13 @@ export class AuthService {
     const employee = (() => {
       const d = value;
       if (d === EMPLOYEE_TYPE.employee) {
-        return USER_ROLES.Employee;
+        return UserRole.Employee;
       } else if (d === EMPLOYEE_TYPE.admin) {
-        return USER_ROLES.Admin;
+        return UserRole.Admin;
       } else {
-        return USER_ROLES.SuperAdmin;
+        return UserRole.SuperAdmin;
       }
     })();
-    localStorage.setItem(USER_ROLES_KEY, employee);
+    localStorage.setItem(UserRole_KEY, employee);
   }
 }

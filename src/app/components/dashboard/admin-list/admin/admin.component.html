@@ -8,7 +8,7 @@
 <td>{{ admin.address }}</td>
 <td>{{ admin.city }}</td>
 <td>{{ admin.country }}</td>
-<td *ngIf="allowedToView([USER_ROLES.SuperAdmin], userType)">
+<td *ngIf="allowedToView([UserRole.SuperAdmin], userType)">
   <div class="admin-actions">
     <i
       appHighlight

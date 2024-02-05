@@ -6,7 +6,7 @@ import { ICONS } from '../../../shared/icons/icons';
 import { TEmployee } from '../../../shared/interfaces/employee.type';
 import { Department } from '../../../shared/models/department.model';
 import { allowedToView } from '../../../utils/allowedToView';
-import { USER_ROLES } from '../../../utils/constants';
+import { UserRole } from '../../../utils/constants';
 
 @Component({
   selector: '[app-department]',
@@ -29,7 +29,7 @@ export class DepartmentComponent {
   @Input({ required: true }) userType!: TEmployee;
   readonly allowedToView = allowedToView;
   readonly ICONS = ICONS;
-  readonly USER_ROLES = USER_ROLES;
+  readonly UserRole = UserRole;
 
   highlight: { edit: boolean; delete: boolean } = {
     edit: false,

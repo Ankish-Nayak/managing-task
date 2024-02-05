@@ -49,7 +49,7 @@
 <td *ngIf="userAllowedToView('Actions')">
   <div
     class="d-flex justify-content-between container-fuild align-items-center"
-    *ngIf="allowedToView([USER_ROLES.Admin, USER_ROLES.SuperAdmin])"
+    *ngIf="allowedToView([UserRole.Admin, UserRole.SuperAdmin])"
   >
     <div appHighlight (highlight)="onHighlight('edit', $event)">
       <i
@@ -78,7 +78,7 @@
 
   <div
     class="d-flex justify-content-center container-fuild align-items-center"
-    *ngIf="allowedToView([USER_ROLES.Employee])"
+    *ngIf="allowedToView([UserRole.Employee])"
   >
     <button class="btn btn-sm btn btn-primary" (click)="mark()">
       {{ !todo.isCompleted ? "Mark as Done" : "Mark as UnDone" }}

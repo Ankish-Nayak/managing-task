@@ -24,7 +24,7 @@ import { DepartmentService } from '../../shared/services/department/department.s
 import { GenericValidators } from '../../shared/validators/generic-validator';
 import { DepartmentComponent } from './department/department.component';
 import { TEmployee } from '../../shared/interfaces/employee.type';
-import { USER_ROLES } from '../../utils/constants';
+import { UserRole } from '../../utils/constants';
 import { allowedToView } from '../../utils/allowedToView';
 
 type IPropertyName = 'departmentName';
@@ -44,7 +44,7 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
   isLoading: boolean = true;
   departments!: Department[];
   departmentForm!: FormGroup;
-  readonly USER_ROLES = USER_ROLES;
+  readonly UserRole = UserRole;
   departmentIdTobeDeleted!: number | null;
 
   readonly allowedToView = allowedToView;
