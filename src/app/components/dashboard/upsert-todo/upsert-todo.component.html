@@ -3,6 +3,9 @@
 </div>
 <div class="card" *ngIf="!isLoading">
   <div class="card-body">
+    <h5 class="card-title text-center" *ngIf="displayTitle">
+      {{ updateForm ? "Update Todo" : "Create Todo" }}
+    </h5>
     <div class="todo-form">
       <form [formGroup]="todoForm" (submit)="onSubmit($event)">
         <div class="form-group">

@@ -10,7 +10,7 @@ import {
   USER_ROLES,
   USER_ROLES_KEY,
 } from '../../../utils/constants';
-import { TEmployee } from '../../interfaces/employee.type';
+// import { USER_ROLES } from '../../interfaces/employee.type';
 import { ILoginRes } from '../../interfaces/login.interface';
 import { IGetProfile } from '../../interfaces/requests/auth.interface';
 import { ISignupPostData } from '../../interfaces/requests/signup.interface';
@@ -22,8 +22,8 @@ import { IEmployee } from '../../interfaces/requests/employee.interface';
 })
 export class AuthService {
   private apiUrl = `${environment.BASE_URL}`;
-  private _userTypeSource = new BehaviorSubject<TEmployee | null>(
-    localStorage.getItem(USER_ROLES_KEY) as TEmployee | null,
+  private _userTypeSource = new BehaviorSubject<USER_ROLES | null>(
+    localStorage.getItem(USER_ROLES_KEY) as USER_ROLES | null,
   );
   private _userSource = new BehaviorSubject<Employee | null>(
     (() => {

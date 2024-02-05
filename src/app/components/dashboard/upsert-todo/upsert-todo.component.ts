@@ -48,6 +48,7 @@ export class UpsertTodoComponent {
   @ViewChildren(FormControlName, { read: ElementRef })
   formInputElements!: ElementRef[];
   @Input() id!: string;
+  @Input() displayTitle: boolean = true;
 
   cardBodyHeader: string[] = ['card-body-header'];
   employees!: Employee[];

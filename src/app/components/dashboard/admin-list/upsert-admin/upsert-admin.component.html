@@ -1,149 +1,160 @@
-<div class="signup-form">
-  <form [formGroup]="signupForm" (submit)="onSubmit($event)">
-    <div class="form-group">
-      <label for="exampleInputEmail1">Email address</label>
-      <input
-        type="email"
-        autofocus
-        [class]="validProperty('email')"
-        id="exampleInputEmail1"
-        aria-describedby="emailHelp"
-        formControlName="email"
-        placeholder="Enter email"
-      />
-      <div class="invalid-feedback">{{ displayFeedback.email }}</div>
-    </div>
-    <div class="form-group">
-      <label for="name">Name</label>
-      <input
-        type="text"
-        formControlName="name"
-        [class]="validProperty('name')"
-        id="name"
-        placeholder="name"
-      />
-      <div class="invalid-feedback">
-        {{ displayFeedback.name }}
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="phone">Phone</label>
-      <input
-        type="text"
-        formControlName="phone"
-        [class]="validProperty('phone')"
-        id="phone"
-        placeholder="phone"
-      />
-      <div class="invalid-feedback">
-        {{ displayFeedback["phone"] }}
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="address">Address</label>
-      <input
-        type="text"
-        formControlName="address"
-        [class]="validProperty('address')"
-        id="address"
-        placeholder="address"
-      />
-      <div class="invalid-feedback">
-        {{ displayFeedback.address }}
-      </div>
-    </div>
-
-    <div class="d-flex justify-content-between">
-      <div class="form-group">
-        <label for="city">City</label>
-        <input
-          type="text"
-          formControlName="city"
-          [class]="validProperty('city')"
-          id="city"
-          placeholder="city"
-        />
-        <div class="invalid-feedback">
-          {{ displayFeedback.city }}
+<app-spinner *ngIf="isLoading"></app-spinner>
+<div class="card" *ngIf="!isLoading">
+  <div class="card-body">
+    <h5 class="card-title text-center" *ngIf="displayTitle">
+      {{ adminRegistration ? "Admin Registration" : "Update Adminn" }}
+    </h5>
+    <div class="signup-form">
+      <form [formGroup]="signupForm" (submit)="onSubmit($event)">
+        <div class="form-group">
+          <label for="exampleInputEmail1">Email address</label>
+          <input
+            type="email"
+            autofocus
+            [class]="validProperty('email')"
+            id="exampleInputEmail1"
+            aria-describedby="emailHelp"
+            formControlName="email"
+            placeholder="Enter email"
+          />
+          <div class="invalid-feedback">{{ displayFeedback.email }}</div>
         </div>
-      </div>
-
-      <div class="form-group">
-        <label for="country">Country</label>
-        <input
-          type="text"
-          formControlName="country"
-          [class]="validProperty('country')"
-          id="country"
-          placeholder="country"
-        />
-        <div class="invalid-feedback">
-          {{ displayFeedback.country }}
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input
+            type="text"
+            formControlName="name"
+            [class]="validProperty('name')"
+            id="name"
+            placeholder="name"
+          />
+          <div class="invalid-feedback">
+            {{ displayFeedback.name }}
+          </div>
         </div>
-      </div>
-    </div>
 
-    <label for="departmentID">Department</label>
-    <select
-      name=""
-      id="departmentID"
-      [class]="validProperty('departmentID')"
-      class="form-select"
-      formControlName="departmentID"
-    >
-      <option [value]="null">Select department</option>
-      <option *ngFor="let department of departments" [value]="department.id">
-        {{ department.departmentName }}
-      </option>
-    </select>
-    <div class="invalid-feedback">
-      {{ displayFeedback.departmentID }}
-    </div>
-    <div class="form-group" *ngIf="false">
-      <label for="employeeType">Employee Type</label>
-      <select
-        name=""
-        id="employeeType"
-        class="form-select"
-        formControlName="employeeType"
-      >
-        <option [value]="employees[0].value" selected>
-          {{ employees[0].name }}
-        </option>
-        <option [value]="employees[1].value">
-          {{ employees[1].name }}
-        </option>
-      </select>
-      <div class="invalid-feedback">
-        {{ displayFeedback.employeeType }}
-      </div>
-    </div>
+        <div class="form-group">
+          <label for="phone">Phone</label>
+          <input
+            type="text"
+            formControlName="phone"
+            [class]="validProperty('phone')"
+            id="phone"
+            placeholder="phone"
+          />
+          <div class="invalid-feedback">
+            {{ displayFeedback["phone"] }}
+          </div>
+        </div>
 
-    <div class="form-group" *ngIf="adminRegistration">
-      <label for="password">Password</label>
-      <input
-        type="password"
-        formControlName="password"
-        [class]="validProperty('password')"
-        id="password"
-        placeholder="password"
-      />
-      <div class="invalid-feedback">
-        {{ displayFeedback.password }}
-      </div>
-    </div>
+        <div class="form-group">
+          <label for="address">Address</label>
+          <input
+            type="text"
+            formControlName="address"
+            [class]="validProperty('address')"
+            id="address"
+            placeholder="address"
+          />
+          <div class="invalid-feedback">
+            {{ displayFeedback.address }}
+          </div>
+        </div>
 
-    <button type="submit" class="btn btn-primary" *ngIf="adminRegistration">
-      Create Admin
-    </button>
+        <div class="d-flex justify-content-between">
+          <div class="form-group">
+            <label for="city">City</label>
+            <input
+              type="text"
+              formControlName="city"
+              [class]="validProperty('city')"
+              id="city"
+              placeholder="city"
+            />
+            <div class="invalid-feedback">
+              {{ displayFeedback.city }}
+            </div>
+          </div>
 
-    <div
-      class="d-flex justify-content-between align-items-center"
-      *ngIf="!adminRegistration"
-    >
-      <button class="btn btn-primary" type="submit">Update Admin</button>
+          <div class="form-group">
+            <label for="country">Country</label>
+            <input
+              type="text"
+              formControlName="country"
+              [class]="validProperty('country')"
+              id="country"
+              placeholder="country"
+            />
+            <div class="invalid-feedback">
+              {{ displayFeedback.country }}
+            </div>
+          </div>
+        </div>
+
+        <label for="departmentID">Department</label>
+        <select
+          name=""
+          id="departmentID"
+          [class]="validProperty('departmentID')"
+          class="form-select"
+          formControlName="departmentID"
+        >
+          <option [value]="null">Select department</option>
+          <option
+            *ngFor="let department of departments"
+            [value]="department.id"
+          >
+            {{ department.departmentName }}
+          </option>
+        </select>
+        <div class="invalid-feedback">
+          {{ displayFeedback.departmentID }}
+        </div>
+        <div class="form-group" *ngIf="false">
+          <label for="employeeType">Employee Type</label>
+          <select
+            name=""
+            id="employeeType"
+            class="form-select"
+            formControlName="employeeType"
+          >
+            <option [value]="employees[0].value" selected>
+              {{ employees[0].name }}
+            </option>
+            <option [value]="employees[1].value">
+              {{ employees[1].name }}
+            </option>
+          </select>
+          <div class="invalid-feedback">
+            {{ displayFeedback.employeeType }}
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="adminRegistration">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            formControlName="password"
+            [class]="validProperty('password')"
+            id="password"
+            placeholder="password"
+          />
+          <div class="invalid-feedback">
+            {{ displayFeedback.password }}
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" *ngIf="adminRegistration">
+          Create Admin
+        </button>
+
+        <div
+          class="d-flex justify-content-between align-items-center"
+          *ngIf="!adminRegistration"
+        >
+          <button class="btn btn-primary" type="submit">Update Admin</button>
+        </div>
+      </form>
     </div>
-  </form>
+  </div>
 </div>

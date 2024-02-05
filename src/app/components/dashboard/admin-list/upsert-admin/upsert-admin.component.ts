@@ -27,9 +27,12 @@ import { AuthService } from '../../../../shared/services/auth/auth.service';
 import { DepartmentService } from '../../../../shared/services/department/department.service';
 import { EmployeeService } from '../../../../shared/services/employee/employee.service';
 import { ToastService } from '../../../../shared/services/toast/toast.service';
+import { SpinnerComponent } from '../../../../shared/spinners/spinner/spinner.component';
 import { GenericValidators } from '../../../../shared/validators/generic-validator';
 import { notNullValidator } from '../../../../shared/validators/not-null-validators';
 import { EMPLOYEE_TYPE, END_POINTS } from '../../../../utils/constants';
+import { getActiveEndpoint } from '../../../../utils/getActiveEndpoint';
+import { VALIDATION_MESSAGES } from './VALIDATION_MESSAGES';
 type IPropertyName =
   | 'name'
   | 'email'
@@ -44,15 +47,17 @@ type IPropertyName =
 @Component({
   selector: 'app-upsert-admin',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, SpinnerComponent],
   templateUrl: './upsert-admin.component.html',
   styleUrl: './upsert-admin.component.scss',
 })
 export class UpsertAdminComponent implements OnInit, AfterViewInit {
+  isLoading: boolean = true;
   signupForm!: FormGroup;
   // returns the query list of FormControlName
   @ViewChildren(FormControlName, { read: ElementRef })
   formInputElements!: ElementRef[];
+  @Input() displayTitle: boolean = true;
 
   displayFeedback: { [key in IPropertyName]?: string } = {};
   employees: { name: string; value: number }[] = [
@@ -65,7 +70,7 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
   @Input() id!: string;
 
   @Input({ alias: 'updateForm', transform: (value: boolean) => !value })
-  adminRegistration: boolean = false;
+  adminRegistration: boolean = true;
 
   private validatioMessages!: { [key: string]: { [key: string]: string } };
   private genericValidator!: GenericValidators;
@@ -80,44 +85,7 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
     private departmentAdapter: DepartmentAdapter,
   ) {
     // defining validation messages here.
-    this.validatioMessages = {
-      email: {
-        required: 'Required',
-        email: 'Invalid email address',
-      },
-      name: {
-        required: 'Required',
-      },
-      city: {
-        required: 'Required',
-      },
-      address: {
-        required: 'Required',
-      },
-      country: {
-        pattern: 'Must be alphabets.',
-        required: 'Required',
-      },
-      phone: {
-        pattern: 'Must be numbers.',
-        required: 'Required',
-      },
-      departmentID: {
-        required: 'Required',
-        notNull: 'Select department',
-      },
-      employeeType: {
-        required: 'Required',
-        allowedvalue: 'Select from dropdown',
-      },
-      password: {
-        required: 'Required',
-        minlength: 'Must be of atleast 8 chars.',
-        pattern:
-          'Must contain at least one uppercase letter, one digit, and one special character',
-      },
-    };
-
+    this.validatioMessages = VALIDATION_MESSAGES;
     this.genericValidator = new GenericValidators(this.validatioMessages);
   }
   ngOnInit(): void {
@@ -129,21 +97,17 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
     });
 
     this.employeeService.getEmployee(Number(this.id)).subscribe((res) => {
-      console.log('employee', res);
       this.employee = res;
       // this.signupForm.patchValue(res);
     });
 
     this.getDepartments();
-    // if (getActiveEndpoint(this.route) === `./${END_POINTS.createAdmin}`) {
-    //   console.log('yess');
-    //   this.adminRegistration = true;
-    // } else {
-    //   this.adminRegistration = false;
-    // }
+    if (getActiveEndpoint(this.route) === `./${END_POINTS.updateAdmin}`) {
+      this.adminRegistration = false;
+    } else {
+      this.adminRegistration = true;
+    }
     this.signupFormInit();
-    //FIXME: disabling departmentID has stoped value to detected.
-    // this.disabling('departmentID');
   }
 
   ngAfterViewInit(): void {
@@ -188,8 +152,6 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
         Validators.required,
         notNullValidator(),
       ]),
-      // 0 -> means employee
-      // 1 -> means admin
       employeeType: new FormControl(EMPLOYEE_TYPE.admin, [Validators.required]),
       password: new FormControl('', [
         Validators.required,
@@ -201,10 +163,6 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
     });
     // TODO: can not pass pass therefore not able to create update admin from super admin side
     if (!this.adminRegistration) {
-      // const employee: Employee = JSON.parse(
-      //   this.employeeService.getEmployee(Number(this.id)),
-      // );
-      // console.log(employee);
       this.signupForm = new FormGroup({
         name: new FormControl(this.employee.name, [Validators.required]),
         email: new FormControl(this.employee.email, [
@@ -227,9 +185,6 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
           Validators.required,
           notNullValidator(),
         ]),
-        // 0 -> means employee
-        // 1 -> means admin
-        // 2 -> super admin
         employeeType: new FormControl(EMPLOYEE_TYPE.admin, [
           Validators.required,
         ]),
@@ -251,21 +206,19 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
             0,
           ),
         );
-        console.log(this.departments);
       }
+      this.isLoading = false;
     });
   }
   onSubmit(e: SubmitEvent) {
     e.preventDefault();
     // Mark all form as touched to trigger validation messages
     this.markAsTouchedAndDirty();
-    //TODO: replace it from hard code.
 
     if (this.signupForm.valid) {
       if (this.adminRegistration) {
         const data = this.signupForm.value;
-        console.log('inputs: ', data);
-        this.authService.signup(data).subscribe((res) => {
+        this.authService.signup(data).subscribe(() => {
           if (this.adminRegistration) {
             this.router.navigate([`../${END_POINTS.adminList}`], {
               relativeTo: this.route,
@@ -273,7 +226,6 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
           } else {
             this.router.navigate(['', END_POINTS.dashboard.toString()]);
           }
-          console.log(res);
         });
       } else {
         const departmentName = this.departments.find(

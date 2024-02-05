@@ -10,10 +10,12 @@
       [updateForm]="update"
       [id]="id"
       (updated)="closeModal()"
+      [displayTitle]="false"
     ></app-upsert-todo>
     <app-upsert-admin
       *ngSwitchCase="COMPONENT_NAME.UPSERT_ADMIN_COMPONENT"
       [updateForm]="update"
+      [displayTitle]="false"
       [id]="id"
     ></app-upsert-admin>
     <app-todo-detail
