@@ -1,13 +1,19 @@
 <div class="d-flex justify-content-center container-fuild">
   <app-spinner *ngIf="isLoading"></app-spinner>
 </div>
-<div class="card" *ngIf="!isLoading">
+<div
+  class="card"
+  *ngIf="!isLoading"
+  [tabIndex]="0"
+  appClickedEnter
+  (clickedEnter)="onClickedEnter()"
+>
   <div class="card-body">
     <h5 class="card-title text-center" *ngIf="displayTitle">
       {{ updateForm ? "Update Todo" : "Create Todo" }}
     </h5>
     <div class="todo-form">
-      <form [formGroup]="todoForm" (submit)="onSubmit($event)">
+      <form [formGroup]="todoForm" (submit)="onSubmit()">
         <div class="form-group">
           <label for="title">Title</label>
           <input

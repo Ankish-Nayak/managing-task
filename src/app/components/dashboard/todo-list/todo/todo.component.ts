@@ -57,7 +57,7 @@ export class TodoComponent implements OnInit {
     this.deleteTodo.emit(this.todo.id);
   }
   ngOnInit(): void {
-    console.log(this.isLoading);
+    // console.log(this.isLoading);
   }
   getDescription(description: string) {
     return description.length > 115

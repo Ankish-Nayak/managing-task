@@ -1,11 +1,16 @@
 <app-spinner *ngIf="isLoading"></app-spinner>
 <div class="card" *ngIf="!isLoading">
-  <div class="card-body">
+  <div
+    class="card-body"
+    appClickedEnter
+    (clickedEnter)="onClickedEnter()"
+    [tabIndex]="0"
+  >
     <h5 class="card-title text-center" *ngIf="displayTitle">
       {{ adminRegistration ? "Admin Registration" : "Update Adminn" }}
     </h5>
     <div class="signup-form">
-      <form [formGroup]="signupForm" (submit)="onSubmit($event)">
+      <form [formGroup]="signupForm" (submit)="onSubmit()">
         <div class="form-group">
           <label for="exampleInputEmail1">Email address</label>
           <input

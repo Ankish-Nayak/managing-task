@@ -33,6 +33,7 @@ import { notNullValidator } from '../../../../shared/validators/not-null-validat
 import { EMPLOYEE_TYPE, END_POINTS } from '../../../../utils/constants';
 import { getActiveEndpoint } from '../../../../utils/getActiveEndpoint';
 import { VALIDATION_MESSAGES } from './VALIDATION_MESSAGES';
+import { ClickedEnterDirective } from '../../../../shared/directives/clicked-enter/clicked-enter.directive';
 type IPropertyName =
   | 'name'
   | 'email'
@@ -47,7 +48,12 @@ type IPropertyName =
 @Component({
   selector: 'app-upsert-admin',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, SpinnerComponent],
+  imports: [
+    ReactiveFormsModule,
+    CommonModule,
+    SpinnerComponent,
+    ClickedEnterDirective,
+  ],
   templateUrl: './upsert-admin.component.html',
   styleUrl: './upsert-admin.component.scss',
 })
@@ -210,8 +216,7 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
       this.isLoading = false;
     });
   }
-  onSubmit(e: SubmitEvent) {
-    e.preventDefault();
+  onSubmit() {
     // Mark all form as touched to trigger validation messages
     this.markAsTouchedAndDirty();
 
@@ -284,5 +289,8 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
         control.markAsDirty();
       }
     });
+  }
+  onClickedEnter() {
+    this.onSubmit();
   }
 }

@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
   DoCheck,
   EventEmitter,
@@ -18,10 +19,9 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './pagination.component.html',
   styleUrl: './pagination.component.scss',
 })
-export class PaginationComponent implements OnInit, OnChanges,DoCheck {
+export class PaginationComponent implements OnInit, OnChanges, DoCheck {
   ngDoCheck(): void {
-    console.log("changed");
-    
+    // console.log('changed');
   }
   @Output() selectedPageChange: EventEmitter<number> =
     new EventEmitter<number>();
@@ -145,5 +145,4 @@ export class PaginationComponent implements OnInit, OnChanges,DoCheck {
       this.rightDisabled = false;
     }
   }
-
 }

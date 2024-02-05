@@ -106,7 +106,7 @@ export class TodoListComponent
     });
   }
   ngDoCheck(): void {
-    console.log('changed');
+    // console.log('changed');
   }
   todoFormInit() {
     this.todoForm = new FormGroup({
@@ -255,7 +255,7 @@ export class TodoListComponent
     this.getTodos;
   }
   allowedToView(allowedUsers: TEmployee[]) {
-    console.log('changed');
+    // console.log('changed');
 
     return allowedUsers.includes(this.userType);
   }

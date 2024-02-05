@@ -122,9 +122,8 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    canActivate: [authGuard],
-    component: DashboardComponent,
     pathMatch: 'full',
+    redirectTo: END_POINTS.dashboard,
   },
   {
     path: '**',

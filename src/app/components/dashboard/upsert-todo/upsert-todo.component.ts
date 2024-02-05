@@ -17,6 +17,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
+import { ClickedEnterDirective } from '../../../shared/directives/clicked-enter/clicked-enter.directive';
 import {
   ICreateTodoPostData,
   IUpdateTodoPostData,
@@ -37,7 +38,12 @@ type IPropertyName = 'title' | 'description' | 'employeeId';
 @Component({
   selector: 'app-upsert-todo',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, SpinnerComponent],
+  imports: [
+    ReactiveFormsModule,
+    CommonModule,
+    SpinnerComponent,
+    ClickedEnterDirective,
+  ],
   templateUrl: './upsert-todo.component.html',
   styleUrl: './upsert-todo.component.scss',
 })
@@ -116,8 +122,8 @@ export class UpsertTodoComponent {
     this.todoFormInit();
   }
 
-  onSubmit(e: SubmitEvent) {
-    e.preventDefault();
+  onSubmit() {
+    // e.preventDefault();
     if (this.updateForm) {
       const { title, description } = this.todoForm.value;
       this.markAsTouchedAndDirty();
@@ -260,5 +266,8 @@ export class UpsertTodoComponent {
         control.markAsDirty();
       }
     });
+  }
+  onClickedEnter() {
+    this.onSubmit();
   }
 }

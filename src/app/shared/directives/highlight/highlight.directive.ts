@@ -11,7 +11,6 @@ import {
   standalone: true,
 })
 export class HighlightDirective {
-  // @Input({required: true}) id!: number;
   constructor(private e: ElementRef) {}
   @Output() highlight = new EventEmitter<boolean>();
   @HostListener('mouseenter') onMouseEnter() {
