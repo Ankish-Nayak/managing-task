@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { DeprecatedGuard, RouterOutlet } from '@angular/router';
 import { TEmployee } from '../../shared/interfaces/employee.type';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { EmployeeService } from '../../shared/services/employee/employee.service';
@@ -10,6 +10,7 @@ import { END_POINTS, UserRole } from '../../utils/constants';
 import { DashboardDetailCardComponent } from './dashboard-detail-card/dashboard-detail-card.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { UserViewDashboardDetailPipe } from '../../shared/pipes/user-view-dashboard-detail-card/user-view-dashboard-detail.pipe';
+import { DepartmentService } from '../../shared/services/department/department.service';
 //TODO: make user based rendering of dashboard component
 
 export interface ICard {
@@ -36,12 +37,13 @@ export interface ICard {
 export class DashboardComponent implements OnInit {
   isLoading: boolean = true;
   cards: ICard[] = [];
-  requestCount = 3;
+  requestCount = 4;
   userType!: UserRole;
   constructor(
     private employeeService: EmployeeService,
     private todoService: TodoService,
     private authService: AuthService,
+    private departmentService: DepartmentService,
   ) {}
   ngOnInit(): void {
     // this.cardsDataInit();
@@ -59,6 +61,7 @@ export class DashboardComponent implements OnInit {
     this.getAdminsDetails();
     this.getEmployeeesDetails();
     this.getTodosDetails();
+    this.getDepartmentDetails();
   }
   getEmployeeesDetails() {
     this.employeeService.getEmployees({}).subscribe((res) => {
@@ -78,7 +81,7 @@ export class DashboardComponent implements OnInit {
     });
   }
   getTodosDetails() {
-    this.employeeService.getAdmins({}).subscribe((res) => {
+    this.todoService.getTodos({}).subscribe((res) => {
       this.cards.push({
         title: 'Todos',
         description: (() => {
@@ -102,22 +105,18 @@ export class DashboardComponent implements OnInit {
             endPoint: `${END_POINTS.portal}/${END_POINTS.createTodo}`,
           },
         ],
-        allowedUsers: [
-          UserRole.Admin,
-          UserRole.SuperAdmin,
-          UserRole.Employee,
-        ],
+        allowedUsers: [UserRole.Admin, UserRole.SuperAdmin, UserRole.Employee],
       });
 
       this.onRequestComplete();
     });
   }
   getAdminsDetails() {
-    this.todoService.getTodos({}).subscribe((res) => {
+    this.employeeService.getAdmins({}).subscribe((res) => {
       this.cards.push({
         title: 'Admins',
         description: 'Assign and view assigned tasks.',
-        count: res.totalPageCount,
+        count: res.count,
         cardLinks: [
           {
             label: 'View admins',
@@ -131,6 +130,23 @@ export class DashboardComponent implements OnInit {
         allowedUsers: [UserRole.SuperAdmin],
       });
 
+      this.onRequestComplete();
+    });
+  }
+  getDepartmentDetails() {
+    this.departmentService.getDepartments().subscribe((res) => {
+      this.cards.push({
+        title: 'Departments',
+        description: 'View Department and their admins',
+        count: res.length,
+        cardLinks: [
+          {
+            label: 'View Departments',
+            endPoint: `${END_POINTS.portal}/${END_POINTS.departmentList}`,
+          },
+        ],
+        allowedUsers: [UserRole.SuperAdmin],
+      });
       this.onRequestComplete();
     });
   }

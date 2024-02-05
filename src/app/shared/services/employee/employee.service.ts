@@ -46,6 +46,7 @@ export class EmployeeService {
           return {
             ...res,
             iterableData: newIterableData,
+            count: newIterableData.length,
           };
         }),
       );
@@ -69,6 +70,7 @@ export class EmployeeService {
           return {
             ...res,
             iterableData: newIterableData,
+            count: newIterableData.length,
           };
         }),
       );
