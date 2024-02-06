@@ -65,7 +65,7 @@ export class TodoListComponent
   todoForm!: FormGroup;
   todos!: Todo[];
   todoIdTobeDeleted: null | number = null;
-  userType!: TEmployee;
+  userType!: UserRole;
   cols: TCOLS = COLS;
   UserRole = UserRole;
   pageState = new GetTodosQueryParams(

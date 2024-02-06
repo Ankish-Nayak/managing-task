@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TEmployee } from '../../interfaces/employee.type';
+import { UserRole } from '../../../utils/constants';
 
 @Component({
   selector: 'app-data-table-control-panel',
@@ -12,13 +13,14 @@ import { TEmployee } from '../../interfaces/employee.type';
 })
 export class DataTableControlPanelComponent {
   @Input() isLoading: boolean = false;
-  @Input({ required: true }) userType!: TEmployee;
+  @Input({ required: true }) userType!: UserRole;
   @Input() createRowLabel: string = 'Create Row';
   @Output() createRow: EventEmitter<void> = new EventEmitter();
   @Input() searchBox: string = '';
   @Output() searchBoxChange = new EventEmitter<string>();
   @Input() isSearchBoxDisabled: boolean = true;
   @Input() searchBoxPlaceholder: string = 'Search rows here';
+  readonly UserRole = UserRole;
   ngOnInit(): void {}
   onCreateRow() {
     this.createRow.emit();

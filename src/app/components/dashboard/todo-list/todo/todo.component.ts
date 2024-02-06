@@ -82,14 +82,18 @@ export class TodoComponent implements OnInit {
   }
   mark() {
     this.todoMarkLoading = true;
-    this.todoService.markTodo(this.todo.id).subscribe((res) => {
-      this.toastService.show('Todo', 'Todo marked as done', 'success', 2000);
-      this.todoMarkLoading = false;
-      this.todo = {
-        ...this.todo,
+    this.todoService
+      .markTodo(this.todo.id, {
         isCompleted: !this.todo.isCompleted,
-      };
-    });
+      })
+      .subscribe((res) => {
+        this.toastService.show('Todo', 'Todo marked as done', 'success', 2000);
+        this.todoMarkLoading = false;
+        this.todo = {
+          ...this.todo,
+          isCompleted: !this.todo.isCompleted,
+        };
+      });
   }
 
   onHighlight(type: 'edit' | 'delete', binary: boolean) {

@@ -60,7 +60,7 @@ export class UpsertTodoComponent {
   cardBodyHeader: string[] = ['card-body-header'];
   employees!: Employee[];
 
-  employeeId: number | undefined;
+  employeeId: number | null = null;
   @Input({ required: true }) updateForm!: boolean;
   @Output() updated: EventEmitter<boolean> = new EventEmitter<boolean>();
   // updateForm: boolean = false;
@@ -109,6 +109,11 @@ export class UpsertTodoComponent {
   getEmployees() {
     this.employeeService.getEmployees({}).subscribe((res) => {
       this.employees = this.employeeAdapter.adaptArray(res.iterableData);
+      if (this.employeeId !== null) {
+        this.employees = this.employees.filter(
+          (employee) => employee.id === this.employeeId,
+        );
+      }
       this.isLoading = false;
     });
   }

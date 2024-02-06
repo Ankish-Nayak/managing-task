@@ -66,14 +66,10 @@ export class TodoService {
     //
     return localStorage.getItem(`todo/${id}`)!;
   }
-  markTodo(id: number) {
-    return this.http.post(
-      `${this.apiUrl}/SetTodoCompleted/${id}`,
-      {},
-      {
-        withCredentials: true,
-        headers: this.Headers,
-      },
-    );
+  markTodo(id: number, data: IMarkTodoPostData) {
+    return this.http.post(`${this.apiUrl}/SetTodoCompleted/${id}`, data, {
+      withCredentials: true,
+      headers: this.Headers,
+    });
   }
 }
