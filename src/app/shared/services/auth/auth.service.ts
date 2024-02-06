@@ -10,12 +10,11 @@ import {
   UserRole,
   UserRole_KEY,
 } from '../../../utils/constants';
-// import { UserRole } from '../../interfaces/employee.type';
 import { ILoginRes } from '../../interfaces/login.interface';
 import { IGetProfile } from '../../interfaces/requests/auth.interface';
+import { IEmployee } from '../../interfaces/requests/employee.interface';
 import { ISignupPostData } from '../../interfaces/requests/signup.interface';
 import { Employee } from '../../models/employee.model';
-import { IEmployee } from '../../interfaces/requests/employee.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -66,7 +65,6 @@ export class AuthService {
   }
 
   updateProfile(id: number, data: IEmployee) {
-    console.log(data);
     return this.http.put(`${this.apiUrl}/updateuser/${id}`, data, {
       withCredentials: true,
       headers: this.Headers,
@@ -115,7 +113,6 @@ export class AuthService {
       );
   }
   signup(data: ISignupPostData) {
-    console.log(data);
     return this.http.post(
       `${this.apiUrl}/registration`,
       {
