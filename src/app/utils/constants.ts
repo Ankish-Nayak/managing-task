@@ -1,5 +1,4 @@
 export const UserRole_KEY = 'userRole';
-export const USER_KEY = 'user';
 export const GET_TODOS_KEY = 'getTodosKey';
 export const GET_EMPLOYEES_KEY = 'getEmployeesKey';
 //TODO: to be changed.
@@ -25,9 +24,6 @@ export const END_POINTS = {
   assignTask: 'assign-task/:employeeId',
 };
 
-// 0 -> means employee
-// 1 -> means admin
-// 2 -> super admin
 export const EMPLOYEE_TYPE = {
   employee: 0,
   admin: 1,
@@ -41,7 +37,6 @@ export enum UserRole {
 }
 
 export enum LocalStorageKeys {
-  UserToken = 'auth_token',
   UserRole = 'user_role',
   AuthToken = 'auth_token',
   User = 'user',

@@ -6,7 +6,6 @@ import { environment } from '../../../../environments/environment.development';
 import {
   EMPLOYEE_TYPE,
   LocalStorageKeys,
-  USER_KEY,
   UserRole,
   UserRole_KEY,
 } from '../../../utils/constants';
@@ -31,7 +30,7 @@ export class AuthService {
   );
   private _userSource = new BehaviorSubject<Employee | null>(
     (() => {
-      const data = localStorage.getItem(USER_KEY);
+      const data = getLocalStorageItem(LocalStorageKeys.User);
       if (data === null) {
         return null;
       } else {
