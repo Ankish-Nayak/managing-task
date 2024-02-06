@@ -3,8 +3,10 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  EventEmitter,
   Input,
   OnInit,
+  Output,
   ViewChildren,
 } from '@angular/core';
 import {
@@ -17,6 +19,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
+import { ClickedEnterDirective } from '../../../../shared/directives/clicked-enter/clicked-enter.directive';
 import { IUpdateEmpoyee } from '../../../../shared/interfaces/requests/employee.interface';
 import {
   Department,
@@ -33,7 +36,7 @@ import { notNullValidator } from '../../../../shared/validators/not-null-validat
 import { EMPLOYEE_TYPE, END_POINTS } from '../../../../utils/constants';
 import { getActiveEndpoint } from '../../../../utils/getActiveEndpoint';
 import { VALIDATION_MESSAGES } from './VALIDATION_MESSAGES';
-import { ClickedEnterDirective } from '../../../../shared/directives/clicked-enter/clicked-enter.directive';
+import { SubmitSpinnerComponent } from '../../../../shared/spinners/submit-spinner/submit-spinner.component';
 type IPropertyName =
   | 'name'
   | 'email'
@@ -53,6 +56,7 @@ type IPropertyName =
     CommonModule,
     SpinnerComponent,
     ClickedEnterDirective,
+    SubmitSpinnerComponent,
   ],
   templateUrl: './upsert-admin.component.html',
   styleUrl: './upsert-admin.component.scss',
@@ -64,19 +68,21 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
   @ViewChildren(FormControlName, { read: ElementRef })
   formInputElements!: ElementRef[];
   @Input() displayTitle: boolean = true;
-
   displayFeedback: { [key in IPropertyName]?: string } = {};
   employees: { name: string; value: number }[] = [
     { name: 'Employee', value: 0 },
     { name: 'Admin', value: 1 },
   ];
+  isSubmitLoading = false;
 
+  @Output() updated: EventEmitter<boolean> = new EventEmitter<boolean>();
   employee!: Employee;
   departments!: Department[];
   @Input() id!: string;
 
   @Input({ alias: 'updateForm', transform: (value: boolean) => !value })
   adminRegistration: boolean = true;
+  endPoint: string = '';
 
   private validatioMessages!: { [key: string]: { [key: string]: string } };
   private genericValidator!: GenericValidators;
@@ -109,9 +115,8 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
 
     this.getDepartments();
     if (getActiveEndpoint(this.route) === `./${END_POINTS.updateAdmin}`) {
+      this.endPoint = getActiveEndpoint(this.route);
       this.adminRegistration = false;
-    } else {
-      this.adminRegistration = true;
     }
     this.signupFormInit();
   }
@@ -221,17 +226,23 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
     this.markAsTouchedAndDirty();
 
     if (this.signupForm.valid) {
+      this.isSubmitLoading = true;
       if (this.adminRegistration) {
         const data = this.signupForm.value;
-        this.authService.signup(data).subscribe(() => {
-          if (this.adminRegistration) {
-            this.router.navigate([`../${END_POINTS.adminList}`], {
-              relativeTo: this.route,
-            });
-          } else {
-            this.router.navigate(['', END_POINTS.dashboard.toString()]);
-          }
-        });
+        this.authService.signup(data).subscribe(
+          () => {
+            this.updated.emit(true);
+            if (this.endPoint == `./${END_POINTS.createAdmin}`) {
+              this.router.navigate([`../${END_POINTS.adminList}`], {
+                relativeTo: this.route,
+              });
+            }
+          },
+          () => {},
+          () => {
+            this.isSubmitLoading = false;
+          },
+        );
       } else {
         const departmentName = this.departments.find(
           (d) => d.id.toString() === this.signupForm.value.departmentID,
@@ -244,9 +255,11 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
         };
         this.employeeService.updateEmployee(Number(this.id), data).subscribe(
           () => {
-            this.router.navigate([`../../${END_POINTS.adminList}`], {
-              relativeTo: this.route,
-            });
+            this.updated.emit(true);
+            if (this.endPoint === `./${END_POINTS.updateAdmin}`) {
+              this.router.navigate(['', END_POINTS.portal.toString()]);
+            }
+
             this.toastService.show(
               'Admin Updatation',
               'Admin has been updated',
@@ -259,6 +272,9 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
               'Failed to update admin',
               'error',
             );
+          },
+          () => {
+            this.isSubmitLoading = false;
           },
         );
       }

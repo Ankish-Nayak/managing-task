@@ -38,7 +38,6 @@
           <div class="invalid-feedback">
             {{ this.displayFeedback.description }}
           </div>
-          <!-- <!---TODO: employee selection for assigning task-> -->
           <label for="employeeID">Assign To</label>
           <select
             [class]="validProperty('employeeId')"
@@ -55,8 +54,12 @@
             {{ this.displayFeedback.employeeId }}
           </div>
         </div>
-        <div class="d-flex justify-content-between align-items">
-          <button class="btn btn-primary" type="submit">Submit</button>
+        <div
+          class="d-flex justify-content-center align-items container-fuild submit"
+        >
+          <app-submit-spinner
+            [isSubmitLoading]="isSubmitLoading"
+          ></app-submit-spinner>
         </div>
       </form>
     </div>

@@ -1,6 +1,9 @@
-<app-spinner *ngIf="isLoading"></app-spinner>
-<div class="card" *ngIf="!isLoading">
+<div class="card">
+  <div class="d-flex justify-content-center align-items-center">
+    <app-spinner *ngIf="isLoading"></app-spinner>
+  </div>
   <div
+    *ngIf="!isLoading"
     class="card-body"
     appClickedEnter
     (clickedEnter)="onClickedEnter()"
@@ -134,7 +137,6 @@
             {{ displayFeedback.employeeType }}
           </div>
         </div>
-
         <div class="form-group" *ngIf="adminRegistration">
           <label for="password">Password</label>
           <input
@@ -149,15 +151,12 @@
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary" *ngIf="adminRegistration">
-          Create Admin
-        </button>
-
         <div
-          class="d-flex justify-content-between align-items-center"
-          *ngIf="!adminRegistration"
+          class="d-flex justify-content-center align-items-center container-fluid submit"
         >
-          <button class="btn btn-primary" type="submit">Update Admin</button>
+          <app-submit-spinner
+            [isSubmitLoading]="isSubmitLoading"
+          ></app-submit-spinner>
         </div>
       </form>
     </div>

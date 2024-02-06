@@ -16,6 +16,7 @@
       *ngSwitchCase="COMPONENT_NAME.UPSERT_ADMIN_COMPONENT"
       [updateForm]="update"
       [displayTitle]="false"
+      (updated)="closeModal()"
       [id]="id"
     ></app-upsert-admin>
     <app-todo-detail

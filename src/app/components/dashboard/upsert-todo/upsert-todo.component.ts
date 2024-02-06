@@ -33,6 +33,7 @@ import { SpinnerComponent } from '../../../shared/spinners/spinner/spinner.compo
 import { GenericValidators } from '../../../shared/validators/generic-validator';
 import { notNullValidator } from '../../../shared/validators/not-null-validators';
 import { END_POINTS } from '../../../utils/constants';
+import { SubmitSpinnerComponent } from '../../../shared/spinners/submit-spinner/submit-spinner.component';
 
 type IPropertyName = 'title' | 'description' | 'employeeId';
 
@@ -44,12 +45,14 @@ type IPropertyName = 'title' | 'description' | 'employeeId';
     CommonModule,
     SpinnerComponent,
     ClickedEnterDirective,
+    SubmitSpinnerComponent,
   ],
   templateUrl: './upsert-todo.component.html',
   styleUrl: './upsert-todo.component.scss',
 })
 export class UpsertTodoComponent {
   isLoading: boolean = true;
+  isSubmitLoading: boolean = false;
   todoForm!: FormGroup;
   displayFeedback: { [key in IPropertyName]?: string } = {};
   @ViewChildren(FormControlName, { read: ElementRef })
@@ -143,19 +146,20 @@ export class UpsertTodoComponent {
       const { title, description } = this.todoForm.value;
       this.markAsTouchedAndDirty();
       if (this.todoForm.valid) {
+        this.isSubmitLoading = true;
         const data: IUpdateTodoPostData = {
           title: this.trimValue(title),
           description: this.trimValue(description),
           isCompleted: false,
           employeeId: Number(this.id),
         };
-        this.isLoading = false;
+        // this.isLoading = false;
 
         this.todoService.updateTodo(data.employeeId, data).subscribe(
           () => {
             this.updated.emit(true);
             // this.router.navigate(['../../todos'], { relativeTo: this.route });
-            this.isLoading = false;
+            // this.isLoading = false;
             this.toastService.show(
               'Todo',
               'Todo has been updated successfully',
@@ -164,7 +168,7 @@ export class UpsertTodoComponent {
             );
           },
           (e) => {
-            this.isLoading = false;
+            // this.isLoading = false;
             console.log(e);
             this.toastService.show(
               'Todo',
@@ -172,6 +176,9 @@ export class UpsertTodoComponent {
               'error',
               2000,
             );
+          },
+          () => {
+            this.isSubmitLoading = false;
           },
         );
       }
@@ -189,7 +196,8 @@ export class UpsertTodoComponent {
 
       this.markAsTouchedAndDirty();
       if (this.todoForm.valid) {
-        this.isLoading = true;
+        this.isSubmitLoading = true;
+        // this.isLoading = true;
         this.todoService.createTodo(data).subscribe(
           () => {
             // this.router.navigate(['../todos'], { relativeTo: this.route });
@@ -205,10 +213,10 @@ export class UpsertTodoComponent {
               'success',
               2000,
             );
-            this.isLoading = false;
+            // this.isLoading = false;
           },
           (e) => {
-            this.isLoading = false;
+            // this.isLoading = false;
 
             this.toastService.show(
               'Todo',
@@ -217,6 +225,9 @@ export class UpsertTodoComponent {
               2000,
             );
             console.log(e);
+          },
+          () => {
+            this.isSubmitLoading = false;
           },
         );
       }
