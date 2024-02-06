@@ -12,6 +12,7 @@ import {
 import { EmployeeService } from '../../../shared/services/employee/employee.service';
 import { EmployeeListHeaderComponent } from './employee-list-header/employee-list-header.component';
 import { EmployeeComponent } from './employee/employee.component';
+import { END_POINTS } from '../../../utils/constants';
 
 //TODO: add placeholder on every small element which exists like employee todo and alll to make this
 //much better
@@ -92,9 +93,12 @@ export class EmployeeListComponent implements OnInit {
       });
   }
   onAssignTask(id: number) {
-    this.router.navigate([`../assign-task/${id}`], {
-      relativeTo: this.route,
+    this.router.navigateByUrl(`${END_POINTS.portal}/assign-task/${id}`, {
       replaceUrl: true,
     });
+    // this.router.navigate([`../assign-task/${id}`], {
+    //   relativeTo: this.route,
+    //   replaceUrl: true,
+    // });
   }
 }

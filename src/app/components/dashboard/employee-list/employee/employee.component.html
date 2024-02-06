@@ -28,6 +28,7 @@
       >
       </i>
       <i
+        *ngIf="false"
         appHighlight
         (highlight)="onHightlight('eye', $event)"
         [class]="highlight.eye ? ICONS.eyeFilled.class : ICONS.eye.class"
