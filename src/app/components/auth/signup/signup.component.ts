@@ -110,9 +110,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
   }
   ngOnInit(): void {
     this.getDepartments();
-    console.log('endpoint', this.getActiveEndpoint());
     if (this.getActiveEndpoint() === `./${END_POINTS.createAdmin}`) {
-      console.log('yess');
       this.adminRegistration = true;
     } else {
       this.adminRegistration = false;
@@ -233,15 +231,12 @@ export class SignupComponent implements OnInit, AfterViewInit {
     };
 
     if (this.signupForm.valid) {
-      console.log('inputs: ', data);
-      this.authService.signup(data).subscribe((res) => {
+      this.authService.signup(data).subscribe(() => {
         if (this.adminRegistration) {
           this.router.navigate(['', END_POINTS.adminList]);
         } else {
           this.router.navigate(['', END_POINTS.dashboard.toString()]);
         }
-
-        console.log(res);
       });
     }
   }

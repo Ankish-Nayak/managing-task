@@ -17,15 +17,15 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
+import { TEmployee } from '../../shared/interfaces/employee.type';
 import { ConfirmationModalComponent } from '../../shared/modals/confirmation-modal/confirmation-modal.component';
 import { Department } from '../../shared/models/department.model';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { DepartmentService } from '../../shared/services/department/department.service';
 import { GenericValidators } from '../../shared/validators/generic-validator';
-import { DepartmentComponent } from './department/department.component';
-import { TEmployee } from '../../shared/interfaces/employee.type';
-import { END_POINTS, UserRole } from '../../utils/constants';
 import { allowedToView } from '../../utils/allowedToView';
+import { END_POINTS, UserRole } from '../../utils/constants';
+import { DepartmentComponent } from './department/department.component';
 
 type IPropertyName = 'departmentName';
 @Component({
@@ -85,7 +85,6 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
     });
   }
   userRole() {
-    console.log('clicked');
     this.authService.userTypeMessage$.subscribe((res) => {
       console.log(res);
     });
@@ -125,7 +124,6 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
   createDepartment() {
     const data = this.departmentForm.value;
     this.departmentService.createDepartment(data).subscribe((res) => {
-      console.log(res);
       this.isLoading = true;
       this.departmentFormInit();
       this.getDepartments();
@@ -175,7 +173,6 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
         this.departments = res.map(
           (d) => new Department(d.id, d.departmentName, d.employeesCount),
         );
-        console.log(res);
       },
       (e) => {
         console.log(e);

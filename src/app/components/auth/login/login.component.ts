@@ -98,8 +98,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
       this.authService.login(email, password).subscribe(
-        (res) => {
-          console.log(res);
+        () => {
           this.router.navigate(['', 'dashboard']);
         },
         (e) => {

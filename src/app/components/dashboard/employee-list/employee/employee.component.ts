@@ -3,11 +3,12 @@ import { HighlightDirective } from '../../../../shared/directives/highlight/high
 import { ICONS } from '../../../../shared/icons/icons';
 import { Employee } from '../../../../shared/models/employee.model';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: '[app-employee]',
   standalone: true,
-  imports: [HighlightDirective, NgbTooltipModule],
+  imports: [HighlightDirective, NgbTooltipModule, CommonModule],
   templateUrl: './employee.component.html',
   styleUrl: './employee.component.scss',
 })
