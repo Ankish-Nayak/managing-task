@@ -23,6 +23,7 @@ export class PaginationComponent implements OnInit, OnChanges, DoCheck {
   ngDoCheck(): void {
     // console.log('changed');
   }
+  @Input() defaultSelectedPaginatedSize: number = 10;
   @Output() selectedPageChange: EventEmitter<number> =
     new EventEmitter<number>();
   @Input({ required: true }) collectionSize!: number;
@@ -48,7 +49,11 @@ export class PaginationComponent implements OnInit, OnChanges, DoCheck {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes) {
       if (changes['collectionSize']) {
+        console.log('collectionSize changing', this.collectionSize);
+        console.log('selectedPaginatedSize', this.selectedPaginatedSize);
         this.pagesInit();
+        this.configurePaginatedSize();
+        console.log(this.paginatedSizes);
       }
       this.renderPages();
     }
@@ -60,6 +65,7 @@ export class PaginationComponent implements OnInit, OnChanges, DoCheck {
   }
 
   configurePaginatedSize() {
+    this.paginatedSizes = [];
     this.paginatedSizes.push(this.selectedPaginatedSize);
     let i = 5;
     while (i < this.collectionSize) {
@@ -74,6 +80,15 @@ export class PaginationComponent implements OnInit, OnChanges, DoCheck {
     this.paginatedSizes = Array.from(new Set(this.paginatedSizes));
 
     this.paginatedSizes.sort((a: number, b: number) => a - b);
+    this.paginatedSizes = this.paginatedSizes.filter(
+      (page) => page <= this.collectionSize,
+    );
+    // if (this.selectedPaginatedSize > this.collectionSize) {
+    //   this.selectedPaginatedSize =
+    //     this.paginatedSizes[this.paginatedSizes.length - 1];
+    // } else {
+    //   this.selectedPaginatedSize = this.defaultSelectedPaginatedSize;
+    // }
   }
 
   pagesInit() {
