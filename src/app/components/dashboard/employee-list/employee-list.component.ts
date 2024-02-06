@@ -12,10 +12,13 @@ import {
 import { EmployeeService } from '../../../shared/services/employee/employee.service';
 import { EmployeeListHeaderComponent } from './employee-list-header/employee-list-header.component';
 import { EmployeeComponent } from './employee/employee.component';
-import { END_POINTS } from '../../../utils/constants';
+import { END_POINTS, LocalStorageKeys } from '../../../utils/constants';
 import { PaginationComponent } from '../../../shared/paginations/pagination/pagination.component';
 
-import { GET_EMPLOYEES_KEY } from '../../../utils/constants';
+import {
+  getLocalStorageItem,
+  setLocalStorageItem,
+} from '../../../utils/localStorageCRUD';
 //TODO: add placeholder on every small element which exists like employee todo and alll to make this
 //much better
 
@@ -39,7 +42,7 @@ export class EmployeeListComponent implements OnInit {
   employeeToBeDeletedID: number | null = null;
   pageState = new GetEmployeesQueryParams(
     (() => {
-      const data = localStorage.getItem(GET_EMPLOYEES_KEY);
+      const data = getLocalStorageItem(LocalStorageKeys.GetEmployees);
       if (data) {
         return JSON.parse(data);
       } else {
@@ -80,8 +83,9 @@ export class EmployeeListComponent implements OnInit {
           this.employees = this.employeeAdapter.adaptArray(res.iterableData);
           this.totalPagesCount = res.count;
           this.isLoading = false;
-          localStorage.setItem(
-            GET_EMPLOYEES_KEY,
+          setLocalStorageItem(
+            LocalStorageKeys.GetEmployees,
+
             JSON.stringify(this.pageState),
           );
         });
@@ -127,7 +131,11 @@ export class EmployeeListComponent implements OnInit {
       ...this.pageState,
       ...pageStateUpdates,
     };
-    localStorage.setItem(GET_EMPLOYEES_KEY, JSON.stringify(this.pageState));
+    setLocalStorageItem(
+      LocalStorageKeys.GetEmployees,
+
+      JSON.stringify(this.pageState),
+    );
     this.getEmployees();
     // this..getTodos(this.pageState).subscribe((res) => {
     //   this.employees = res.iterableData;

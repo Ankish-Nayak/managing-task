@@ -1,4 +1,3 @@
-export const GET_EMPLOYEES_KEY = 'getEmployeesKey';
 //TODO: to be changed.
 export const END_POINTS = {
   dashboard: 'dashboard',
