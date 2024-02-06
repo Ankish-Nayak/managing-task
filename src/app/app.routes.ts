@@ -10,14 +10,13 @@ import { TodoListComponent } from './components/dashboard/todo-list/todo-list.co
 import { UpsertTodoComponent } from './components/dashboard/upsert-todo/upsert-todo.component';
 import { DepartmentListComponent } from './components/department-list/department-list.component';
 import { NotAllowedUserComponent } from './components/not-allowed-user/not-allowed-user.component';
+import { PortalComponent } from './components/portal/portal.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { authGuard } from './shared/guards/auth/auth.guard';
+import { notSavedChangesGuard } from './shared/guards/notSavedChanges/not-saved-changes.guard';
 import { userBasedAuthGuard } from './shared/guards/userBasedAuth/user-based-auth.guard';
 import { PaginationComponent } from './shared/paginations/pagination/pagination.component';
 import { END_POINTS, UserRole } from './utils/constants';
-import { UpsertProfileComponent } from './components/dashboard/upsert-profile/upsert-profile.component';
-import { notSavedChangesGuard } from './shared/guards/notSavedChanges/not-saved-changes.guard';
-import { PortalComponent } from './components/portal/portal.component';
 
 // TODO: make a class to get url to particular endpoints and also have push, pop as method in it.
 export const routes: Routes = [

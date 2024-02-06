@@ -98,6 +98,7 @@ export class NavbarComponent implements OnInit {
         // );
         this.router.navigateByUrl(
           `${END_POINTS.portal}/${END_POINTS.upsertProfile}`,
+          { replaceUrl: true },
         );
         break;
       }

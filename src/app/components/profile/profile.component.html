@@ -16,8 +16,13 @@
         cancel
       </button>
     </div>
-    <div class="update-profile-form">
-      <form [formGroup]="updateProfileForm" (submit)="onSubmit($event)">
+    <div
+      class="update-profile-form"
+      [tabIndex]="0"
+      appClickedEnter
+      (clickedEnter)="onClickEnter()"
+    >
+      <form [formGroup]="updateProfileForm" (submit)="onSubmit()">
         <div class="form-group">
           <label for="email">Email address</label>
           <input

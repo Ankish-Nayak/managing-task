@@ -8,7 +8,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import {
   BehaviorSubject,
@@ -17,6 +17,7 @@ import {
   fromEvent,
   merge,
 } from 'rxjs';
+import { ClickedEnterDirective } from '../../shared/directives/clicked-enter/clicked-enter.directive';
 import { BlockNavigationIfChange } from '../../shared/interfaces/hasChanges/BlockNavigationIfChange';
 import { IEmployee } from '../../shared/interfaces/requests/employee.interface';
 import { SaveChangesModalComponent } from '../../shared/modals/save-changes-modal/save-changes-modal.component';
@@ -42,7 +43,13 @@ type IPropertyName =
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [JsonPipe, CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [
+    JsonPipe,
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    ClickedEnterDirective,
+  ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
 })
@@ -80,12 +87,17 @@ export class ProfileComponent implements OnInit, BlockNavigationIfChange {
     private authService: AuthService,
     private departmentService: DepartmentService,
     private modalService: NgbModal,
+    private router: Router,
   ) {
     // defining validation messages here.
     this.validatioMessages = UPDATE_PROFILE_VALIDAION_MESSAGES;
     this.genericValidator = new GenericValidators(this.validatioMessages);
   }
   ngOnInit(): void {
+    this.profileComponentInit();
+  }
+  profileComponentInit() {
+    this.isLoading = true;
     this.getDepartments();
 
     this.updateProfileFormInit();
@@ -97,6 +109,7 @@ export class ProfileComponent implements OnInit, BlockNavigationIfChange {
     this.authService.profile().subscribe((res) => {
       this.profile = res;
       this.updateProfileForm.patchValue(this.profile);
+      // this.formInitailValue = JSON.stringify(res);
       this.isLoading = false;
     });
   }
@@ -106,13 +119,6 @@ export class ProfileComponent implements OnInit, BlockNavigationIfChange {
     const controlsBlurs: Observable<any>[] = this.formInputElements.map(
       (formControl: ElementRef) => fromEvent(formControl.nativeElement, 'blur'),
     );
-
-    this.updateProfileForm.valueChanges.subscribe(() => {
-      const currentValue = JSON.stringify(this.updateProfileForm.value);
-      this._hasUnSavedChangesSource.next(
-        this.formInitailValue !== currentValue,
-      );
-    });
 
     merge(this.updateProfileForm.valueChanges, ...controlsBlurs)
       .pipe(debounceTime(800))
@@ -137,25 +143,28 @@ export class ProfileComponent implements OnInit, BlockNavigationIfChange {
       this.cardBodyHeader = this.cardBodyHeader.filter((v) => v !== 'visible');
       this.cardBodyHeader.push('invisible');
       this.updateProfileForm.reset(this.profile);
-      console.log('reseting');
       this.updateProfileForm.disable();
       this.updatingProfile = false;
-      console.log(this.cardBodyHeader);
     } else {
       this.cardBodyHeader = this.cardBodyHeader.filter(
         (v) => v !== 'invisible',
       );
       this.cardBodyHeader.push('visible');
       this.updatingProfile = true;
-      console.log(this.cardBodyHeader);
 
       this.enableAllowedField(['phone', 'city', 'country', 'address']);
+      this.formInitailValue = JSON.stringify(this.updateProfileForm.value);
+
+      this.updateProfileForm.valueChanges.subscribe(() => {
+        const currentValue = JSON.stringify(this.updateProfileForm.value);
+        this._hasUnSavedChangesSource.next(
+          this.formInitailValue !== currentValue,
+        );
+      });
       // this.updateProfileForm.enable();
     }
-    console.log(this.updatingProfile);
   }
   updateProfileFormInit() {
-    console.log(this.profile);
     this.updateProfileForm = new FormGroup({
       name: new FormControl(this.profile.name, [Validators.required]),
       email: new FormControl(this.profile.email, [
@@ -183,7 +192,7 @@ export class ProfileComponent implements OnInit, BlockNavigationIfChange {
         Validators.required,
       ]),
     });
-    this.formInitailValue = JSON.stringify(this.updateProfileForm.value);
+    // this.formInitailValue = JSON.stringify(this.profile);
   }
   edit() {
     if (!this.updatingProfile) {
@@ -193,6 +202,7 @@ export class ProfileComponent implements OnInit, BlockNavigationIfChange {
   }
   reset() {
     this.updateProfileForm.patchValue(this.profile);
+    this.formInitailValue = JSON.stringify(this.updateProfileForm.value);
   }
 
   getDepartments() {
@@ -202,9 +212,7 @@ export class ProfileComponent implements OnInit, BlockNavigationIfChange {
       );
     });
   }
-  onSubmit(e: SubmitEvent) {
-    e.preventDefault();
-    // Mark all form as touched to trigger validation messages
+  onSubmit() {
     this.markAsTouchedAndDirty();
     const { address, country, phone, city } = this.updateProfileForm.value;
     const data: IEmployee = {
@@ -216,13 +224,19 @@ export class ProfileComponent implements OnInit, BlockNavigationIfChange {
     };
 
     if (this.updateProfileForm.valid) {
-      console.log('inputs: ', data);
-      this.authService.updateProfile(this.profile.id, data).subscribe((res) => {
+      this.authService.updateProfile(this.profile.id, data).subscribe(() => {
         this._hasUnSavedChangesSource.next(false);
-        console.log(res);
-        this.toggleForm();
+        this.reloadComponent();
       });
     }
+  }
+  reloadComponent() {
+    const currentUrl = this.router.url;
+    this.router
+      .navigateByUrl('/reload', { skipLocationChange: true })
+      .then(() => {
+        this.router.navigate([currentUrl]);
+      });
   }
   neitherTouchedNorDirty(element: AbstractControl<any, any>) {
     return !(element.touched && element.dirty);
@@ -257,5 +271,12 @@ export class ProfileComponent implements OnInit, BlockNavigationIfChange {
   }
   cancel() {
     this.toggleForm();
+
+    this._hasUnSavedChangesSource.next(false);
+  }
+  onClickEnter() {
+    if (this.updatingProfile) {
+      this.onSubmit();
+    }
   }
 }

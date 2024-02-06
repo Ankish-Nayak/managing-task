@@ -32,6 +32,7 @@ import { TodoService } from '../../../shared/services/todo/todo.service';
 import { SpinnerComponent } from '../../../shared/spinners/spinner/spinner.component';
 import { GenericValidators } from '../../../shared/validators/generic-validator';
 import { notNullValidator } from '../../../shared/validators/not-null-validators';
+import { END_POINTS } from '../../../utils/constants';
 
 type IPropertyName = 'title' | 'description' | 'employeeId';
 
@@ -177,6 +178,9 @@ export class UpsertTodoComponent {
         employeeId,
         isCompleted: false,
       };
+      if (this.employeeId) {
+        data.employeeId = this.employeeId;
+      }
 
       this.markAsTouchedAndDirty();
       if (this.todoForm.valid) {
@@ -185,7 +189,9 @@ export class UpsertTodoComponent {
           () => {
             // this.router.navigate(['../todos'], { relativeTo: this.route });
             if (this.employeeId) {
-              this.router.navigate(['../'], { relativeTo: this.route });
+              this.router.navigate([`../../${END_POINTS.employeeList}`], {
+                relativeTo: this.route,
+              });
             }
             this.updated.emit(true);
             this.toastService.show(

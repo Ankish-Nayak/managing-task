@@ -1,8 +1,8 @@
 import { CanDeactivateFn } from '@angular/router';
 import { of, switchMap } from 'rxjs';
-import { UpsertProfileComponent } from '../../../components/dashboard/upsert-profile/upsert-profile.component';
+import { ProfileComponent } from '../../../components/profile/profile.component';
 
-export const notSavedChangesGuard: CanDeactivateFn<UpsertProfileComponent> = (
+export const notSavedChangesGuard: CanDeactivateFn<ProfileComponent> = (
   component,
   _currentRoute,
   _currentState,
