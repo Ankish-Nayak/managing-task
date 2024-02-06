@@ -21,6 +21,14 @@
     ></tr>
   </tbody>
 </table>
+<app-pagination
+  *ngIf="!isLoading"
+  [(selectedPage)]="pageState.index"
+  (pageChange)="onPageChange({ index: $event })"
+  [collectionSize]="totalPagesCount"
+  [selectedPaginatedSize]="pageState.take"
+  (selectedPaginatedSizeChange)="onPageChange({ take: $event })"
+/>
 
 <app-confirmation-modal
   (confirmation)="confirm($event)"

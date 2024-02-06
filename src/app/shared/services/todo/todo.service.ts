@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment.development';
-import { AUTH_TOKEN } from '../../../utils/constants';
+import { LocalStorageKeys } from '../../../utils/constants';
 import {
   GetTodosQueryParams,
   ICreateTodoPostData,
@@ -11,6 +11,7 @@ import {
   IMarkTodoPostData,
   IUpdateTodoPostData,
 } from '../../interfaces/requests/toto.interface';
+import { getLocalStorageItem } from '../../../utils/localStorageCRUD';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +20,7 @@ export class TodoService {
   private apiUrl = `${environment.BASE_URL}/todo`;
   constructor(private http: HttpClient) {}
   get Headers() {
-    const token = localStorage.getItem(AUTH_TOKEN);
+    const token = getLocalStorageItem(LocalStorageKeys.AuthToken);
     return new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,

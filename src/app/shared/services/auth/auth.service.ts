@@ -4,12 +4,17 @@ import { BehaviorSubject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment.development';
 import {
-  AUTH_TOKEN,
   EMPLOYEE_TYPE,
+  LocalStorageKeys,
   USER_KEY,
   UserRole,
   UserRole_KEY,
 } from '../../../utils/constants';
+import {
+  getLocalStorageItem,
+  removeLocalStorageItem,
+  setLocalStorageItem,
+} from '../../../utils/localStorageCRUD';
 import { ILoginRes } from '../../interfaces/login.interface';
 import { IGetProfile } from '../../interfaces/requests/auth.interface';
 import { IEmployee } from '../../interfaces/requests/employee.interface';
@@ -39,7 +44,7 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
   get Headers() {
-    const token = localStorage.getItem(AUTH_TOKEN);
+    const token = getLocalStorageItem(LocalStorageKeys.AuthToken);
     return new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
@@ -52,7 +57,7 @@ export class AuthService {
 
   me() {
     //TODO: make it observable for backend request.
-    const token = localStorage.getItem(AUTH_TOKEN);
+    const token = getLocalStorageItem(LocalStorageKeys.AuthToken);
     return token === null ? false : true;
   }
   profile() {
@@ -71,7 +76,7 @@ export class AuthService {
     });
   }
   logout() {
-    localStorage.removeItem(AUTH_TOKEN);
+    removeLocalStorageItem(LocalStorageKeys.AuthToken);
     localStorage.removeItem(UserRole_KEY);
     return of();
   }
@@ -91,7 +96,7 @@ export class AuthService {
       )
       .pipe(
         map((res) => {
-          localStorage.setItem(AUTH_TOKEN, res.token);
+          setLocalStorageItem(LocalStorageKeys.AuthToken, res.token);
           this._userTypeSource.next(
             (() => {
               const employee = (() => {

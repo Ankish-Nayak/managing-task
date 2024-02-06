@@ -1,8 +1,7 @@
-import { TEmployee } from '../shared/interfaces/employee.type';
 export const UserRole_KEY = 'userRole';
-export const AUTH_TOKEN = 'authToken';
 export const USER_KEY = 'user';
 export const GET_TODOS_KEY = 'getTodosKey';
+export const GET_EMPLOYEES_KEY = 'getEmployeesKey';
 //TODO: to be changed.
 export const END_POINTS = {
   dashboard: 'dashboard',
@@ -41,15 +40,18 @@ export enum UserRole {
   SuperAdmin = 'superadmin',
 }
 
+export enum LocalStorageKeys {
+  UserToken = 'auth_token',
+  UserRole = 'user_role',
+  AuthToken = 'auth_token',
+  User = 'user',
+  GetTodos = 'get_todos',
+  GetEmployees = 'get_employees',
+}
+
 export enum COMPONENT_NAME {
   UPSERT_ADMIN_COMPONENT = 'upsert-admin-component',
   UPSERT_TODO_COMPONENT = 'upsert-todo-component',
   UPSERT_EMPLOYEE_COMPONENT = 'upsert_employee_component',
   TODO_DETAIL_COMPONENT = 'todo-detail-component',
 }
-
-// export const UserRole: {[key: string]: TEmployee} = {
-//   employee: 'employee',
-//   admin: 'admin',
-//   superAdmin: 'superadmin',
-// };

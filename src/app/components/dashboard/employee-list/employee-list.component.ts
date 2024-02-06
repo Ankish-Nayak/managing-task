@@ -13,7 +13,9 @@ import { EmployeeService } from '../../../shared/services/employee/employee.serv
 import { EmployeeListHeaderComponent } from './employee-list-header/employee-list-header.component';
 import { EmployeeComponent } from './employee/employee.component';
 import { END_POINTS } from '../../../utils/constants';
+import { PaginationComponent } from '../../../shared/paginations/pagination/pagination.component';
 
+import { GET_EMPLOYEES_KEY } from '../../../utils/constants';
 //TODO: add placeholder on every small element which exists like employee todo and alll to make this
 //much better
 
@@ -26,6 +28,7 @@ import { END_POINTS } from '../../../utils/constants';
     EmployeeComponent,
     HighlightDirective,
     EmployeeListHeaderComponent,
+    PaginationComponent,
   ],
   templateUrl: './employee-list.component.html',
   styleUrl: './employee-list.component.scss',
@@ -34,7 +37,23 @@ export class EmployeeListComponent implements OnInit {
   employees!: Employee[];
   isLoading: boolean = true;
   employeeToBeDeletedID: number | null = null;
-  pageState = new GetEmployeesQueryParams({});
+  pageState = new GetEmployeesQueryParams(
+    (() => {
+      const data = localStorage.getItem(GET_EMPLOYEES_KEY);
+      if (data) {
+        return JSON.parse(data);
+      } else {
+        return {
+          isPagination: true,
+          index: 0,
+          take: 10,
+          isCompleted: null,
+        };
+      }
+    })(),
+  );
+  totalPagesCount: number = 0;
+  employeeId: string | null = null;
   readonly ICONS = ICONS;
   constructor(
     private employeeService: EmployeeService,
@@ -45,26 +64,34 @@ export class EmployeeListComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
-      if (id !== null) {
-        this.getEmployeesByDepartment(Number(id));
-      } else {
-        this.getEmployees();
-      }
+      this.employeeId = id;
+      this.getEmployees();
     });
   }
   getEmployeesByDepartment(id: number) {
     this.isLoading = true;
-    this.employeeService.getEmployeesByDepartment(id).subscribe((res) => {
-      this.employees = this.employeeAdapter.adaptArray(res.iterableData);
-      this.isLoading = false;
-    });
   }
   getEmployees() {
     this.isLoading = true;
-    this.employeeService.getEmployees(this.pageState).subscribe((res) => {
-      this.employees = this.employeeAdapter.adaptArray(res.iterableData);
-      this.isLoading = false;
-    });
+    if (this.employeeId) {
+      this.employeeService
+        .getEmployeesByDepartment(Number(this.employeeId), this.pageState)
+        .subscribe((res) => {
+          this.employees = this.employeeAdapter.adaptArray(res.iterableData);
+          this.totalPagesCount = res.count;
+          this.isLoading = false;
+          localStorage.setItem(
+            GET_EMPLOYEES_KEY,
+            JSON.stringify(this.pageState),
+          );
+        });
+    } else {
+      this.employeeService.getEmployees(this.pageState).subscribe((res) => {
+        this.employees = this.employeeAdapter.adaptArray(res.iterableData);
+        this.totalPagesCount = res.count;
+        this.isLoading = false;
+      });
+    }
   }
   confirm(confirmation: boolean) {
     if (confirmation && this.employeeToBeDeletedID !== null) {
@@ -92,6 +119,22 @@ export class EmployeeListComponent implements OnInit {
         this.employees = res.iterableData;
       });
   }
+  onPageChange(pageStateUpdates: Partial<GetEmployeesQueryParams>) {
+    if (pageStateUpdates.take) {
+      this.pageState.index = 0;
+    }
+    this.pageState = {
+      ...this.pageState,
+      ...pageStateUpdates,
+    };
+    localStorage.setItem(GET_EMPLOYEES_KEY, JSON.stringify(this.pageState));
+    this.getEmployees();
+    // this..getTodos(this.pageState).subscribe((res) => {
+    //   this.employees = res.iterableData;
+    //   this.totalPagesCount = res.totalPageCount;
+    // });
+  }
+
   onAssignTask(id: number) {
     this.router.navigateByUrl(`${END_POINTS.portal}/assign-task/${id}`, {
       replaceUrl: true,

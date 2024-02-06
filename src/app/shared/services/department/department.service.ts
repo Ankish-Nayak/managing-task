@@ -2,8 +2,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from '../../../../environments/environment.development';
-import { AUTH_TOKEN } from '../../../utils/constants';
+import { LocalStorageKeys } from '../../../utils/constants';
 import { IGetDepartmentRes } from '../../interfaces/requests/department.interface';
+import { getLocalStorageItem } from '../../../utils/localStorageCRUD';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,7 @@ export class DepartmentService {
   private apiUrl = `${environment.BASE_URL}`;
   constructor(private http: HttpClient) {}
   get Headers() {
-    const token = localStorage.getItem(AUTH_TOKEN);
+    const token = getLocalStorageItem(LocalStorageKeys.AuthToken);
     return new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
