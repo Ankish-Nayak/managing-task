@@ -7,7 +7,6 @@ import {
   EMPLOYEE_TYPE,
   LocalStorageKeys,
   UserRole,
-  UserRole_KEY,
 } from '../../../utils/constants';
 import {
   getLocalStorageItem,
@@ -26,7 +25,7 @@ import { Employee } from '../../models/employee.model';
 export class AuthService {
   private apiUrl = `${environment.BASE_URL}`;
   private _userTypeSource = new BehaviorSubject<UserRole | null>(
-    localStorage.getItem(UserRole_KEY) as UserRole | null,
+    getLocalStorageItem(LocalStorageKeys.UserRole) as UserRole | null,
   );
   private _userSource = new BehaviorSubject<Employee | null>(
     (() => {
@@ -76,7 +75,7 @@ export class AuthService {
   }
   logout() {
     removeLocalStorageItem(LocalStorageKeys.AuthToken);
-    localStorage.removeItem(UserRole_KEY);
+    removeLocalStorageItem(LocalStorageKeys.UserRole);
     return of();
   }
   login(email: string, password: string) {
@@ -108,7 +107,7 @@ export class AuthService {
                   return UserRole.SuperAdmin;
                 }
               })();
-              localStorage.setItem(UserRole_KEY, employee);
+              setLocalStorageItem(LocalStorageKeys.UserRole, employee);
               return employee;
             })(),
           );
@@ -146,6 +145,6 @@ export class AuthService {
         return UserRole.SuperAdmin;
       }
     })();
-    localStorage.setItem(UserRole_KEY, employee);
+    setLocalStorageItem(LocalStorageKeys.UserRole, employee);
   }
 }

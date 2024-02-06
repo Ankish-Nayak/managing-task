@@ -1,4 +1,3 @@
-export const UserRole_KEY = 'userRole';
 export const GET_TODOS_KEY = 'getTodosKey';
 export const GET_EMPLOYEES_KEY = 'getEmployeesKey';
 //TODO: to be changed.
