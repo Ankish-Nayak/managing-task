@@ -27,13 +27,18 @@ import { TodoService } from '../../../shared/services/todo/todo.service';
 import { SpinnerComponent } from '../../../shared/spinners/spinner/spinner.component';
 import {
   COMPONENT_NAME,
-  GET_TODOS_KEY,
+  LocalStorageKeys,
   UserRole,
 } from '../../../utils/constants';
 import { sortTasksByProperty } from '../../../utils/sortTasksByPropery';
 import { COLS, TCOLS } from './cols';
 import { TodoListHeaderComponent } from './todo-list-header/todo-list-header.component';
 import { TodoComponent } from './todo/todo.component';
+import {
+  getLocalStorageItem,
+  removeLocalStorageItem,
+  setLocalStorageItem,
+} from '../../../utils/localStorageCRUD';
 
 export enum TodoTab {
   All = 'All',
@@ -70,7 +75,7 @@ export class TodoListComponent
   UserRole = UserRole;
   pageState = new GetTodosQueryParams(
     (() => {
-      const data = localStorage.getItem(GET_TODOS_KEY);
+      const data = getLocalStorageItem(LocalStorageKeys.GetTodos);
       if (data) {
         return JSON.parse(data);
       } else {
@@ -260,7 +265,10 @@ export class TodoListComponent
       ...this.pageState,
       ...pageStateUpdates,
     };
-    localStorage.setItem(GET_TODOS_KEY, JSON.stringify(this.pageState));
+    setLocalStorageItem(
+      LocalStorageKeys.GetTodos,
+      JSON.stringify(this.pageState),
+    );
     this.todoService.getTodos(this.pageState).subscribe((res) => {
       this.todos = res.iterableData;
       this.totalPagesCount = res.totalPageCount;
@@ -270,7 +278,7 @@ export class TodoListComponent
     return allowedUsers.includes(this.userType);
   }
   ngOnDestroy(): void {
-    localStorage.removeItem(GET_TODOS_KEY);
+    removeLocalStorageItem(LocalStorageKeys.GetTodos);
   }
   handleTabChange(tab: TodoTab) {
     this.todoTab = tab;
