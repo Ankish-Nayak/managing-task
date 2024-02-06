@@ -20,7 +20,7 @@ export const NAV_LINKS: TNavLinks = [
     name: 'DepartmentList',
     path: processPath(END_POINTS.departmentList),
     active: false,
-    notAllowedUsers: null,
+    notAllowedUsers: [UserRole.Employee, UserRole.Admin],
   },
   {
     name: 'AdminList',

@@ -90,4 +90,18 @@ export const ICONS = {
     openDelay: 1000,
     closeDelay: 500,
   },
+  active: {
+    class: 'bi bi-square',
+    name: 'todo',
+    toolTip: 'mark as done',
+    openDelay: 1000,
+    closeDelay: 500,
+  },
+  done: {
+    class: 'bi bi-check-square',
+    name: 'todo',
+    toolTip: 'mark as undone',
+    openDelay: 1000,
+    closeDelay: 500,
+  },
 };

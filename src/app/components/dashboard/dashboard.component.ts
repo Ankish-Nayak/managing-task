@@ -54,8 +54,18 @@ export class DashboardComponent implements OnInit {
     this.authService.userTypeMessage$.subscribe((res) => {
       if (res !== null) {
         this.userType = res;
+        if (this.userType === UserRole.Employee) {
+          this.cardDataInOrderInitForEmployee();
+        } else {
+          this.cardDataInOrderInit();
+        }
       }
-      this.cardDataInOrderInit();
+    });
+  }
+  cardDataInOrderInitForEmployee() {
+    this.todoService.getTodos({}).subscribe((res) => {
+      this.cards.push(this.getTodosDetails(res));
+      this.isLoading = false;
     });
   }
   cardDataInOrderInit() {
@@ -85,12 +95,13 @@ export class DashboardComponent implements OnInit {
       title: 'Employees',
       description: 'Place to create and delete employees.',
       count: res.iterableData.length,
-      cardLinks: [
+      cardLinks: this.processLinks([
         {
           label: 'View employees',
           endPoint: `${END_POINTS.portal}/${END_POINTS.employeeList}`,
+          notAllowedUsers: [UserRole.Employee],
         },
-      ],
+      ]),
       allowedUsers: [UserRole.Admin, UserRole.SuperAdmin],
     };
   }
@@ -98,7 +109,6 @@ export class DashboardComponent implements OnInit {
     return {
       title: 'Todos',
       description: (() => {
-        console.log(this.userType);
         if (this.userType === 'superadmin') {
           return 'Todos of each department.';
         } else if (this.userType === 'employee') {
@@ -108,16 +118,18 @@ export class DashboardComponent implements OnInit {
         }
       })(),
       count: res.iterableData.length,
-      cardLinks: [
+      cardLinks: this.processLinks([
         {
           label: 'View todos',
           endPoint: `${END_POINTS.portal}/${END_POINTS.todoList}`,
+          notAllowedUsers: [],
         },
         {
           label: 'Create todos',
           endPoint: `${END_POINTS.portal}/${END_POINTS.createTodo}`,
+          notAllowedUsers: [UserRole.Employee],
         },
-      ],
+      ]),
       allowedUsers: [UserRole.Admin, UserRole.SuperAdmin, UserRole.Employee],
     };
   }
@@ -126,16 +138,18 @@ export class DashboardComponent implements OnInit {
       title: 'Admins',
       description: 'Assign and view assigned tasks.',
       count: res.count,
-      cardLinks: [
+      cardLinks: this.processLinks([
         {
           label: 'View admins',
           endPoint: `${END_POINTS.portal}/${END_POINTS.adminList}`,
+          notAllowedUsers: [],
         },
         {
           label: 'Create Admins',
           endPoint: `${END_POINTS.portal}/${END_POINTS.createAdmin}`,
+          notAllowedUsers: [UserRole.Admin, UserRole.Employee],
         },
-      ],
+      ]),
       allowedUsers: [UserRole.SuperAdmin],
     };
   }
@@ -152,5 +166,23 @@ export class DashboardComponent implements OnInit {
       ],
       allowedUsers: [UserRole.SuperAdmin],
     };
+  }
+  processLinks(
+    links: {
+      label: string;
+      endPoint: string;
+      notAllowedUsers: UserRole[];
+    }[],
+  ) {
+    const newLinks: {
+      label: string;
+      endPoint: string;
+    }[] = links
+      .filter((link) => !link.notAllowedUsers.includes(this.userType))
+      .map((link) => ({
+        label: link.label,
+        endPoint: link.endPoint,
+      }));
+    return newLinks;
   }
 }

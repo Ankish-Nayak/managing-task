@@ -1,12 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { HighlightDirective } from '../../../../shared/directives/highlight/highlight.directive';
@@ -89,19 +82,14 @@ export class TodoComponent implements OnInit {
   }
   mark() {
     this.todoMarkLoading = true;
-    this.todoService
-      .markTodo(this.todo.id, {
-        isCompleted: this.todo.isCompleted,
-      })
-      .subscribe((res) => {
-        console.log(res);
-        this.toastService.show('Todo', 'Todo marked as done', 'success', 2000);
-        this.todoMarkLoading = false;
-        this.todo = {
-          ...this.todo,
-          isCompleted: !this.todo.isCompleted,
-        };
-      });
+    this.todoService.markTodo(this.todo.id).subscribe((res) => {
+      this.toastService.show('Todo', 'Todo marked as done', 'success', 2000);
+      this.todoMarkLoading = false;
+      this.todo = {
+        ...this.todo,
+        isCompleted: !this.todo.isCompleted,
+      };
+    });
   }
 
   onHighlight(type: 'edit' | 'delete', binary: boolean) {

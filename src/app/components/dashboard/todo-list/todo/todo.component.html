@@ -80,8 +80,24 @@
     class="d-flex justify-content-center container-fuild align-items-center"
     *ngIf="allowedToView([UserRole.Employee])"
   >
-    <button class="btn btn-sm btn btn-primary" (click)="mark()">
-      {{ !todo.isCompleted ? "Mark as Done" : "Mark as UnDone" }}
-    </button>
+    <i
+      *ngIf="!todo.isCompleted"
+      [class]="ICONS.active.class"
+      (click)="mark()"
+      [ngbTooltip]="ICONS.active.toolTip"
+      [openDelay]="ICONS.active.openDelay"
+      [closeDelay]="ICONS.active.closeDelay"
+    ></i>
+    <i
+      *ngIf="todo.isCompleted"
+      [class]="ICONS.done.class"
+      (click)="mark()"
+      [ngbTooltip]="ICONS.done.toolTip"
+      [openDelay]="ICONS.done.openDelay"
+      [closeDelay]="ICONS.done.closeDelay"
+    ></i>
+    <!-- <button class="btn btn-sm btn btn-primary" (click)="mark()"> -->
+    <!--   {{ !todo.isCompleted ? "Mark as Done" : "Mark as UnDone" }} -->
+    <!-- </button> -->
   </div>
 </td>

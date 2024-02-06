@@ -83,19 +83,13 @@ export class NavbarComponent implements OnInit {
   }
   getEmployeeType() {
     this.authService.userTypeMessage$.subscribe((res) => {
-      console.log('userType', res);
       if (res !== null) this.userType = res;
     });
   }
   handleProfileLinks(event: MouseEvent, name: string) {
     event.preventDefault();
-    console.log(name);
     switch (name) {
       case 'profile': {
-        //TODO: make profile open
-        // this.router.navigateByUrl(
-        //   `${END_POINTS.dashboard}/${END_POINTS.profile}`,
-        // );
         this.router.navigateByUrl(
           `${END_POINTS.portal}/${END_POINTS.upsertProfile}`,
           { replaceUrl: true },
@@ -103,7 +97,6 @@ export class NavbarComponent implements OnInit {
         break;
       }
       case 'updateProfile': {
-        //TODO: update profile open
         break;
       }
       case 'logout': {
