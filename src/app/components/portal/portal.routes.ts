@@ -1,13 +1,6 @@
 import { Routes } from '@angular/router';
 import { AdminListComponent } from '../../components/dashboard/admin-list/admin-list.component';
-import { UpsertAdminComponent } from '../../components/dashboard/admin-list/upsert-admin/upsert-admin.component';
-import { EmployeeListComponent } from '../../components/dashboard/employee-list/employee-list.component';
-import { TodoDetailComponent } from '../../components/dashboard/todo-list/todo-detail/todo-detail.component';
-import { TodoListComponent } from '../../components/dashboard/todo-list/todo-list.component';
-import { UpsertTodoComponent } from '../../components/dashboard/upsert-todo/upsert-todo.component';
-import { DepartmentListComponent } from '../../components/department-list/department-list.component';
 import { NotAllowedUserComponent } from '../../components/not-allowed-user/not-allowed-user.component';
-import { ProfileComponent } from '../../components/profile/profile.component';
 import { notSavedChangesGuard } from '../../shared/guards/notSavedChanges/not-saved-changes.guard';
 import { userBasedAuthGuard } from '../../shared/guards/userBasedAuth/user-based-auth.guard';
 import { PaginationComponent } from '../../shared/paginations/pagination/pagination.component';
@@ -15,20 +8,31 @@ import { END_POINTS, UserRole } from '../../utils/constants';
 
 export const routes: Routes = [
   {
-    // loadComponent: () => import('../../components/department-list/department-list.component').then(m => m.DepartmentListComponent),
-    component: DepartmentListComponent,
+    loadComponent: () =>
+      import('../../components/department-list/department-list.component').then(
+        (m) => m.DepartmentListComponent,
+      ),
     path: END_POINTS.departmentList,
   },
   {
-    component: TodoListComponent,
+    loadComponent: () =>
+      import('../../components/dashboard/todo-list/todo-list.component').then(
+        (m) => m.TodoListComponent,
+      ),
     path: END_POINTS.todoList,
   },
   {
-    component: TodoDetailComponent,
+    loadComponent: () =>
+      import(
+        '../../components/dashboard/todo-list/todo-detail/todo-detail.component'
+      ).then((m) => m.TodoDetailComponent),
     path: END_POINTS.todoDetail,
   },
   {
-    component: UpsertTodoComponent,
+    loadComponent: () =>
+      import(
+        '../../components/dashboard/upsert-todo/upsert-todo.component'
+      ).then((m) => m.UpsertTodoComponent),
     path: END_POINTS.createTodo,
     canActivate: [userBasedAuthGuard],
     data: {
@@ -36,7 +40,10 @@ export const routes: Routes = [
     },
   },
   {
-    component: UpsertTodoComponent,
+    loadComponent: () =>
+      import(
+        '../../components/dashboard/upsert-todo/upsert-todo.component'
+      ).then((m) => m.UpsertTodoComponent),
     path: END_POINTS.updateTodo,
     canActivate: [userBasedAuthGuard],
     data: {
@@ -44,7 +51,10 @@ export const routes: Routes = [
     },
   },
   {
-    component: UpsertAdminComponent,
+    loadComponent: () =>
+      import(
+        '../../components/dashboard/admin-list/upsert-admin/upsert-admin.component'
+      ).then((m) => m.UpsertAdminComponent),
     path: END_POINTS.createAdmin,
     canActivate: [userBasedAuthGuard],
     data: {
@@ -60,7 +70,10 @@ export const routes: Routes = [
     },
   },
   {
-    component: UpsertAdminComponent,
+    loadComponent: () =>
+      import(
+        '../../components/dashboard/admin-list/upsert-admin/upsert-admin.component'
+      ).then((m) => m.UpsertAdminComponent),
     path: END_POINTS.updateAdmin,
     canActivate: [userBasedAuthGuard],
     data: {
@@ -68,7 +81,10 @@ export const routes: Routes = [
     },
   },
   {
-    component: EmployeeListComponent,
+    loadComponent: () =>
+      import(
+        '../../components/dashboard/employee-list/employee-list.component'
+      ).then((m) => m.EmployeeListComponent),
     path: END_POINTS.employeeList,
     canActivate: [userBasedAuthGuard],
     data: {
@@ -76,7 +92,10 @@ export const routes: Routes = [
     },
   },
   {
-    component: EmployeeListComponent,
+    loadComponent: () =>
+      import(
+        '../../components/dashboard/employee-list/employee-list.component'
+      ).then((m) => m.EmployeeListComponent),
     path: END_POINTS.employeesByDepartment,
     canActivate: [userBasedAuthGuard],
     data: {
@@ -85,7 +104,10 @@ export const routes: Routes = [
   },
   { component: NotAllowedUserComponent, path: END_POINTS.notAllowedUser },
   {
-    component: ProfileComponent,
+    loadComponent: () =>
+      import('../../components/profile/profile.component').then(
+        (m) => m.ProfileComponent,
+      ),
     path: END_POINTS.profile,
   },
   {
@@ -93,12 +115,18 @@ export const routes: Routes = [
     path: END_POINTS.test,
   },
   {
-    component: ProfileComponent,
+    loadComponent: () =>
+      import('../../components/profile/profile.component').then(
+        (m) => m.ProfileComponent,
+      ),
     path: END_POINTS.upsertProfile,
     canDeactivate: [notSavedChangesGuard],
   },
   {
-    component: UpsertTodoComponent,
+    loadComponent: () =>
+      import(
+        '../../components/dashboard/upsert-todo/upsert-todo.component'
+      ).then((m) => m.UpsertTodoComponent),
     path: END_POINTS.assignTask,
   },
 ];
