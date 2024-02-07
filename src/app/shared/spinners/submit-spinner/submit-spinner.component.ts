@@ -11,4 +11,6 @@ import { Input } from '@angular/core';
 })
 export class SubmitSpinnerComponent {
   @Input({ required: true }) isSubmitLoading!: boolean;
+  @Input() label: string = 'Submit';
+  @Input() fullWidth: boolean = false;
 }

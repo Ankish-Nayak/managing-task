@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HighlightDirective } from '../../../shared/directives/highlight/highlight.directive';
 import { ICONS } from '../../../shared/icons/icons';
@@ -27,8 +27,10 @@ import { AuthService } from '../../../shared/services/auth/auth.service';
 import { ToastService } from '../../../shared/services/toast/toast.service';
 import {
   getLocalStorageItem,
+  removeLocalStorageItem,
   setLocalStorageItem,
 } from '../../../utils/localStorageCRUD';
+import { COLS } from './cols';
 //TODO: add placeholder on every small element which exists like employee todo and alll to make this
 //much better
 export enum EmployeeTab {
@@ -52,7 +54,7 @@ export enum EmployeeTab {
   templateUrl: './employee-list.component.html',
   styleUrl: './employee-list.component.scss',
 })
-export class EmployeeListComponent implements OnInit {
+export class EmployeeListComponent implements OnInit, OnDestroy {
   employees!: Employee[];
   isLoading: boolean = true;
   employeeToBeDeletedID: number | null = null;
@@ -75,6 +77,7 @@ export class EmployeeListComponent implements OnInit {
   totalPagesCount: number = 0;
   departmentId: string | null = null;
   userType!: UserRole;
+  readonly cols = COLS;
   readonly employeesTabs: EmployeeTab[] = [
     EmployeeTab.All,
     EmployeeTab.Admins,
@@ -116,19 +119,12 @@ export class EmployeeListComponent implements OnInit {
   getEmployees() {
     // this.isLoading = true;
     if (this.departmentId) {
-      console.log('getting employees by department');
       this.employeeService
         .getEmployeesByDepartment(Number(this.departmentId), {})
         .subscribe((res) => {
           this.employees = this.employeeAdapter.adaptArray(res.iterableData);
-          console.log(this.employees);
           this.totalPagesCount = res.count;
           this.isLoading = false;
-          // setLocalStorageItem(
-          //   LocalStorageKeys.GetEmployees,
-          //
-          //   JSON.stringify(this.pageState),
-          // );
         });
     } else {
       this.handleTabChange(this.employeeTab);
@@ -144,9 +140,7 @@ export class EmployeeListComponent implements OnInit {
     }
   }
   onViewEmployeesByDepartment(id: number) {}
-  print() {
-    console.log('enter');
-  }
+
   delete(id: number) {
     this.employeeToBeDeletedID = id;
   }
@@ -171,14 +165,10 @@ export class EmployeeListComponent implements OnInit {
     };
     setLocalStorageItem(
       LocalStorageKeys.GetEmployees,
-
       JSON.stringify(this.pageState),
     );
+    console.log('changes happening', this.pageState);
     this.getEmployees();
-    // this..getTodos(this.pageState).subscribe((res) => {
-    //   this.employees = res.iterableData;
-    //   this.totalPagesCount = res.totalPageCount;
-    // });
   }
 
   onAssignTask(id: number) {
@@ -241,5 +231,8 @@ export class EmployeeListComponent implements OnInit {
         'info',
       );
     });
+  }
+  ngOnDestroy(): void {
+    removeLocalStorageItem(LocalStorageKeys.GetEmployees);
   }
 }

@@ -38,7 +38,7 @@ export interface ICard {
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent implements OnInit {
-  isLoading: boolean = true;
+  isLoading: boolean = false;
   cards: ICard[] = [];
   userType!: UserRole;
   constructor(
@@ -63,6 +63,10 @@ export class DashboardComponent implements OnInit {
     });
   }
   cardDataInOrderInitForEmployee() {
+    if (this.isLoading) {
+      return;
+    }
+    this.isLoading = true;
     this.todoService.getTodos({}).subscribe((res) => {
       this.cards.push(this.getTodosDetails(res));
       this.isLoading = false;

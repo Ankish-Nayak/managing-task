@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ClickedDirective } from '../../../../shared/directives/clicked/clicked.directive';
 import { Employee } from '../../../../shared/models/employee.model';
-import { COLS } from '../cols';
+import { COLS, TCOLS } from '../cols';
 import { GetEmployeesQueryParams } from '../../../../shared/interfaces/requests/employee.interface';
 import { ICONS } from '../../../../shared/icons/icons';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
@@ -15,13 +15,13 @@ type TWidth = { [key in keyof Employee]?: string };
   templateUrl: './employee-list-header.component.html',
   styleUrl: './employee-list-header.component.scss',
 })
-export class EmployeeListHeaderComponent {
-  readonly cols = COLS;
-  @Output() clicked: EventEmitter<string> = new EventEmitter<string>();
+export class EmployeeListHeaderComponent implements OnInit {
+  @Input({ required: true }) cols!: TCOLS;
   @Input({ required: true }) pageState!: GetEmployeesQueryParams;
   @Output() pageStateChange = new EventEmitter<
     Partial<GetEmployeesQueryParams>
   >();
+  @Input({ required: true }) renderIcons!: boolean;
   readonly widths: TWidth = {
     name: '10%',
     address: '15%',
@@ -32,27 +32,30 @@ export class EmployeeListHeaderComponent {
     asc: boolean;
   } | null = null;
   readonly ICONS = ICONS;
-  constructor() {}
-  // onClicked(name: string) {
-  //   this.clicked.emit(name);
-  //   console.log(name);
-  // }
+  ngOnInit(): void {
+    if (this.pageState.orderBy.length > 0)
+      this.sortBy = {
+        name: this.pageState.orderBy as keyof Employee,
+        asc: this.pageState.orders === 0 ? true : false,
+      };
+    console.log('sortby', this.sortBy);
+  }
   onClicked(name: string) {
-    console.log(name);
+    // console.log(name);
     if (name.includes('|')) {
       // up -> 0 -> means asc
       // down -> 1 -> means dsc
       const array = name.split('|');
       const colName = array[0] as keyof Employee;
-      console.log(colName);
-      console.log('sortBy', this.sortBy);
+      // console.log(colName);
+      // console.log('sortBy', this.sortBy);
       if (
         this.sortBy &&
         this.sortBy.name === colName &&
         ((this.sortBy.asc && array.includes('up')) ||
           (!this.sortBy.asc && array.includes('down')))
       ) {
-        console.log('has to toggle it');
+        // console.log('has to toggle it');
         this.sortBy = null;
       } else {
         this.sortBy = {
@@ -61,11 +64,10 @@ export class EmployeeListHeaderComponent {
         };
       }
 
-      console.log(this.sortBy);
+      // console.log(this.sortBy);
       if (this.sortBy)
         this.pageStateChange.emit({
           orderBy: this.sortBy.name,
-          // orders: array.includes('up') ? 0 : 1,
           orders: this.sortBy.asc ? 0 : 1,
         });
       else {
@@ -75,22 +77,7 @@ export class EmployeeListHeaderComponent {
         });
       }
     } else {
-      this.clicked.emit(name as keyof Employee);
+      // this.clicked.emit(name as keyof Employee);
     }
-  }
-  isFilled(
-    colName: keyof Employee | null,
-    name: 'up' | 'down',
-    isFilled: boolean,
-  ) {
-    if (this.sortBy === null) {
-      return !isFilled;
-    }
-    return (
-      colName !== null &&
-      this.sortBy.name === colName &&
-      ((this.sortBy.asc && name === 'up') ||
-        (!this.sortBy.asc && name === 'down'))
-    );
   }
 }

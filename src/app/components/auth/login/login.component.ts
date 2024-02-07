@@ -18,8 +18,11 @@ import { Router, RouterLink } from '@angular/router';
 import { NgbToast } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, fromEvent, merge } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { ClickedEnterDirective } from '../../../shared/directives/clicked-enter/clicked-enter.directive';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { ToastService } from '../../../shared/services/toast/toast.service';
+import { SpinnerComponent } from '../../../shared/spinners/spinner/spinner.component';
+import { SubmitSpinnerComponent } from '../../../shared/spinners/submit-spinner/submit-spinner.component';
 import { GenericValidators } from '../../../shared/validators/generic-validator';
 
 type IPropertyName = 'email' | 'password';
@@ -27,7 +30,15 @@ type IPropertyName = 'email' | 'password';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, NgbToast],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    NgbToast,
+    SpinnerComponent,
+    SubmitSpinnerComponent,
+    ClickedEnterDirective,
+  ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -37,6 +48,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   loginForm!: FormGroup;
   displayFeedback: { [key in IPropertyName]?: string } = {};
   errorMessage: any;
+  isSubmitLoading: boolean = false;
 
   private validationMessages!: { [key: string]: { [key: string]: string } };
   private genericValidator!: GenericValidators;
@@ -91,12 +103,12 @@ export class LoginComponent implements OnInit, AfterViewInit {
       ]),
     });
   }
-  onSubmit(e: SubmitEvent) {
-    e.preventDefault();
+  onSubmit() {
     // mark as touched and dirty
     this.markAsTouchedAndDirty();
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
+      this.isSubmitLoading = true;
       this.authService.login(email, password).subscribe(
         () => {
           this.router.navigate(['', 'dashboard']);
@@ -109,6 +121,9 @@ export class LoginComponent implements OnInit, AfterViewInit {
             'error',
           );
           console.log(e);
+        },
+        () => {
+          this.isSubmitLoading = false;
         },
       );
     } else {

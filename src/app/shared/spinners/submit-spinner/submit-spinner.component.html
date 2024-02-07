@@ -1,9 +1,13 @@
-<button class="btn btn-primary" type="submit" [disabled]="isSubmitLoading">
+<button
+  [class]="'btn btn-primary ' + (fullWidth ? 'container-fluid' : '')"
+  type="submit"
+  [disabled]="isSubmitLoading"
+>
   <span
     class="spinner-border spinner-border-sm"
     role="status"
     aria-hidden="true"
     *ngIf="isSubmitLoading"
   ></span>
-  Submit
+  {{ label }}
 </button>

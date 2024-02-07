@@ -34,6 +34,7 @@ export class TodoListHeaderComponent implements OnInit {
         name: this.pageState.orderBy as keyof Todo,
         asc: this.pageState.orders === 0 ? true : false,
       };
+    console.log(this.sortBy);
   }
   onClicked(name: string) {
     if (name.includes('|')) {
@@ -55,7 +56,7 @@ export class TodoListHeaderComponent implements OnInit {
           asc: array.includes('up'),
         };
       }
-
+      console.log('sortBy', this.sortBy);
       console.log(this.sortBy);
       if (this.sortBy)
         this.pageStateChange.emit({
@@ -72,16 +73,5 @@ export class TodoListHeaderComponent implements OnInit {
     } else {
       this.clicked.emit(name as keyof Todo);
     }
-  }
-  isFilled(colName: keyof Todo | null, name: 'up' | 'down', isFilled: boolean) {
-    if (this.sortBy === null) {
-      return !isFilled;
-    }
-    return (
-      colName !== null &&
-      this.sortBy.name === colName &&
-      ((this.sortBy.asc && name === 'up') ||
-        (!this.sortBy.asc && name === 'down'))
-    );
   }
 }

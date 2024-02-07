@@ -91,11 +91,14 @@ export class EmployeeService {
       );
   }
   getEmployeesAndAdmins(queryParams: Partial<IGetEmployeesQueryParams>) {
-    const transformedQueryParmas = new GetEmployeesQueryParams(queryParams);
+    const transformedQueryParams = new GetEmployeesQueryParams(queryParams);
+    transformedQueryParams.orderBy =
+      transformedQueryParams.orderBy.charAt(0).toUpperCase() +
+      transformedQueryParams.orderBy.substring(1);
     return this.http
       .post<IGetEmployees>(
         `${this.apiUrl}/employees/`,
-        transformedQueryParmas,
+        transformedQueryParams,
         {
           withCredentials: true,
           headers: this.Headers,

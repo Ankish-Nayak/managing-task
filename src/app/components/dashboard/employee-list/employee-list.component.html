@@ -33,9 +33,10 @@
     <thead>
       <tr
         app-employee-list-header
-        (clicked)="onClicked($event)"
+        [cols]="cols"
         [pageState]="pageState"
         (pageStateChange)="onPageChange($event)"
+        [renderIcons]="employeeTab === EmployeeTab.All"
       ></tr>
     </thead>
     <tbody>
@@ -54,9 +55,6 @@
 
 <div *ngIf="!isLoading" [class]="controlsClass">
   <app-pagination
-    *ngIf="
-      !isLoading && employeeTab === EmployeeTab.All && departmentId === null
-    "
     [(selectedPage)]="pageState.index"
     (pageChange)="onPageChange({ index: $event })"
     [collectionSize]="totalPagesCount"

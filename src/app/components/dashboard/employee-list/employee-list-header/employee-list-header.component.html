@@ -4,12 +4,15 @@
   (clicked)="onClicked($event)"
   [id]="col.idName"
   [ngStyle]="{
-    width: widths.name
+    width: widths[col.idName!]
   }"
 >
   <div class="container">
     <span [class]="col.canSort ? col.canSort : ''">{{ col.name }}</span>
-    <div class="icons-container" *ngIf="col.canSort">
+    <div
+      [class]="'icons-container ' + (renderIcons ? '' : 'invisible')"
+      *ngIf="col.canSort"
+    >
       <i
         *ngIf="
           sortBy &&
