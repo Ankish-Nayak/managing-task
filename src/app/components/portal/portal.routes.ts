@@ -14,7 +14,11 @@ import { PaginationComponent } from '../../shared/paginations/pagination/paginat
 import { END_POINTS, UserRole } from '../../utils/constants';
 
 export const routes: Routes = [
-  { component: DepartmentListComponent, path: END_POINTS.departmentList },
+  {
+    // loadComponent: () => import('../../components/department-list/department-list.component').then(m => m.DepartmentListComponent),
+    component: DepartmentListComponent,
+    path: END_POINTS.departmentList,
+  },
   {
     component: TodoListComponent,
     path: END_POINTS.todoList,
