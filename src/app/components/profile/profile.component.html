@@ -4,18 +4,6 @@
 <div class="card" style="width: 500px" *ngIf="!isLoading">
   <div class="card-body">
     <h5 class="card-title text-center">Profile</h5>
-    <div [classList]="cardBodyHeader.join(' ')">
-      <button
-        class="btn btn-primary btn-sm edit-button"
-        type="button"
-        (click)="reset()"
-      >
-        reset
-      </button>
-      <button class="btn btn-primary btn-sm" type="button" (click)="cancel()">
-        cancel
-      </button>
-    </div>
     <div
       class="update-profile-form"
       [tabIndex]="0"
@@ -110,9 +98,10 @@
           </div>
         </div>
         <div class="button-container">
-          <button type="submit" *ngIf="updatingProfile" class="btn btn-primary">
-            submit
-          </button>
+          <app-submit-spinner
+            *ngIf="updatingProfile"
+            [isSubmitLoading]="isSubmitLoading"
+          ></app-submit-spinner>
           <button
             *ngIf="!updatingProfile"
             [type]="'button'"
@@ -120,6 +109,22 @@
             (click)="edit()"
           >
             edit
+          </button>
+        </div>
+        <div [classList]="cardBodyHeader.join(' ')">
+          <button
+            class="btn btn-primary btn-sm edit-button"
+            type="button"
+            (click)="reset()"
+          >
+            reset
+          </button>
+          <button
+            class="btn btn-primary btn-sm"
+            type="button"
+            (click)="cancel()"
+          >
+            cancel
           </button>
         </div>
       </form>

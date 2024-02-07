@@ -30,7 +30,22 @@
   (click)="navigate()"
   *ngIf="userAllowedToView('IsCompleted') && todoTab === TodoTab.All"
 >
-  {{ todo.isCompleted }}
+  <i
+    *ngIf="todo.isCompleted"
+    [class]="ICONS.taskNotCompleted.class"
+    [ngbTooltip]="ICONS.taskNotCompleted.toolTip"
+    [openDelay]="ICONS.taskNotCompleted.openDelay"
+    [closeDelay]="ICONS.taskNotCompleted.closeDelay"
+  >
+  </i>
+  <i
+    *ngIf="!todo.isCompleted"
+    [class]="ICONS.taskCompleted.class"
+    [ngbTooltip]="ICONS.taskCompleted.toolTip"
+    [openDelay]="ICONS.taskCompleted.openDelay"
+    [closeDelay]="ICONS.taskCompleted.closeDelay"
+  >
+  </i>
 </td>
 <td
   class="todo-assignedTo pointer"
@@ -96,8 +111,5 @@
       [openDelay]="ICONS.done.openDelay"
       [closeDelay]="ICONS.done.closeDelay"
     ></i>
-    <!-- <button class="btn btn-sm btn btn-primary" (click)="mark()"> -->
-    <!--   {{ !todo.isCompleted ? "Mark as Done" : "Mark as UnDone" }} -->
-    <!-- </button> -->
   </div>
 </td>

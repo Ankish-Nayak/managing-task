@@ -28,6 +28,7 @@ import { DepartmentService } from '../../shared/services/department/department.s
 import { GenericValidators } from '../../shared/validators/generic-validator';
 import { notNullValidator } from '../../shared/validators/not-null-validators';
 import { UPDATE_PROFILE_VALIDAION_MESSAGES } from './validationMessages';
+import { SubmitSpinnerComponent } from '../../shared/spinners/submit-spinner/submit-spinner.component';
 
 type IPropertyName =
   | 'name'
@@ -49,12 +50,14 @@ type IPropertyName =
     ReactiveFormsModule,
     RouterLink,
     ClickedEnterDirective,
+    SubmitSpinnerComponent,
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
 })
 export class ProfileComponent implements OnInit, BlockNavigationIfChange {
   isLoading: boolean = true;
+  isSubmitLoading: boolean = false;
   profile: Employee = new Employee(0, '', '', 0, '', '', '', '', 0, '', '', '');
   updateProfileForm!: FormGroup;
   // returns the query list of FormControlName
@@ -224,10 +227,17 @@ export class ProfileComponent implements OnInit, BlockNavigationIfChange {
     };
 
     if (this.updateProfileForm.valid) {
-      this.authService.updateProfile(this.profile.id, data).subscribe(() => {
-        this._hasUnSavedChangesSource.next(false);
-        this.reloadComponent();
-      });
+      this.isSubmitLoading = true;
+      this.authService.updateProfile(this.profile.id, data).subscribe(
+        () => {
+          this._hasUnSavedChangesSource.next(false);
+          this.reloadComponent();
+        },
+        () => {},
+        () => {
+          this.isSubmitLoading = false;
+        },
+      );
     }
   }
   reloadComponent() {

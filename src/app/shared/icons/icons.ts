@@ -104,4 +104,18 @@ export const ICONS = {
     openDelay: 1000,
     closeDelay: 500,
   },
+  taskNotCompleted: {
+    class: 'bi bi-clock-history',
+    name: 'task not completed',
+    toolTip: 'task not completed',
+    openDelay: 1000,
+    closeDelay: 500,
+  },
+  taskCompleted: {
+    class: 'bi bi-check',
+    name: 'task completed',
+    toolTip: 'task completed',
+    openDelay: 1000,
+    closeDelay: 500,
+  },
 };
