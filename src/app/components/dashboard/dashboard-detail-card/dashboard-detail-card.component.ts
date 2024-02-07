@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
-import { END_POINTS } from '../../../utils/constants';
 
 @Component({
   selector: 'app-dashboard-detail-card',
@@ -30,13 +29,9 @@ export class DashboardDetailCardComponent {
     queryParams?: Params | null;
   }) {
     console.log('cardLink', cardLink);
-    // if (Object.keys(END_POINTS).includes(cardLink.endPoint)) {
     this.router.navigate([`../${cardLink.endPoint}`], {
       relativeTo: this.route,
       queryParams: cardLink.queryParams,
     });
-    // } else {
-    //   console.log('endPoint dose not exists in Object');
-    // }
   }
 }

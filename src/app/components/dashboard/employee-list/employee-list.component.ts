@@ -117,6 +117,11 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
   getQueryParams() {
     this.route.queryParams.subscribe((params) => {
       console.log('params ', params);
+      const employeeTab = params['employeeTab'];
+      const key = Object.values(EmployeeTab).find((e) => e === employeeTab);
+      if (key) {
+        this.employeeTab = key;
+      }
     });
   }
   getEmployeesByDepartment(id: number) {

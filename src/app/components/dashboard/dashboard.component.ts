@@ -13,8 +13,8 @@ import { TodoService } from '../../shared/services/todo/todo.service';
 import { SpinnerComponent } from '../../shared/spinners/spinner/spinner.component';
 import { END_POINTS, UserRole } from '../../utils/constants';
 import { DashboardDetailCardComponent } from './dashboard-detail-card/dashboard-detail-card.component';
-import { NavbarComponent } from './navbar/navbar.component';
 import { EmployeeTab } from './employee-list/employee-list.component';
+import { NavbarComponent } from './navbar/navbar.component';
 //TODO: make user based rendering of dashboard component
 
 export interface ICard {
@@ -158,7 +158,10 @@ export class DashboardComponent implements OnInit {
       cardLinks: this.processLinks([
         {
           label: 'View admins',
-          endPoint: `${END_POINTS.portal}/${END_POINTS.adminList}`,
+          endPoint: `${END_POINTS.portal}/${END_POINTS.employeeList}`,
+          queryParams: {
+            employeeTab: EmployeeTab.Admins,
+          },
           notAllowedUsers: [],
         },
         {
