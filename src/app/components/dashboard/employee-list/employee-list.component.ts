@@ -9,22 +9,26 @@ import {
   Employee,
   EmployeeAdapter,
 } from '../../../shared/models/employee.model';
+import { PaginationComponent } from '../../../shared/paginations/pagination/pagination.component';
 import { EmployeeService } from '../../../shared/services/employee/employee.service';
-import { EmployeeListHeaderComponent } from './employee-list-header/employee-list-header.component';
-import { EmployeeComponent } from './employee/employee.component';
 import {
+  COMPONENT_NAME,
   END_POINTS,
   LocalStorageKeys,
   UserRole,
 } from '../../../utils/constants';
-import { PaginationComponent } from '../../../shared/paginations/pagination/pagination.component';
+import { EmployeeListHeaderComponent } from './employee-list-header/employee-list-header.component';
+import { EmployeeComponent } from './employee/employee.component';
 
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { DataTableControlPanelComponent } from '../../../shared/controlPanels/data-table-control-panel/data-table-control-panel.component';
+import { UpsertContentModalComponent } from '../../../shared/modals/upsert-content-modal/upsert-content-modal.component';
+import { AuthService } from '../../../shared/services/auth/auth.service';
+import { ToastService } from '../../../shared/services/toast/toast.service';
 import {
   getLocalStorageItem,
   setLocalStorageItem,
 } from '../../../utils/localStorageCRUD';
-import { AuthService } from '../../../shared/services/auth/auth.service';
-import { DataTableControlPanelComponent } from '../../../shared/controlPanels/data-table-control-panel/data-table-control-panel.component';
 //TODO: add placeholder on every small element which exists like employee todo and alll to make this
 //much better
 export enum EmployeeTab {
@@ -67,6 +71,7 @@ export class EmployeeListComponent implements OnInit {
       }
     })(),
   );
+  controlsClass: string = 'container-fluid';
   totalPagesCount: number = 0;
   employeeId: string | null = null;
   userType!: UserRole;
@@ -85,6 +90,8 @@ export class EmployeeListComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService,
+    private modalService: NgbModal,
+    private toastService: ToastService,
   ) {}
   ngOnInit(): void {
     this.authService.userTypeMessage$.subscribe((res) => {
@@ -97,6 +104,11 @@ export class EmployeeListComponent implements OnInit {
       this.employeeId = id;
       this.getEmployees();
     });
+    this.controlsClass =
+      'container-fluid ' +
+      (this.employeeTab === this.EmployeeTab.All && this.employeeId === null
+        ? ''
+        : 'invisible');
   }
   getEmployeesByDepartment(id: number) {
     this.isLoading = true;
@@ -181,7 +193,13 @@ export class EmployeeListComponent implements OnInit {
     // });
   }
   handleTabChange(tab: EmployeeTab) {
+    this.controlsClass =
+      'container-fluid ' +
+      (tab === this.EmployeeTab.All && this.employeeId === null
+        ? ''
+        : 'invisible');
     this.employeeTab = tab;
+    console.log('tab', this.employeeTab);
     if (this.employeeTab === EmployeeTab.All) {
       this.employeeService
         .getEmployeesAndAdmins(this.pageState)
@@ -204,5 +222,26 @@ export class EmployeeListComponent implements OnInit {
       });
     }
   }
-  createAdmin() {}
+  createAdmin() {
+    const ref = this.modalService.open(UpsertContentModalComponent, {
+      size: 'lg',
+      backdrop: 'static',
+    });
+    ref.componentInstance.update = false;
+    ref.componentInstance.componentName = COMPONENT_NAME.UPSERT_ADMIN_COMPONENT;
+    ref.closed.subscribe((res) => {
+      console.log(res);
+      this.handleTabChange(this.employeeTab);
+      // this.getAdmins();
+    });
+
+    ref.dismissed.subscribe((res) => {
+      console.log(res);
+      this.toastService.show(
+        'Create Admin',
+        'Admin creation was cancelled',
+        'info',
+      );
+    });
+  }
 }

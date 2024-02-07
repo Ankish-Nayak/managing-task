@@ -104,14 +104,6 @@ export class EmployeeService {
       .pipe(
         map((res) => {
           return res;
-          // const newIterableData = res.iterableData.filter(
-          //   (e) => e.employeeType === EMPLOYEE_TYPE.employee,
-          // );
-          // return {
-          //   ...res,
-          //   iterableData: newIterableData,
-          //   count: newIterableData.length,
-          // };
         }),
       );
   }

@@ -49,11 +49,8 @@ export class PaginationComponent implements OnInit, OnChanges, DoCheck {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes) {
       if (changes['collectionSize']) {
-        console.log('collectionSize changing', this.collectionSize);
-        console.log('selectedPaginatedSize', this.selectedPaginatedSize);
         this.pagesInit();
         this.configurePaginatedSize();
-        console.log(this.paginatedSizes);
       }
       this.renderPages();
     }

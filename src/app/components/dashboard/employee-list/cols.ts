@@ -1,4 +1,5 @@
 import { TEmployee } from '../../../shared/interfaces/employee.type';
+import { Employee } from '../../../shared/models/employee.model';
 
 export type TcolsName =
   | 'sNo'
@@ -14,7 +15,7 @@ export type TcolsName =
 export type TCOLS = {
   name: TcolsName;
   notAllowedUsers: TEmployee[] | null;
-  idName: string;
+  idName: keyof Employee | null;
   render: boolean;
   class?: 'pointer';
 }[];
@@ -22,7 +23,7 @@ export const COLS: TCOLS = [
   {
     name: 'sNo',
     notAllowedUsers: null,
-    idName: 'sNo',
+    idName: null,
     render: true,
   },
   {
@@ -35,7 +36,7 @@ export const COLS: TCOLS = [
   {
     name: 'Department',
     notAllowedUsers: null,
-    idName: 'description',
+    idName: 'departmentName',
 
     render: true,
     class: 'pointer',
@@ -60,7 +61,7 @@ export const COLS: TCOLS = [
   {
     name: 'Address',
     notAllowedUsers: ['admin'],
-    idName: 'Address',
+    idName: 'address',
     render: true,
     class: 'pointer',
   },
@@ -82,7 +83,7 @@ export const COLS: TCOLS = [
   {
     name: 'Actions',
     notAllowedUsers: null,
-    idName: 'actions',
+    idName: null,
     render: true,
   },
 ];

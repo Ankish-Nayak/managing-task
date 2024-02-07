@@ -3,6 +3,10 @@
   [class]="col.class"
   appClicked
   (clicked)="onClicked($event)"
+  [id]="col.idName"
+  [ngStyle]="{
+    width: widths.name
+  }"
 >
-  {{ col.name }}
+  <span>{{ col.name }}</span>
 </th>

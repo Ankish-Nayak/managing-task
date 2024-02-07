@@ -5,15 +5,16 @@
 <h5 class="text-center" *ngIf="!isLoading && employees.length === 0">
   No Employees Here
 </h5>
-<app-data-table-control-panel
-  *ngIf="!isLoading"
-  (createRow)="createAdmin()"
-  [userType]="userType"
-  [createRowLabel]="'Create Admin'"
-  [searchBox]="pageState.search"
-  (searchBoxChange)="onPageChange({ search: $event })"
-  [searchBoxPlaceholder]="'Search todos here'"
-></app-data-table-control-panel>
+<div *ngIf="!isLoading" [class]="controlsClass">
+  <app-data-table-control-panel
+    (createRow)="createAdmin()"
+    [userType]="userType"
+    [createRowLabel]="'Create Admin'"
+    [searchBox]="pageState.search"
+    (searchBoxChange)="onPageChange({ search: $event })"
+    [searchBoxPlaceholder]="'Search employees here'"
+  ></app-data-table-control-panel>
+</div>
 <ul
   class="nav nav-tabs"
   *ngIf="!isLoading && UserRole.SuperAdmin && userType && employeeId === null"
@@ -45,15 +46,17 @@
     </tbody>
   </table>
 </div>
-<app-pagination
-  *ngIf="!isLoading && employeeTab === EmployeeTab.All && employeeId === null"
-  [(selectedPage)]="pageState.index"
-  (pageChange)="onPageChange({ index: $event })"
-  [collectionSize]="totalPagesCount"
-  [selectedPaginatedSize]="pageState.take"
-  (selectedPaginatedSizeChange)="onPageChange({ take: $event })"
-/>
 
+<div *ngIf="!isLoading" [class]="controlsClass">
+  <app-pagination
+    *ngIf="!isLoading && employeeTab === EmployeeTab.All && employeeId === null"
+    [(selectedPage)]="pageState.index"
+    (pageChange)="onPageChange({ index: $event })"
+    [collectionSize]="totalPagesCount"
+    [selectedPaginatedSize]="pageState.take"
+    (selectedPaginatedSizeChange)="onPageChange({ take: $event })"
+  />
+</div>
 <app-confirmation-modal
   (confirmation)="confirm($event)"
 ></app-confirmation-modal>
