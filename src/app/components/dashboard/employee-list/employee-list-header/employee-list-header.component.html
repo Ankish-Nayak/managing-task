@@ -1,6 +1,5 @@
 <th
   *ngFor="let col of cols"
-  [class]="col.class"
   appClicked
   (clicked)="onClicked($event)"
   [id]="col.idName"
@@ -8,5 +7,65 @@
     width: widths.name
   }"
 >
-  <span>{{ col.name }}</span>
+  <div class="container">
+    <span [class]="col.canSort ? col.canSort : ''">{{ col.name }}</span>
+    <div class="icons-container" *ngIf="col.canSort">
+      <i
+        *ngIf="
+          sortBy &&
+            sortBy.asc &&
+            col.name &&
+            sortBy.name.toLowerCase() === col.idName;
+          else elseBlock1
+        "
+        [class]="ICONS.upFilled.class"
+        [ngbTooltip]="ICONS.upFilled.toolTip"
+        [openDelay]="ICONS.upFilled.openDelay"
+        [closeDelay]="ICONS.upFilled.closeDelay"
+        [id]="col.idName + '|' + ICONS.upFilled.name"
+        appClicked
+        (clicked)="onClicked($event)"
+      ></i>
+
+      <ng-template #elseBlock1
+        ><i
+          [class]="ICONS.up.class"
+          [ngbTooltip]="ICONS.up.toolTip"
+          [openDelay]="ICONS.up.openDelay"
+          [closeDelay]="ICONS.up.closeDelay"
+          [id]="col.idName + '|' + ICONS.up.name"
+          appClicked
+          (clicked)="onClicked($event)"
+        ></i
+      ></ng-template>
+
+      <i
+        *ngIf="
+          sortBy &&
+            !sortBy.asc &&
+            col.idName &&
+            sortBy.name.toLowerCase() === col.idName;
+          else elseBlock2
+        "
+        [class]="ICONS.downFilled.class"
+        [ngbTooltip]="ICONS.downFilled.toolTip"
+        [openDelay]="ICONS.downFilled.openDelay"
+        [closeDelay]="ICONS.downFilled.closeDelay"
+        [id]="col.idName + '|' + ICONS.downFilled.name"
+        appClicked
+        (clicked)="onClicked($event)"
+      ></i>
+      <ng-template #elseBlock2
+        ><i
+          [class]="ICONS.down.class"
+          [ngbTooltip]="ICONS.down.toolTip"
+          [openDelay]="ICONS.down.openDelay"
+          [closeDelay]="ICONS.down.closeDelay"
+          [id]="col.idName + '|' + ICONS.down.name"
+          appClicked
+          (clicked)="onClicked($event)"
+        ></i
+      ></ng-template>
+    </div>
+  </div>
 </th>

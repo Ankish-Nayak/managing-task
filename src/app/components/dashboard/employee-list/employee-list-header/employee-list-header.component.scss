@@ -1,5 +1,33 @@
 th {
-  cursor: pointer;
   position: sticky;
   top: 0px;
+}
+
+.pointer {
+  cursor: pointer;
+}
+i {
+  padding: 0px;
+  margin: 0px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.icons-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  float: right;
+  height: max-content;
+  position: absolute;
+  right: 0px;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  position: relative;
 }

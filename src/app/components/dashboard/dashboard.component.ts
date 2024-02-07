@@ -38,7 +38,7 @@ export interface ICard {
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent implements OnInit {
-  isLoading: boolean = false;
+  isLoading: boolean = true;
   cards: ICard[] = [];
   userType!: UserRole;
   constructor(

@@ -9,7 +9,6 @@ import { Todo } from '../../../../shared/models/todo.model';
 import { UserViewColsPipe } from '../../../../shared/pipes/user-view-cols/user-view-cols.pipe';
 import { TCOLS } from '../cols';
 
-// type TsortBy = keyof Todo | null;
 @Component({
   selector: '[app-todo-list-header]',
   standalone: true,

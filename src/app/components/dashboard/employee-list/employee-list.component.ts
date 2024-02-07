@@ -73,7 +73,7 @@ export class EmployeeListComponent implements OnInit {
   );
   controlsClass: string = 'container-fluid';
   totalPagesCount: number = 0;
-  employeeId: string | null = null;
+  departmentId: string | null = null;
   userType!: UserRole;
   readonly employeesTabs: EmployeeTab[] = [
     EmployeeTab.All,
@@ -101,12 +101,12 @@ export class EmployeeListComponent implements OnInit {
     });
     this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
-      this.employeeId = id;
+      this.departmentId = id;
       this.getEmployees();
     });
     this.controlsClass =
       'container-fluid ' +
-      (this.employeeTab === this.EmployeeTab.All && this.employeeId === null
+      (this.employeeTab === this.EmployeeTab.All && this.departmentId === null
         ? ''
         : 'invisible');
   }
@@ -114,27 +114,24 @@ export class EmployeeListComponent implements OnInit {
     this.isLoading = true;
   }
   getEmployees() {
-    this.isLoading = true;
-    if (this.employeeId) {
+    // this.isLoading = true;
+    if (this.departmentId) {
+      console.log('getting employees by department');
       this.employeeService
-        .getEmployeesByDepartment(Number(this.employeeId), {})
+        .getEmployeesByDepartment(Number(this.departmentId), {})
         .subscribe((res) => {
           this.employees = this.employeeAdapter.adaptArray(res.iterableData);
+          console.log(this.employees);
           this.totalPagesCount = res.count;
           this.isLoading = false;
-          setLocalStorageItem(
-            LocalStorageKeys.GetEmployees,
-
-            JSON.stringify(this.pageState),
-          );
+          // setLocalStorageItem(
+          //   LocalStorageKeys.GetEmployees,
+          //
+          //   JSON.stringify(this.pageState),
+          // );
         });
     } else {
       this.handleTabChange(this.employeeTab);
-      // this.employeeService.getEmployees({}).subscribe((res) => {
-      //   this.employees = this.employeeAdapter.adaptArray(res.iterableData);
-      //   this.totalPagesCount = res.count;
-      //   this.isLoading = false;
-      // });
     }
   }
   confirm(confirmation: boolean) {
@@ -153,6 +150,7 @@ export class EmployeeListComponent implements OnInit {
   delete(id: number) {
     this.employeeToBeDeletedID = id;
   }
+
   onClicked(name: string) {
     this.employeeService
       .getEmployees({
@@ -195,7 +193,7 @@ export class EmployeeListComponent implements OnInit {
   handleTabChange(tab: EmployeeTab) {
     this.controlsClass =
       'container-fluid ' +
-      (tab === this.EmployeeTab.All && this.employeeId === null
+      (tab === this.EmployeeTab.All && this.departmentId === null
         ? ''
         : 'invisible');
     this.employeeTab = tab;
