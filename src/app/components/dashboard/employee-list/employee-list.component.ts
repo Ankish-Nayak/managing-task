@@ -97,6 +97,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     private toastService: ToastService,
   ) {}
   ngOnInit(): void {
+    this.getQueryParams();
     this.authService.userTypeMessage$.subscribe((res) => {
       if (res) {
         this.userType = res;
@@ -112,6 +113,11 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
       (this.employeeTab === this.EmployeeTab.All && this.departmentId === null
         ? ''
         : 'invisible');
+  }
+  getQueryParams() {
+    this.route.queryParams.subscribe((params) => {
+      console.log('params ', params);
+    });
   }
   getEmployeesByDepartment(id: number) {
     this.isLoading = true;

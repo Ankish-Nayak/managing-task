@@ -9,9 +9,11 @@
       <a
         class="card-link"
         *ngFor="let cardlink of cardLinks"
-        [routerLink]="'../' + cardlink.endPoint"
+        (click)="handleCardLink(cardlink)"
         >{{ cardlink.label }}</a
       >
     </div>
   </div>
 </div>
+
+<!-- [routerLink]="'../' + cardlink.endPoint" -->

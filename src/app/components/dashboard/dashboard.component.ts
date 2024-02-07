@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Params, RouterOutlet } from '@angular/router';
 import { concatMap } from 'rxjs';
 import { IDepartment } from '../../shared/interfaces/requests/department.interface';
 import { IGetEmployees } from '../../shared/interfaces/requests/employee.interface';
@@ -14,13 +14,14 @@ import { SpinnerComponent } from '../../shared/spinners/spinner/spinner.componen
 import { END_POINTS, UserRole } from '../../utils/constants';
 import { DashboardDetailCardComponent } from './dashboard-detail-card/dashboard-detail-card.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { EmployeeTab } from './employee-list/employee-list.component';
 //TODO: make user based rendering of dashboard component
 
 export interface ICard {
   title: string;
   count: number;
   description: string;
-  cardLinks: { label: string; endPoint: string }[];
+  cardLinks: { label: string; endPoint: string; queryParams?: Params | null }[];
   allowedUsers: UserRole[];
 }
 @Component({
@@ -112,6 +113,9 @@ export class DashboardComponent implements OnInit {
         {
           label: 'View employees',
           endPoint: `${END_POINTS.portal}/${END_POINTS.employeeList}`,
+          queryParams: {
+            employeeTab: EmployeeTab.Employees,
+          },
           notAllowedUsers: [UserRole.Employee],
         },
       ]),
@@ -184,6 +188,7 @@ export class DashboardComponent implements OnInit {
     links: {
       label: string;
       endPoint: string;
+      queryParams?: Params | null;
       notAllowedUsers: UserRole[];
     }[],
   ) {
@@ -195,6 +200,7 @@ export class DashboardComponent implements OnInit {
       .map((link) => ({
         label: link.label,
         endPoint: link.endPoint,
+        queryParams: link.queryParams,
       }));
     return newLinks;
   }
