@@ -12,15 +12,26 @@ import {
 import { EmployeeService } from '../../../shared/services/employee/employee.service';
 import { EmployeeListHeaderComponent } from './employee-list-header/employee-list-header.component';
 import { EmployeeComponent } from './employee/employee.component';
-import { END_POINTS, LocalStorageKeys } from '../../../utils/constants';
+import {
+  END_POINTS,
+  LocalStorageKeys,
+  UserRole,
+} from '../../../utils/constants';
 import { PaginationComponent } from '../../../shared/paginations/pagination/pagination.component';
 
 import {
   getLocalStorageItem,
   setLocalStorageItem,
 } from '../../../utils/localStorageCRUD';
+import { AuthService } from '../../../shared/services/auth/auth.service';
+import { DataTableControlPanelComponent } from '../../../shared/controlPanels/data-table-control-panel/data-table-control-panel.component';
 //TODO: add placeholder on every small element which exists like employee todo and alll to make this
 //much better
+export enum EmployeeTab {
+  All = 'All',
+  Admins = 'Admins',
+  Employees = 'Employees',
+}
 
 @Component({
   selector: 'app-employee-list',
@@ -32,6 +43,7 @@ import {
     HighlightDirective,
     EmployeeListHeaderComponent,
     PaginationComponent,
+    DataTableControlPanelComponent,
   ],
   templateUrl: './employee-list.component.html',
   styleUrl: './employee-list.component.scss',
@@ -57,14 +69,29 @@ export class EmployeeListComponent implements OnInit {
   );
   totalPagesCount: number = 0;
   employeeId: string | null = null;
+  userType!: UserRole;
+  readonly employeesTabs: EmployeeTab[] = [
+    EmployeeTab.All,
+    EmployeeTab.Admins,
+    EmployeeTab.Employees,
+  ];
+  employeeTab: EmployeeTab = EmployeeTab.All;
   readonly ICONS = ICONS;
+  readonly UserRole = UserRole;
+  readonly EmployeeTab = EmployeeTab;
   constructor(
     private employeeService: EmployeeService,
     private employeeAdapter: EmployeeAdapter,
     private route: ActivatedRoute,
     private router: Router,
+    private authService: AuthService,
   ) {}
   ngOnInit(): void {
+    this.authService.userTypeMessage$.subscribe((res) => {
+      if (res) {
+        this.userType = res;
+      }
+    });
     this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       this.employeeId = id;
@@ -78,7 +105,7 @@ export class EmployeeListComponent implements OnInit {
     this.isLoading = true;
     if (this.employeeId) {
       this.employeeService
-        .getEmployeesByDepartment(Number(this.employeeId), this.pageState)
+        .getEmployeesByDepartment(Number(this.employeeId), {})
         .subscribe((res) => {
           this.employees = this.employeeAdapter.adaptArray(res.iterableData);
           this.totalPagesCount = res.count;
@@ -90,11 +117,12 @@ export class EmployeeListComponent implements OnInit {
           );
         });
     } else {
-      this.employeeService.getEmployees(this.pageState).subscribe((res) => {
-        this.employees = this.employeeAdapter.adaptArray(res.iterableData);
-        this.totalPagesCount = res.count;
-        this.isLoading = false;
-      });
+      this.handleTabChange(this.employeeTab);
+      // this.employeeService.getEmployees({}).subscribe((res) => {
+      //   this.employees = this.employeeAdapter.adaptArray(res.iterableData);
+      //   this.totalPagesCount = res.count;
+      //   this.isLoading = false;
+      // });
     }
   }
   confirm(confirmation: boolean) {
@@ -152,4 +180,29 @@ export class EmployeeListComponent implements OnInit {
     //   replaceUrl: true,
     // });
   }
+  handleTabChange(tab: EmployeeTab) {
+    this.employeeTab = tab;
+    if (this.employeeTab === EmployeeTab.All) {
+      this.employeeService
+        .getEmployeesAndAdmins(this.pageState)
+        .subscribe((res) => {
+          this.employees = this.employeeAdapter.adaptArray(res.iterableData);
+          this.totalPagesCount = res.count;
+          this.isLoading = false;
+        });
+    } else if (this.employeeTab === EmployeeTab.Admins) {
+      this.employeeService.getAdmins({}).subscribe((res) => {
+        this.employees = this.employeeAdapter.adaptArray(res.iterableData);
+        this.totalPagesCount = res.count;
+        this.isLoading = false;
+      });
+    } else {
+      this.employeeService.getEmployees({}).subscribe((res) => {
+        this.employees = this.employeeAdapter.adaptArray(res.iterableData);
+        this.totalPagesCount = res.count;
+        this.isLoading = false;
+      });
+    }
+  }
+  createAdmin() {}
 }

@@ -90,6 +90,31 @@ export class EmployeeService {
         }),
       );
   }
+  getEmployeesAndAdmins(queryParams: Partial<IGetEmployeesQueryParams>) {
+    const transformedQueryParmas = new GetEmployeesQueryParams(queryParams);
+    return this.http
+      .post<IGetEmployees>(
+        `${this.apiUrl}/employees/`,
+        transformedQueryParmas,
+        {
+          withCredentials: true,
+          headers: this.Headers,
+        },
+      )
+      .pipe(
+        map((res) => {
+          return res;
+          // const newIterableData = res.iterableData.filter(
+          //   (e) => e.employeeType === EMPLOYEE_TYPE.employee,
+          // );
+          // return {
+          //   ...res,
+          //   iterableData: newIterableData,
+          //   count: newIterableData.length,
+          // };
+        }),
+      );
+  }
   deleteEmployee(id: number) {
     return this.http.delete(`${this.apiUrl}/deleteEmployee/${id}`, {
       withCredentials: true,

@@ -11,9 +11,16 @@ form {
   justify-content: space-between;
   align-items: center;
 }
-
+.scroll {
+  overflow-y: auto;
+  max-height: 600px;
+}
 .table {
   width: 1500px;
   margin: auto;
   text-align: center;
+}
+
+.pointer {
+  cursor: pointer;
 }

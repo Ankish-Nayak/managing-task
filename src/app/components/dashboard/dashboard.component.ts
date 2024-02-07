@@ -38,7 +38,7 @@ export interface ICard {
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent implements OnInit {
-  isLoading: boolean = true;
+  isLoading: boolean = false;
   cards: ICard[] = [];
   userType!: UserRole;
   constructor(
@@ -69,6 +69,10 @@ export class DashboardComponent implements OnInit {
     });
   }
   cardDataInOrderInit() {
+    if (this.isLoading) {
+      return;
+    }
+    this.isLoading = true;
     this.employeeService
       .getAdmins({})
       .pipe(
@@ -85,10 +89,15 @@ export class DashboardComponent implements OnInit {
           return this.departmentService.getDepartments();
         }),
       )
-      .subscribe((fourthApiRes) => {
-        this.cards.push(this.getDepartmentDetails(fourthApiRes));
-        this.isLoading = false;
-      });
+      .subscribe(
+        (fourthApiRes) => {
+          this.cards.push(this.getDepartmentDetails(fourthApiRes));
+        },
+        () => {},
+        () => {
+          this.isLoading = false;
+        },
+      );
   }
   getEmployeeesDetails(res: IGetEmployees) {
     return {

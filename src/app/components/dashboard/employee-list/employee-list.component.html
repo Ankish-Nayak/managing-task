@@ -5,24 +5,48 @@
 <h5 class="text-center" *ngIf="!isLoading && employees.length === 0">
   No Employees Here
 </h5>
-<table class="table table-hover" *ngIf="!isLoading && employees.length !== 0">
-  <thead>
-    <tr app-employee-list-header (clicked)="onClicked($event)"></tr>
-  </thead>
-  <tbody>
-    <tr
-      *ngFor="let employee of employees; let i = index"
-      app-employee
-      [employee]="employee"
-      [sno]="i + 1"
-      (deleteEmployee)="delete($event)"
-      (viewEmployeeByDepartment)="onViewEmployeesByDepartment($event)"
-      (assignTask)="onAssignTask($event)"
-    ></tr>
-  </tbody>
-</table>
-<app-pagination
+<app-data-table-control-panel
   *ngIf="!isLoading"
+  (createRow)="createAdmin()"
+  [userType]="userType"
+  [createRowLabel]="'Create Admin'"
+  [searchBox]="pageState.search"
+  (searchBoxChange)="onPageChange({ search: $event })"
+  [searchBoxPlaceholder]="'Search todos here'"
+></app-data-table-control-panel>
+<ul
+  class="nav nav-tabs"
+  *ngIf="!isLoading && UserRole.SuperAdmin && userType && employeeId === null"
+>
+  <li class="nav-item" *ngFor="let tab of employeesTabs">
+    <a
+      [class]="'nav-link pointer ' + (tab === employeeTab ? 'active' : '')"
+      aria-current="page"
+      (click)="handleTabChange(tab)"
+      >{{ tab }}</a
+    >
+  </li>
+</ul>
+<div class="scroll">
+  <table class="table table-hover" *ngIf="!isLoading && employees.length !== 0">
+    <thead>
+      <tr app-employee-list-header (clicked)="onClicked($event)"></tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let employee of employees; let i = index"
+        app-employee
+        [employee]="employee"
+        [sno]="i + 1"
+        (deleteEmployee)="delete($event)"
+        (viewEmployeeByDepartment)="onViewEmployeesByDepartment($event)"
+        (assignTask)="onAssignTask($event)"
+      ></tr>
+    </tbody>
+  </table>
+</div>
+<app-pagination
+  *ngIf="!isLoading && employeeTab === EmployeeTab.All && employeeId === null"
   [(selectedPage)]="pageState.index"
   (pageChange)="onPageChange({ index: $event })"
   [collectionSize]="totalPagesCount"

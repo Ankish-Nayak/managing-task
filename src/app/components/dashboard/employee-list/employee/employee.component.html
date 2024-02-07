@@ -11,7 +11,7 @@
   <td>{{ employee.country }}</td>
   <td>
     <div
-      class="d-flex justify-content-between container-fuild align-items-center"
+      class="d-flex justify-content-around container-fuild align-items-center"
     >
       <i
         appHighlight
@@ -39,6 +39,7 @@
       >
       </i>
       <i
+        *ngIf="employee.employeeType === EMPLOYEE_TYPE.employee"
         [class]="ICONS.assignTask.class"
         (click)="assinTask()"
         [ngbTooltip]="ICONS.assignTask.toolTip"

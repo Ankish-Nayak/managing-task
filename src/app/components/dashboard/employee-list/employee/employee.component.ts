@@ -4,6 +4,7 @@ import { ICONS } from '../../../../shared/icons/icons';
 import { Employee } from '../../../../shared/models/employee.model';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
+import { EMPLOYEE_TYPE } from '../../../../utils/constants';
 
 @Component({
   selector: '[app-employee]',
@@ -27,6 +28,7 @@ export class EmployeeComponent {
     delete: false,
   };
   readonly ICONS = ICONS;
+  readonly EMPLOYEE_TYPE = EMPLOYEE_TYPE;
   update() {
     localStorage.setItem(
       `employee/${this.employee.id}`,

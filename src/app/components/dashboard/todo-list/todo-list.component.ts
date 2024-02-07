@@ -272,6 +272,7 @@ export class TodoListComponent
     this.todoService.getTodos(this.pageState).subscribe((res) => {
       this.todos = res.iterableData;
       this.totalPagesCount = res.totalPageCount;
+      this.pageState.take = Math.min(this.pageState.take, res.totalPageCount);
     });
   }
   allowedToView(allowedUsers: TEmployee[]) {

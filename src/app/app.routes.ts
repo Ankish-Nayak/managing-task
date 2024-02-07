@@ -114,6 +114,7 @@ export const routes: Routes = [
   {
     component: DashboardComponent,
     path: END_POINTS.dashboard,
+    canActivate: [authGuard],
   },
   {
     component: LoginComponent,
