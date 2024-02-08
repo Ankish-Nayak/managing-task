@@ -13,7 +13,7 @@
       {{ updateForm ? "Update Todo" : "Create Todo" }}
     </h5>
     <div class="todo-form">
-      <form [formGroup]="todoForm" (submit)="onSubmit()">
+      <form [formGroup]="todoForm" (submit)="checkSubmit()">
         <div class="form-group">
           <label for="title">Title</label>
           <input
@@ -54,6 +54,41 @@
             {{ this.displayFeedback.employeeId }}
           </div>
         </div>
+
+        <div
+          class="d-flex justify-content-around align-items-center flex-row container-fluid"
+        >
+          <div class="form-group">
+            <label for="date">Deadline date</label>
+            <input
+              type="date"
+              formControlName="deadlineDate"
+              autoFocus
+              [class]="validProperty('deadlineDate')"
+              id="date"
+              placeholder="DD/MM/YYYY"
+            />
+            <div class="invalid-feedback">
+              {{ this.displayFeedback.deadlineDate }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="date">Deadline time</label>
+            <input
+              type="time"
+              formControlName="deadlineTime"
+              autoFocus
+              [class]="validProperty('deadlineTime')"
+              id="date"
+              placeholder="time"
+            />
+            <div class="invalid-feedback">
+              {{ this.displayFeedback.deadlineTime }}
+            </div>
+          </div>
+        </div>
+
         <div
           class="d-flex justify-content-center align-items container-fuild submit"
         >

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -34,9 +34,18 @@ import { GenericValidators } from '../../../shared/validators/generic-validator'
 import { notNullValidator } from '../../../shared/validators/not-null-validators';
 import { SpinnerComponent } from '../../../sharedComponents/spinners/spinner/spinner.component';
 import { SubmitSpinnerComponent } from '../../../sharedComponents/spinners/submit-spinner/submit-spinner.component';
-import { END_POINTS } from '../../../utils/constants';
+import { END_POINTS, Months } from '../../../utils/constants';
+import { getCurrentDateInISO, getCurrentTimeISO } from '../../../utils/time';
 
-type IPropertyName = 'title' | 'description' | 'employeeId';
+type IPropertyName =
+  | 'title'
+  | 'description'
+  | 'employeeId'
+  | 'day'
+  | 'year'
+  | 'month'
+  | 'deadlineDate'
+  | 'deadlineTime';
 
 @Component({
   selector: 'app-upsert-todo',
@@ -63,12 +72,11 @@ export class UpsertTodoComponent {
 
   cardBodyHeader: string[] = ['card-body-header'];
   employees!: Employee[];
+  readonly Months = Months;
 
   employeeId: number | null = null;
   @Input({ required: true }) updateForm!: boolean;
   @Output() updated: EventEmitter<boolean> = new EventEmitter<boolean>();
-  // updateForm: boolean = false;
-
   private validatioMessages!: { [key: string]: { [key: string]: string } };
   private genericValidator!: GenericValidators;
 
@@ -79,6 +87,7 @@ export class UpsertTodoComponent {
     private employeeService: EmployeeService,
     private toastService: ToastService,
     private employeeAdapter: EmployeeAdapter,
+    private datePipe: DatePipe,
   ) {
     this.validatioMessages = {
       title: {
@@ -92,6 +101,18 @@ export class UpsertTodoComponent {
       employeeId: {
         required: 'Required',
         notNull: 'Select Employee',
+      },
+      date: {
+        required: 'Required',
+        pattern: 'InValid date format',
+      },
+      deadlineDate: {
+        required: 'Required',
+        notNull: 'Select deadline Date',
+      },
+      deadlineTime: {
+        required: 'Required',
+        notNull: 'Select deadline Time',
       },
     };
     this.genericValidator = new GenericValidators(this.validatioMessages);
@@ -140,9 +161,12 @@ export class UpsertTodoComponent {
       }
     });
   }
-
+  checkSubmit() {
+    this.markAsTouchedAndDirty();
+    const data = this.todoForm.value;
+    console.log(data);
+  }
   onSubmit() {
-    // e.preventDefault();
     if (this.updateForm) {
       const { title, description } = this.todoForm.value;
       this.markAsTouchedAndDirty();
@@ -154,13 +178,10 @@ export class UpsertTodoComponent {
           isCompleted: false,
           employeeId: Number(this.id),
         };
-        // this.isLoading = false;
 
         this.todoService.updateTodo(data.employeeId, data).subscribe(
           () => {
             this.updated.emit(true);
-            // this.router.navigate(['../../todos'], { relativeTo: this.route });
-            // this.isLoading = false;
             this.toastService.show(
               'Todo',
               'Todo has been updated successfully',
@@ -249,6 +270,20 @@ export class UpsertTodoComponent {
       ]),
       employeeId: new FormControl('null', [
         Validators.required,
+        notNullValidator(),
+      ]),
+      month: new FormControl('null', [Validators.required, notNullValidator()]),
+      day: new FormControl('null', [Validators.required, notNullValidator()]),
+      year: new FormControl('null', [Validators.required, notNullValidator()]),
+      deadlineDate: new FormControl('null', [
+        Validators.required,
+        // Validators.pattern('^d{4}-d{2}-d{2}$'),
+        notNullValidator(),
+      ]),
+      deadlineTime: new FormControl('null', [
+        Validators.required,
+        // Validators.pattern('^([01]d|2[0-3]):[0-5]d$'),
+
         notNullValidator(),
       ]),
     });

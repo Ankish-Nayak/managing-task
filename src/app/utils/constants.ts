@@ -21,6 +21,21 @@ export const END_POINTS = {
   assignTask: 'assign-task/:employeeId',
 };
 
+export enum Months {
+  January = 1,
+  February,
+  March,
+  April,
+  May,
+  June,
+  July,
+  August,
+  September,
+  October,
+  November,
+  December,
+}
+
 export const EMPLOYEE_TYPE = {
   employee: 0,
   admin: 1,
