@@ -23,6 +23,7 @@ export interface ICreateTodoPostData {
   description: string;
   isCompleted: boolean;
   employeeId: number;
+  deadLine: string;
 }
 
 export interface IGetTodosQueryParams {
@@ -40,6 +41,7 @@ export interface IUpdateTodoPostData {
   description: string;
   isCompleted: boolean;
   employeeId: number;
+  deadLine: string;
 }
 
 export interface IMarkTodoPostData {

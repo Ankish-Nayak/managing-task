@@ -35,7 +35,6 @@ import { notNullValidator } from '../../../shared/validators/not-null-validators
 import { SpinnerComponent } from '../../../sharedComponents/spinners/spinner/spinner.component';
 import { SubmitSpinnerComponent } from '../../../sharedComponents/spinners/submit-spinner/submit-spinner.component';
 import { END_POINTS, Months } from '../../../utils/constants';
-import { getCurrentDateInISO, getCurrentTimeISO } from '../../../utils/time';
 
 type IPropertyName =
   | 'title'
@@ -167,8 +166,10 @@ export class UpsertTodoComponent {
     console.log(data);
   }
   onSubmit() {
+    console.log('submiting');
     if (this.updateForm) {
-      const { title, description } = this.todoForm.value;
+      const { title, description, deadlineDate, deadlineTime } =
+        this.todoForm.value;
       this.markAsTouchedAndDirty();
       if (this.todoForm.valid) {
         this.isSubmitLoading = true;
@@ -177,6 +178,11 @@ export class UpsertTodoComponent {
           description: this.trimValue(description),
           isCompleted: false,
           employeeId: Number(this.id),
+          deadLine:
+            this.datePipe.transform(
+              `${deadlineDate}T${deadlineTime}:00`,
+              'yyyy-MM-ddTHH:mm:ss.SSS',
+            ) + 'Z',
         };
 
         this.todoService.updateTodo(data.employeeId, data).subscribe(
@@ -205,12 +211,20 @@ export class UpsertTodoComponent {
         );
       }
     } else {
-      const { title, description, employeeId } = this.todoForm.value;
+      console.log('submiting');
+      const { title, description, employeeId, deadlineDate, deadlineTime } =
+        this.todoForm.value;
       const data: ICreateTodoPostData = {
         title: this.trimValue(title),
         description: this.trimValue(description),
         employeeId,
         isCompleted: false,
+
+        deadLine:
+          this.datePipe.transform(
+            `${deadlineDate}T${deadlineTime}:00`,
+            'yyyy-MM-ddTHH:mm:ss.SSS',
+          ) + 'Z',
       };
       if (this.employeeId) {
         data.employeeId = this.employeeId;
@@ -272,9 +286,6 @@ export class UpsertTodoComponent {
         Validators.required,
         notNullValidator(),
       ]),
-      month: new FormControl('null', [Validators.required, notNullValidator()]),
-      day: new FormControl('null', [Validators.required, notNullValidator()]),
-      year: new FormControl('null', [Validators.required, notNullValidator()]),
       deadlineDate: new FormControl('null', [
         Validators.required,
         // Validators.pattern('^d{4}-d{2}-d{2}$'),
@@ -282,8 +293,6 @@ export class UpsertTodoComponent {
       ]),
       deadlineTime: new FormControl('null', [
         Validators.required,
-        // Validators.pattern('^([01]d|2[0-3]):[0-5]d$'),
-
         notNullValidator(),
       ]),
     });
