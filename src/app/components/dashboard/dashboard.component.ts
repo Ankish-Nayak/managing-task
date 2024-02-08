@@ -114,7 +114,10 @@ export class DashboardComponent implements OnInit {
           label: 'View employees',
           endPoint: `${END_POINTS.portal}/${END_POINTS.employeeList}`,
           queryParams: {
-            employeeTab: EmployeeTab.Employees,
+            employeeTab:
+              this.userType === UserRole.Admin
+                ? EmployeeTab.All
+                : EmployeeTab.Employees,
           },
           notAllowedUsers: [UserRole.Employee],
         },

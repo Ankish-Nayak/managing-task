@@ -78,7 +78,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
   departmentId: string | null = null;
   userType!: UserRole;
   readonly cols = COLS;
-  readonly employeesTabs: EmployeeTab[] = [
+  employeesTabs: EmployeeTab[] = [
     EmployeeTab.All,
     EmployeeTab.Admins,
     EmployeeTab.Employees,
@@ -101,6 +101,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     this.authService.userTypeMessage$.subscribe((res) => {
       if (res) {
         this.userType = res;
+        this.employeesTabs = this.getEmployeeTabs();
       }
     });
     this.route.paramMap.subscribe((params) => {
@@ -113,6 +114,15 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
       (this.employeeTab === this.EmployeeTab.All && this.departmentId === null
         ? ''
         : 'invisible');
+  }
+  getEmployeeTabs() {
+    if (this.userType === UserRole.Employee) {
+      return [];
+    } else if (this.userType === UserRole.Admin) {
+      return [EmployeeTab.All];
+    } else {
+      return [EmployeeTab.Admins, EmployeeTab.All, EmployeeTab.Employees];
+    }
   }
   getQueryParams() {
     this.route.queryParams.subscribe((params) => {
@@ -186,10 +196,6 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl(`${END_POINTS.portal}/assign-task/${id}`, {
       replaceUrl: true,
     });
-    // this.router.navigate([`../assign-task/${id}`], {
-    //   relativeTo: this.route,
-    //   replaceUrl: true,
-    // });
   }
   handleTabChange(tab: EmployeeTab) {
     this.controlsClass =
@@ -231,7 +237,6 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     ref.closed.subscribe((res) => {
       console.log(res);
       this.handleTabChange(this.employeeTab);
-      // this.getAdmins();
     });
 
     ref.dismissed.subscribe((res) => {

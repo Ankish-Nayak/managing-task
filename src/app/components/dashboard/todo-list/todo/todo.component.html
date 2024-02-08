@@ -31,7 +31,7 @@
   *ngIf="userAllowedToView('IsCompleted') && todoTab === TodoTab.All"
 >
   <i
-    *ngIf="todo.isCompleted"
+    *ngIf="!todo.isCompleted"
     [class]="ICONS.taskNotCompleted.class"
     [ngbTooltip]="ICONS.taskNotCompleted.toolTip"
     [openDelay]="ICONS.taskNotCompleted.openDelay"
@@ -39,7 +39,7 @@
   >
   </i>
   <i
-    *ngIf="!todo.isCompleted"
+    *ngIf="todo.isCompleted"
     [class]="ICONS.taskCompleted.class"
     [ngbTooltip]="ICONS.taskCompleted.toolTip"
     [openDelay]="ICONS.taskCompleted.openDelay"

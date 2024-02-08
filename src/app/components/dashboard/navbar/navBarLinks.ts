@@ -22,12 +22,12 @@ export const NAV_LINKS: TNavLinks = [
     active: false,
     notAllowedUsers: [UserRole.Employee, UserRole.Admin],
   },
-  {
-    name: 'AdminList',
-    path: processPath(END_POINTS.adminList),
-    active: false,
-    notAllowedUsers: [UserRole.Employee, UserRole.Admin],
-  },
+  // {
+  //   name: 'AdminList',
+  //   path: processPath(END_POINTS.adminList),
+  //   active: false,
+  //   notAllowedUsers: [UserRole.Employee, UserRole.Admin],
+  // },
   {
     name: 'EmployeeList',
     path: processPath(END_POINTS.employeeList),
