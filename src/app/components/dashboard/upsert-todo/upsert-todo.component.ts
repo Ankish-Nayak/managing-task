@@ -26,14 +26,15 @@ import {
   Employee,
   EmployeeAdapter,
 } from '../../../shared/models/employee.model';
+import { Todo } from '../../../shared/models/todo.model';
 import { EmployeeService } from '../../../shared/services/employee/employee.service';
 import { ToastService } from '../../../shared/services/toast/toast.service';
 import { TodoService } from '../../../shared/services/todo/todo.service';
-import { SpinnerComponent } from '../../../sharedComponents/spinners/spinner/spinner.component';
 import { GenericValidators } from '../../../shared/validators/generic-validator';
 import { notNullValidator } from '../../../shared/validators/not-null-validators';
-import { END_POINTS } from '../../../utils/constants';
+import { SpinnerComponent } from '../../../sharedComponents/spinners/spinner/spinner.component';
 import { SubmitSpinnerComponent } from '../../../sharedComponents/spinners/submit-spinner/submit-spinner.component';
+import { END_POINTS } from '../../../utils/constants';
 
 type IPropertyName = 'title' | 'description' | 'employeeId';
 
@@ -237,36 +238,26 @@ export class UpsertTodoComponent {
     return value.trim();
   }
   todoFormInit() {
+    this.todoForm = new FormGroup({
+      title: new FormControl('', [
+        Validators.required,
+        Validators.minLength(6),
+      ]),
+      description: new FormControl('', [
+        Validators.required,
+        Validators.minLength(6),
+      ]),
+      employeeId: new FormControl('null', [
+        Validators.required,
+        notNullValidator(),
+      ]),
+    });
     if (this.updateForm) {
-      const todo = JSON.parse(this.todoService.getTodo(this.id));
-      this.todoForm = new FormGroup({
-        title: new FormControl(todo.title || '', [
-          Validators.required,
-          Validators.minLength(6),
-        ]),
-        description: new FormControl(todo.description || '', [
-          Validators.required,
-          Validators.minLength(6),
-        ]),
-        employeeId: new FormControl(String(todo.employeeId), [
-          Validators.required,
-          notNullValidator(),
-        ]),
-      });
-    } else {
-      this.todoForm = new FormGroup({
-        title: new FormControl('', [
-          Validators.required,
-          Validators.minLength(6),
-        ]),
-        description: new FormControl('', [
-          Validators.required,
-          Validators.minLength(6),
-        ]),
-        employeeId: new FormControl('null', [
-          Validators.required,
-          notNullValidator(),
-        ]),
+      const todo: Todo = JSON.parse(this.todoService.getTodo(this.id));
+      this.todoForm.patchValue({
+        title: todo.title || '',
+        description: todo.description || '',
+        employeeId: todo.employeeId.toString(),
       });
     }
   }
