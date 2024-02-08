@@ -8,6 +8,9 @@ export interface ITask {
   employeeName: string;
   departmentName: string;
   assignBy: number;
+  createdDate: string;
+  updatedDate: string;
+  deadLine: null | string;
 }
 
 export interface IGetTodosRes {

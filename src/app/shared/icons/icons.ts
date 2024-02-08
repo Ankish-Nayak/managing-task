@@ -118,4 +118,18 @@ export const ICONS = {
     openDelay: 1000,
     closeDelay: 500,
   },
+  change: {
+    class: 'bi bi-check-circle-fill',
+    name: 'change',
+    toolTip: 'change',
+    openDelay: 1000,
+    closeDelay: 500,
+  },
+  cancel: {
+    class: 'bi bi-x-circle-fill',
+    name: 'cancel',
+    toolTip: 'cancel',
+    openDelay: 1000,
+    closeDelay: 500,
+  },
 };

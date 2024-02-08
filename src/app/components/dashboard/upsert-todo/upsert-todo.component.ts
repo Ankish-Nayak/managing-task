@@ -35,6 +35,7 @@ import { notNullValidator } from '../../../shared/validators/not-null-validators
 import { SpinnerComponent } from '../../../sharedComponents/spinners/spinner/spinner.component';
 import { SubmitSpinnerComponent } from '../../../sharedComponents/spinners/submit-spinner/submit-spinner.component';
 import { END_POINTS, Months } from '../../../utils/constants';
+import { getSpiltTimeISO } from '../../../utils/time';
 
 type IPropertyName =
   | 'title'
@@ -288,7 +289,6 @@ export class UpsertTodoComponent {
       ]),
       deadlineDate: new FormControl('null', [
         Validators.required,
-        // Validators.pattern('^d{4}-d{2}-d{2}$'),
         notNullValidator(),
       ]),
       deadlineTime: new FormControl('null', [
@@ -298,10 +298,13 @@ export class UpsertTodoComponent {
     });
     if (this.updateForm) {
       const todo: Todo = JSON.parse(this.todoService.getTodo(this.id));
+      const { dateInput, timeInput } = getSpiltTimeISO(todo.deadLine);
       this.todoForm.patchValue({
         title: todo.title || '',
         description: todo.description || '',
-        employeeId: todo.employeeId.toString(),
+        employeeId: String(todo.employeeId),
+        deadlineDate: dateInput,
+        deadlineTime: timeInput,
       });
     }
   }

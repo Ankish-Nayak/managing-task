@@ -30,7 +30,7 @@ import {
   LocalStorageKeys,
   UserRole,
 } from '../../../utils/constants';
-import { sortTasksByProperty } from '../../../utils/sortTasksByPropery';
+// import { sortTasksByProperty } from '../../../utils/sortTasksByPropery';
 import { COLS, TCOLS } from './cols';
 import { TodoListHeaderComponent } from './todo-list-header/todo-list-header.component';
 import { TodoComponent } from './todo/todo.component';
@@ -248,14 +248,14 @@ export class TodoListComponent
       this.columnSortBy.name = name;
       this.columnSortBy.dsc = false;
     }
-    this.todoService.getTodos(this.pageState).subscribe((res) => {
-      this.todos = sortTasksByProperty(
-        res.iterableData,
-        name,
-        this.columnSortBy.dsc,
-      );
-      this.totalPagesCount = res.totalPageCount;
-    });
+    // this.todoService.getTodos(this.pageState).subscribe((res) => {
+    //   this.todos = sortTasksByProperty(
+    //     res.iterableData,
+    //     name,
+    //     this.columnSortBy.dsc,
+    //   );
+    //   this.totalPagesCount = res.totalPageCount;
+    // });
   }
   onPageChange(pageStateUpdates: Partial<GetEmployeesQueryParams>) {
     if (pageStateUpdates.take) {

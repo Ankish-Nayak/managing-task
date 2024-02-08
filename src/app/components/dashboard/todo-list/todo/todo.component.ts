@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
@@ -12,6 +12,8 @@ import { TodoService } from '../../../../shared/services/todo/todo.service';
 import { UserRole } from '../../../../utils/constants';
 import { COLS, TCOLS, TcolsName } from '../cols';
 import { TodoTab } from '../todo-list.component';
+import { FormsModule } from '@angular/forms';
+import { IUpdateTodoPostData } from '../../../../shared/interfaces/requests/toto.interface';
 
 @Component({
   selector: '[app-todo]',
@@ -21,6 +23,7 @@ import { TodoTab } from '../todo-list.component';
     CommonModule,
     ConfirmationModalComponent,
     NgbTooltipModule,
+    FormsModule,
     HighlightDirective,
   ],
   templateUrl: './todo.component.html',
@@ -44,16 +47,19 @@ export class TodoComponent implements OnInit {
   cols: TCOLS = COLS;
   UserRole = UserRole;
   readonly ICONS = ICONS;
+  deadline!: string;
 
+  wantToChangeDeadline = false;
   constructor(
     private todoService: TodoService,
     private toastService: ToastService,
+    private datePipe: DatePipe,
   ) {}
   delete() {
     this.deleteTodo.emit(this.todo.id);
   }
   ngOnInit(): void {
-    // console.log(this.isLoading);
+    this.deadline = this.todo.deadLine!;
   }
   getDescription(description: string) {
     return description.length > 115
@@ -102,5 +108,20 @@ export class TodoComponent implements OnInit {
     } else {
       this.highlight.delete = binary;
     }
+  }
+  togglewantToChangeDeadline() {
+    this.wantToChangeDeadline = !this.wantToChangeDeadline;
+  }
+  assignDeadline() {
+    this.isLoading = true;
+    const data: IUpdateTodoPostData = {
+      ...this.todo,
+      deadLine: this.deadline,
+    };
+    this.todoService.updateTodo(this.todo.id, data).subscribe(() => {
+      this.isLoading = false;
+      this.todo.deadLine = this.deadline;
+    });
+    this.togglewantToChangeDeadline();
   }
 }

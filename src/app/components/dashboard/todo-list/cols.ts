@@ -8,7 +8,8 @@ export type TcolsName =
   | 'IsCompleted'
   | 'AssignedTo'
   | 'AssignedBy'
-  | 'Actions';
+  | 'Actions'
+  | 'Deadline';
 export type TCOLS = {
   name: TcolsName;
   notAllowedUsers: TEmployee[] | null;
@@ -48,14 +49,18 @@ export const COLS: TCOLS = [
     notAllowedUsers: ['employee'],
     idName: 'employeeName',
     render: true,
-    // canSort: 'pointer',
   },
   {
     name: 'AssignedBy',
     notAllowedUsers: ['admin'],
     idName: 'assignBy',
     render: true,
-    // canSort: 'pointer',
+  },
+  {
+    name: 'Deadline',
+    notAllowedUsers: null,
+    idName: 'deadLine',
+    render: true,
   },
   {
     name: 'Actions',

@@ -61,6 +61,39 @@
 >
   {{ todo.assignBy === 1 ? "admin" : "super admin" }}
 </td>
+<td>
+  <div
+    class="input-group text-center d-flex flex-column justify-content-between align-items-center container-fuild"
+    *ngIf="wantToChangeDeadline"
+  >
+    <input
+      type="datetime-local"
+      autoFocus
+      id="date"
+      [(ngModel)]="deadline"
+      placeholder="DD/MM/YYYY"
+    />
+    <div class="input-group-prepend d-flex">
+      <i
+        [class]="ICONS.cancel.class"
+        (click)="togglewantToChangeDeadline()"
+      ></i>
+
+      <i [class]="ICONS.change.class" (click)="assignDeadline()"></i>
+    </div>
+    <div class="invalid-feedback"></div>
+  </div>
+  <button
+    class="btn-primary"
+    *ngIf="!wantToChangeDeadline"
+    type="button"
+    (click)="togglewantToChangeDeadline()"
+  >
+    {{
+      todo.deadLine === null ? "assign deadline" : (deadline | date: "medium")
+    }}
+  </button>
+</td>
 <td *ngIf="userAllowedToView('Actions')">
   <div
     class="d-flex justify-content-between container-fuild align-items-center"

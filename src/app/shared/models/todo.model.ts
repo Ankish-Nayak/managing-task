@@ -10,7 +10,9 @@ export class Todo implements ITask {
   employeeName: string;
   departmentName: string;
   assignBy: number;
-
+  createdDate: string;
+  updatedDate: string;
+  deadLine: null | string;
   constructor(data: ITask) {
     this.title = data.title;
     this.description = data.description;
@@ -21,6 +23,9 @@ export class Todo implements ITask {
     this.employeeName = data.employeeName;
     this.departmentName = data.departmentName;
     this.assignBy = data.assignBy;
+    this.createdDate = data.createdDate;
+    this.updatedDate = data.updatedDate;
+    this.deadLine = data.deadLine;
   }
 }
 
@@ -41,6 +46,9 @@ export class TaskAdapter {
       employeeName: item.employeeName,
       departmentName: item.departmentName,
       assignBy: item.assignBy,
+      createdDate: item.createdDate,
+      updatedDate: item.updatedDate,
+      deadLine: item.deadLine,
     };
   }
 
