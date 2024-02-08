@@ -4,8 +4,8 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TEmployee } from '../../../shared/interfaces/employee.type';
-import { ConfirmationModalComponent } from '../../../shared/modals/confirmation-modal/confirmation-modal.component';
-import { UpsertContentModalComponent } from '../../../shared/modals/upsert-content-modal/upsert-content-modal.component';
+import { ConfirmationModalComponent } from '../../../sharedComponents/modals/confirmation-modal/confirmation-modal.component';
+import { UpsertContentModalComponent } from '../../../sharedComponents/modals/upsert-content-modal/upsert-content-modal.component';
 import {
   Employee,
   EmployeeAdapter,

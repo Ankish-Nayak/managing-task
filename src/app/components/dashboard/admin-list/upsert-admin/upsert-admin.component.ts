@@ -30,13 +30,13 @@ import { AuthService } from '../../../../shared/services/auth/auth.service';
 import { DepartmentService } from '../../../../shared/services/department/department.service';
 import { EmployeeService } from '../../../../shared/services/employee/employee.service';
 import { ToastService } from '../../../../shared/services/toast/toast.service';
-import { SpinnerComponent } from '../../../../shared/spinners/spinner/spinner.component';
+import { SpinnerComponent } from '../../../../sharedComponents/spinners/spinner/spinner.component';
 import { GenericValidators } from '../../../../shared/validators/generic-validator';
 import { notNullValidator } from '../../../../shared/validators/not-null-validators';
 import { EMPLOYEE_TYPE, END_POINTS } from '../../../../utils/constants';
 import { getActiveEndpoint } from '../../../../utils/getActiveEndpoint';
 import { VALIDATION_MESSAGES } from './VALIDATION_MESSAGES';
-import { SubmitSpinnerComponent } from '../../../../shared/spinners/submit-spinner/submit-spinner.component';
+import { SubmitSpinnerComponent } from '../../../../sharedComponents/spinners/submit-spinner/submit-spinner.component';
 type IPropertyName =
   | 'name'
   | 'email'

@@ -21,8 +21,8 @@ import { debounceTime } from 'rxjs/operators';
 import { ClickedEnterDirective } from '../../../shared/directives/clicked-enter/clicked-enter.directive';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { ToastService } from '../../../shared/services/toast/toast.service';
-import { SpinnerComponent } from '../../../shared/spinners/spinner/spinner.component';
-import { SubmitSpinnerComponent } from '../../../shared/spinners/submit-spinner/submit-spinner.component';
+import { SpinnerComponent } from '../../../sharedComponents/spinners/spinner/spinner.component';
+import { SubmitSpinnerComponent } from '../../../sharedComponents/spinners/submit-spinner/submit-spinner.component';
 import { GenericValidators } from '../../../shared/validators/generic-validator';
 
 type IPropertyName = 'email' | 'password';

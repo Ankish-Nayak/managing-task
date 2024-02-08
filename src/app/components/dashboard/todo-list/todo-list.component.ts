@@ -8,23 +8,23 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { DataTableControlPanelComponent } from '../../../shared/controlPanels/data-table-control-panel/data-table-control-panel.component';
+import { DataTableControlPanelComponent } from '../../../sharedComponents/controlPanels/data-table-control-panel/data-table-control-panel.component';
 import { TEmployee } from '../../../shared/interfaces/employee.type';
 import { GetEmployeesQueryParams } from '../../../shared/interfaces/requests/employee.interface';
 import {
   GetTodosQueryParams,
   ITask,
 } from '../../../shared/interfaces/requests/toto.interface';
-import { ConfirmationModalComponent } from '../../../shared/modals/confirmation-modal/confirmation-modal.component';
-import { UpsertContentModalComponent } from '../../../shared/modals/upsert-content-modal/upsert-content-modal.component';
+import { ConfirmationModalComponent } from '../../../sharedComponents/modals/confirmation-modal/confirmation-modal.component';
+import { UpsertContentModalComponent } from '../../../sharedComponents/modals/upsert-content-modal/upsert-content-modal.component';
 import { Todo } from '../../../shared/models/todo.model';
-import { PaginationComponent } from '../../../shared/paginations/pagination/pagination.component';
+import { PaginationComponent } from '../../../sharedComponents/paginations/pagination/pagination.component';
 import { UserViewColsPipe } from '../../../shared/pipes/user-view-cols/user-view-cols.pipe';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { EmployeeService } from '../../../shared/services/employee/employee.service';
 import { ToastService } from '../../../shared/services/toast/toast.service';
 import { TodoService } from '../../../shared/services/todo/todo.service';
-import { SpinnerComponent } from '../../../shared/spinners/spinner/spinner.component';
+import { SpinnerComponent } from '../../../sharedComponents/spinners/spinner/spinner.component';
 import {
   COMPONENT_NAME,
   LocalStorageKeys,

@@ -29,11 +29,11 @@ import {
 import { EmployeeService } from '../../../shared/services/employee/employee.service';
 import { ToastService } from '../../../shared/services/toast/toast.service';
 import { TodoService } from '../../../shared/services/todo/todo.service';
-import { SpinnerComponent } from '../../../shared/spinners/spinner/spinner.component';
+import { SpinnerComponent } from '../../../sharedComponents/spinners/spinner/spinner.component';
 import { GenericValidators } from '../../../shared/validators/generic-validator';
 import { notNullValidator } from '../../../shared/validators/not-null-validators';
 import { END_POINTS } from '../../../utils/constants';
-import { SubmitSpinnerComponent } from '../../../shared/spinners/submit-spinner/submit-spinner.component';
+import { SubmitSpinnerComponent } from '../../../sharedComponents/spinners/submit-spinner/submit-spinner.component';
 
 type IPropertyName = 'title' | 'description' | 'employeeId';
 

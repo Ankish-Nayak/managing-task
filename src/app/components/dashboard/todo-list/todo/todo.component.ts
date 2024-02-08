@@ -5,7 +5,7 @@ import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { HighlightDirective } from '../../../../shared/directives/highlight/highlight.directive';
 import { ICONS } from '../../../../shared/icons/icons';
 import { TEmployee } from '../../../../shared/interfaces/employee.type';
-import { ConfirmationModalComponent } from '../../../../shared/modals/confirmation-modal/confirmation-modal.component';
+import { ConfirmationModalComponent } from '../../../../sharedComponents/modals/confirmation-modal/confirmation-modal.component';
 import { Todo } from '../../../../shared/models/todo.model';
 import { ToastService } from '../../../../shared/services/toast/toast.service';
 import { TodoService } from '../../../../shared/services/todo/todo.service';

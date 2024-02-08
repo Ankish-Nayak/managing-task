@@ -10,7 +10,7 @@ import { AuthService } from '../../shared/services/auth/auth.service';
 import { DepartmentService } from '../../shared/services/department/department.service';
 import { EmployeeService } from '../../shared/services/employee/employee.service';
 import { TodoService } from '../../shared/services/todo/todo.service';
-import { SpinnerComponent } from '../../shared/spinners/spinner/spinner.component';
+import { SpinnerComponent } from '../../sharedComponents/spinners/spinner/spinner.component';
 import { END_POINTS, UserRole } from '../../utils/constants';
 import { DashboardDetailCardComponent } from './dashboard-detail-card/dashboard-detail-card.component';
 import { EmployeeTab } from './employee-list/employee-list.component';

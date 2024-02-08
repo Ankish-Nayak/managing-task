@@ -18,7 +18,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
 import { TEmployee } from '../../shared/interfaces/employee.type';
-import { ConfirmationModalComponent } from '../../shared/modals/confirmation-modal/confirmation-modal.component';
+import { ConfirmationModalComponent } from '../../sharedComponents/modals/confirmation-modal/confirmation-modal.component';
 import { Department } from '../../shared/models/department.model';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { DepartmentService } from '../../shared/services/department/department.service';
