@@ -5,6 +5,8 @@ import { notSavedChangesGuard } from '../../shared/guards/notSavedChanges/not-sa
 import { userBasedAuthGuard } from '../../shared/guards/userBasedAuth/user-based-auth.guard';
 import { PaginationComponent } from '../../sharedComponents/paginations/pagination/pagination.component';
 import { END_POINTS, UserRole } from '../../utils/constants';
+import { DatePickerComponent } from '../../sharedComponents/datePickers/date-picker/date-picker.component';
+import { TestComponent } from '../test/test.component';
 
 export const routes: Routes = [
   {
@@ -111,7 +113,7 @@ export const routes: Routes = [
     path: END_POINTS.profile,
   },
   {
-    component: PaginationComponent,
+    component: TestComponent,
     path: END_POINTS.test,
   },
   {
