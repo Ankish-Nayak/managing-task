@@ -1,14 +1,40 @@
-<div class="d-flex justify-content-between align-items-center">
-  <div class="d-flex flex-column">
-    {{ selectedTime | json }}
-    <app-time-picker
-      [(time)]="selectedTime"
-      (timeChange)="(selectedTime)"
-    ></app-time-picker>
-  </div>
+<div class="list-group" *ngFor="let notification of notifications">
+  <a href="#" class="list-group-item list-group-item-action">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1">Related to Task</h5>
+      <small class="text-body-secondary">{{
+        notification.created | timeAgo
+      }}</small>
+    </div>
+    <div
+      class="d-flex justify-content-between align-items-center container-fuild"
+    >
+      <p class="mb-1">{{ notification.message }}</p>
+      <button class="btn btn-primary btn-sm" (click)="markAsRead()">
+        mark as read
+      </button>
+    </div>
+    <!-- <small class="text-body-secondary">And some muted small print.</small> -->
+  </a>
+  <!-- <a -->
+  <!--   href="#" -->
+  <!--   class="list-group-item list-group-item-action active" -->
+  <!--   aria-current="true" -->
+  <!-- > -->
+  <!--   <div class="d-flex w-100 justify-content-between"> -->
+  <!--     <h5 class="mb-1">List group item heading</h5> -->
+  <!--     <small>3 days ago</small> -->
+  <!--   </div> -->
+  <!--   <p class="mb-1">Some placeholder content in a paragraph.</p> -->
+  <!--   <small>And some small print.</small> -->
+  <!-- </a> -->
 
-  <div class="d-flex flex-column">
-    {{ selectedDate | json }}
-    <app-date-picker (modalChange)="onDateChange($event)"></app-date-picker>
-  </div>
+  <!-- <a href="#" class="list-group-item list-group-item-action"> -->
+  <!--   <div class="d-flex w-100 justify-content-between"> -->
+  <!--     <h5 class="mb-1">List group item heading</h5> -->
+  <!--     <small class="text-body-secondary">3 days ago</small> -->
+  <!--   </div> -->
+  <!--   <p class="mb-1">Some placeholder content in a paragraph.</p> -->
+  <!--   <small class="text-body-secondary">And some muted small print.</small> -->
+  <!-- </a> -->
 </div>

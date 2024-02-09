@@ -39,13 +39,18 @@
       </ul>
       <div class="nav-item dropdown">
         <a
-          class="nav-link dropdown-toggle"
+          class="nav-link"
           href="#"
           role="button"
           data-bs-toggle="dropdown"
           aria-expanded="false"
         >
-          {{ userType }}
+          <!-- {{ userType }} -->
+          <i class="bi bi-person-circle"> </i>
+          <span
+            class="badge badge-dark text-dark position-absolute top-0 border border-primary rounded-circle"
+            >{{ notificationCount }}</span
+          >
         </a>
         <ul class="dropdown-menu">
           <li *ngFor="let profileLink of profileLinks">

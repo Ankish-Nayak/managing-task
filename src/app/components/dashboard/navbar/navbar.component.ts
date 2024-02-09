@@ -19,6 +19,7 @@ import {
   TNavLinks,
   TProfileLinks,
 } from './navBarLinks';
+import { NotificationService } from '../../../shared/services/notification/notification.service';
 
 @Component({
   selector: 'app-navbar',
@@ -39,12 +40,14 @@ export class NavbarComponent implements OnInit {
   userType!: TEmployee;
   readonly END_POINTS = END_POINTS;
   activeEndPoint!: string;
+  notificationCount: number = 5;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private authService: AuthService,
     private activeEndpoint: ActiveEndpointService,
+    private notificationService: NotificationService,
   ) {}
   ngOnInit(): void {
     this.activeEndPoint = getActiveEndpoint(this.route);
@@ -54,6 +57,12 @@ export class NavbarComponent implements OnInit {
     });
     this.activeEndpoint.activeEndpointMessage$.subscribe((endPoint) => {
       this.updateNavLinks(endPoint);
+    });
+    this.getNotificationCount();
+  }
+  getNotificationCount() {
+    this.notificationService.getNotifications().subscribe((res) => {
+      this.notificationCount = res.length;
     });
   }
   updateNavLinks(endpoint: string) {
