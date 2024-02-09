@@ -42,4 +42,5 @@ export interface IMessage {
   userType: string;
   isSeen: boolean;
   messageDate: string; // Assuming messageDate is in ISO format
+  senderId: number;
 }

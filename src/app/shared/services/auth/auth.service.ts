@@ -111,6 +111,8 @@ export class AuthService {
               return employee;
             })(),
           );
+          this._userSource.next(res.data as Employee);
+          setLocalStorageItem(LocalStorageKeys.User, JSON.stringify(res.data));
           return res.data;
         }),
       );

@@ -8,6 +8,7 @@ export class Message implements IMessage {
   userType: string;
   isSeen: boolean;
   messageDate: string;
+  senderId: number;
 
   constructor(data: IMessage) {
     this.id = data.id;
@@ -15,6 +16,7 @@ export class Message implements IMessage {
     this.name = data.name;
     this.userType = data.userType;
     this.isSeen = data.isSeen;
+    this.senderId = data.senderId;
     this.messageDate = data.messageDate;
   }
 }

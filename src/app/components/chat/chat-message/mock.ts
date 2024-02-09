@@ -1,45 +1,97 @@
 import { IMessage } from '../../../shared/interfaces/requests/chatbox.interface';
-
-export const conversationData: IMessage[] = [
-  {
+import { Message } from '../../../shared/models/message.model';
+export const senderId = 456;
+export const loggedInuserId = 123;
+export const conversationData: Message[] = [
+  new Message({
     id: 1,
     message: "Hey Bob, how's it going?",
     name: 'Alice',
     userType: 'sender',
     isSeen: true,
     messageDate: '2024-02-09T09:00:00.000Z',
-  },
-  {
+    senderId: 123,
+  }),
+  new Message({
     id: 2,
     message: "Hi Alice! I'm doing well, thanks. How about you?",
     name: 'Bob',
     userType: 'receiver',
     isSeen: true,
     messageDate: '2024-02-09T09:05:00.000Z',
-  },
-  {
+    senderId: 456,
+  }),
+  new Message({
     id: 3,
     message: "I'm good too, just working on some stuff.",
     name: 'Alice',
     userType: 'sender',
     isSeen: true,
     messageDate: '2024-02-09T09:10:00.000Z',
-  },
-  {
+    senderId: 123,
+  }),
+  new Message({
     id: 4,
     message: "That's great. Anything interesting?",
     name: 'Bob',
     userType: 'receiver',
     isSeen: false,
     messageDate: '2024-02-09T09:15:00.000Z',
-  },
-  {
+    senderId: 456,
+  }),
+  new Message({
     id: 5,
     message: 'Not really, just some routine tasks.',
     name: 'Alice',
     userType: 'sender',
     isSeen: false,
     messageDate: '2024-02-09T09:20:00.000Z',
-  },
+    senderId: 123,
+  }),
+  new Message({
+    id: 6,
+    message: "Yeah, I know what you mean. I'm in the same boat.",
+    name: 'Bob',
+    userType: 'receiver',
+    isSeen: false,
+    messageDate: '2024-02-09T09:25:00.000Z',
+    senderId: 456,
+  }),
+  new Message({
+    id: 7,
+    message: "It's just one of those days, I guess.",
+    name: 'Alice',
+    userType: 'sender',
+    isSeen: false,
+    messageDate: '2024-02-09T09:30:00.000Z',
+    senderId: 123,
+  }),
+  new Message({
+    id: 8,
+    message: "We'll get through it!",
+    name: 'Bob',
+    userType: 'receiver',
+    isSeen: false,
+    messageDate: '2024-02-09T09:35:00.000Z',
+    senderId: 456,
+  }),
+  new Message({
+    id: 9,
+    message: "Yeah, you're right. Thanks, Bob!",
+    name: 'Alice',
+    userType: 'sender',
+    isSeen: false,
+    messageDate: '2024-02-09T09:40:00.000Z',
+    senderId: 123,
+  }),
+  new Message({
+    id: 10,
+    message: "Anytime, Alice. That's what friends are for!",
+    name: 'Bob',
+    userType: 'receiver',
+    isSeen: false,
+    messageDate: '2024-02-09T09:45:00.000Z',
+    senderId: 456,
+  }),
   // Add more messages as needed
 ];

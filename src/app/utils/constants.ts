@@ -23,6 +23,7 @@ export const END_POINTS = {
   chatBox: 'chat-box',
   chat: 'chat',
   message: 'message',
+  messageToSomeone: 'message/:senderId',
 };
 
 export enum Months {

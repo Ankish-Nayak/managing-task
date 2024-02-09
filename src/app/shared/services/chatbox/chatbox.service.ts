@@ -17,7 +17,7 @@ import { MessageAdapter } from '../../models/message.model';
   providedIn: 'root',
 })
 export class ChatboxService {
-  private apiUrl = `${environment.BASE_URL}`;
+  private apiUrl = `${environment.BASE_URL}/CommunityMessage`;
   constructor(
     private http: HttpClient,
     private chatboxAdapter: ChatBoxAdapter,

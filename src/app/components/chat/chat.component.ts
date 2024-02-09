@@ -31,13 +31,17 @@ export class ChatComponent implements OnInit {
     private router: Router,
   ) {}
   ngOnInit(): void {
+    this.router.events.subscribe(() => {
+      this.getActiveTab();
+    });
+  }
+  getActiveTab() {
     const activeEndPoint = getActiveEndpoint(this.route);
     if (activeEndPoint === `./${END_POINTS.chatBox}`) {
       this.selectedChatTab = ChatTab.Chats;
     } else if (activeEndPoint === `./${END_POINTS.message}`) {
       this.selectedChatTab = ChatTab.Message;
     }
-    console.log(this.selectedChatTab);
   }
   getNavLink(tab: ChatTab) {
     if (tab === ChatTab.Chats) {
