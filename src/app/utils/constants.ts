@@ -20,6 +20,7 @@ export const END_POINTS = {
   employeesByDepartment: 'employees-by-department/:id',
   assignTask: 'assign-task/:employeeId',
   notifications: 'notifications',
+  chatBox: 'chat-box',
 };
 
 export enum Months {

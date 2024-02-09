@@ -138,4 +138,11 @@ export const routes: Routes = [
       ),
     path: END_POINTS.notifications,
   },
+  {
+    loadComponent: () =>
+      import('../chat/chat-box/chat-box.component').then(
+        (m) => m.ChatBoxComponent,
+      ),
+    path: END_POINTS.chatBox,
+  },
 ];
