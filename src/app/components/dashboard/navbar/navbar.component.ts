@@ -61,9 +61,11 @@ export class NavbarComponent implements OnInit {
     this.getNotificationCount();
   }
   getNotificationCount() {
-    this.notificationService.getNotifications().subscribe((res) => {
-      this.notificationCount = res.length;
-    });
+    this.notificationService
+      .getNotifications({ isSeen: false })
+      .subscribe((res) => {
+        this.notificationCount = res.length;
+      });
   }
   updateNavLinks(endpoint: string) {
     this.navLinks = this.navLinks.map((n) => {
@@ -105,7 +107,13 @@ export class NavbarComponent implements OnInit {
         );
         break;
       }
-      case 'updateProfile': {
+      case 'notifications': {
+        this.router.navigateByUrl(
+          `${END_POINTS.portal}/${END_POINTS.notifications}`,
+          {
+            replaceUrl: true,
+          },
+        );
         break;
       }
       case 'logout': {

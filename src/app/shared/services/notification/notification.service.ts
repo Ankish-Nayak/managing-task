@@ -1,10 +1,11 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { map } from 'rxjs';
 import { environment } from '../../../../environments/environment.development';
 import { LocalStorageKeys } from '../../../utils/constants';
+import { getNotificationType } from '../../../utils/get-notification-type';
 import { getLocalStorageItem } from '../../../utils/localStorageCRUD';
 import { IGetNotifications } from '../../interfaces/requests/notification.interface';
-import { map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -19,16 +20,21 @@ export class NotificationService {
       Authorization: `Bearer ${token}`,
     });
   }
-  getNotifications() {
+  getNotifications(data: { isSeen: boolean }) {
     return this.http
-      .post<IGetNotifications>(
-        `${this.apiUrl}/GetNotifications`,
-        { isSeen: true },
-        {
-          withCredentials: true,
-          headers: this.Headers,
-        },
-      )
-      .pipe(map((res) => res.iterableData));
+      .post<IGetNotifications>(`${this.apiUrl}/GetNotifications`, data, {
+        withCredentials: true,
+        headers: this.Headers,
+      })
+      .pipe(
+        map((res) =>
+          res.iterableData.map((n) => ({
+            ...n,
+            title: 'Task ' + getNotificationType(n.message),
+          })),
+        ),
+      );
   }
+  markNotificationAsRead(id: number) {}
+  markNotificationsAsRead(ids: number[]) {}
 }

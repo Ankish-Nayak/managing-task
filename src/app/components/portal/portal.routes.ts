@@ -131,4 +131,11 @@ export const routes: Routes = [
       ).then((m) => m.UpsertTodoComponent),
     path: END_POINTS.assignTask,
   },
+  {
+    loadComponent: () =>
+      import('../../components/notifications/notifications.component').then(
+        (m) => m.NotificationsComponent,
+      ),
+    path: END_POINTS.notifications,
+  },
 ];

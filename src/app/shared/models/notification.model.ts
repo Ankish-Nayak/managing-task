@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { INotification } from '../interfaces/requests/notification.interface';
 import { Adapter } from './adapter';
+import { getNotificationType } from '../../utils/get-notification-type';
 
 export class Notification implements INotification {
   id: number;
@@ -8,6 +9,7 @@ export class Notification implements INotification {
   isSeen: boolean;
   created: string;
   todoId: number;
+  title: string;
 
   constructor(
     id: number,
@@ -15,12 +17,14 @@ export class Notification implements INotification {
     isSeen: boolean,
     created: string,
     todoId: number,
+    title: string,
   ) {
     this.id = id;
     this.message = message;
     this.isSeen = isSeen;
     this.created = created;
     this.todoId = todoId;
+    this.title = title;
   }
 }
 
@@ -35,6 +39,7 @@ export class NotificationAdapter implements Adapter<Notification> {
       item.isSeen,
       item.created,
       item.todoId,
+      getNotificationType(item.message),
     );
   }
 

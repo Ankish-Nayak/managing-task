@@ -19,6 +19,7 @@ export const END_POINTS = {
   portal: 'portal',
   employeesByDepartment: 'employees-by-department/:id',
   assignTask: 'assign-task/:employeeId',
+  notifications: 'notifications',
 };
 
 export enum Months {
@@ -54,6 +55,12 @@ export enum LocalStorageKeys {
   User = 'user',
   GetTodos = 'get_todos',
   GetEmployees = 'get_employees',
+}
+
+export enum NotificationType {
+  Assigned = 'Assigned',
+  Completed = 'Completed',
+  Updated = 'Updated',
 }
 
 export enum COMPONENT_NAME {

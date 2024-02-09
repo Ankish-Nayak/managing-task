@@ -1,1 +1,33 @@
-<p>notifications works!</p>
+<div class="list-group">
+  <div
+    class="list-group-item d-flex justify-content-center align-items-center container-fuild"
+    id="markAsAllRead"
+  >
+    <button class="btn btn-primary" (click)="markAllAsRead()">
+      Mark all as read
+    </button>
+  </div>
+  <div
+    class="list-group-item list-group-item-action flex-column align-items-start"
+    *ngFor="let notification of notifications"
+  >
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1">{{ notification.title }}</h5>
+      <small class="text-body-secondary">{{
+        notification.created | timeAgo
+      }}</small>
+    </div>
+    <div
+      class="d-flex justify-content-between align-items-center container-fuild"
+    >
+      <p class="mb-1">{{ notification.message }}</p>
+      <button
+        class="btn btn-primary btn-sm"
+        (click)="markAsRead(notification.id)"
+      >
+        mark as read
+      </button>
+    </div>
+    <small class="text-body-secondary"><a href="#">See todo</a></small>
+  </div>
+</div>
