@@ -5,7 +5,10 @@ import { environment } from '../../../../environments/environment.development';
 import { LocalStorageKeys } from '../../../utils/constants';
 import { getNotificationType } from '../../../utils/get-notification-type';
 import { getLocalStorageItem } from '../../../utils/localStorageCRUD';
-import { IGetNotifications } from '../../interfaces/requests/notification.interface';
+import {
+  IGetNotificationPostData,
+  IGetNotifications,
+} from '../../interfaces/requests/notification.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +23,7 @@ export class NotificationService {
       Authorization: `Bearer ${token}`,
     });
   }
-  getNotifications(data: { isSeen: boolean }) {
+  getNotifications(data: IGetNotificationPostData) {
     return this.http
       .post<IGetNotifications>(`${this.apiUrl}/GetNotifications`, data, {
         withCredentials: true,

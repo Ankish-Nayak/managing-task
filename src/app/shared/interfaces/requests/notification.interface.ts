@@ -12,3 +12,6 @@ export interface INotification {
   created: string; // Assuming created is in ISO format
   todoId: number;
 }
+export interface IGetNotificationPostData {
+  isSeen: boolean | null;
+}
