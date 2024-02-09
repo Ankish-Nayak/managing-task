@@ -145,4 +145,11 @@ export const routes: Routes = [
       ),
     path: END_POINTS.chatBox,
   },
+
+  {
+    loadComponent: () =>
+      import('../chat/chat.component').then((m) => m.ChatComponent),
+    path: END_POINTS.chat,
+    loadChildren: () => import('../chat/chat.routes').then((m) => m.routes),
+  },
 ];

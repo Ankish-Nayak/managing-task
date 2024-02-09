@@ -21,6 +21,8 @@ export const END_POINTS = {
   assignTask: 'assign-task/:employeeId',
   notifications: 'notifications',
   chatBox: 'chat-box',
+  chat: 'chat',
+  message: 'message',
 };
 
 export enum Months {
