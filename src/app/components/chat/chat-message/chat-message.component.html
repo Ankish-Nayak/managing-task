@@ -1,1 +1,52 @@
-<p>chat-message works!</p>
+<div class="list-group">
+  <ng-container *ngFor="let message of messages"
+    ><a
+      href="#"
+      [class]="
+        'list-group-item list-group-item-action flex-column align-items-start ' +
+        (message.userType === 'receiver' ? 'text-left' : 'text-right')
+      "
+    >
+      <div
+        [class]="
+          'd-flex w-100 justify-content-' +
+          (message.userType === 'receiver' ? 'start' : 'end')
+        "
+      >
+        <small>3 days ago</small>
+      </div>
+      <p
+        class="mb-1"
+        [class]="
+          'd-flex w-100 justify-content-' +
+          (message.userType === 'receiver' ? 'start' : 'end')
+        "
+      >
+        {{ message.message }}
+      </p>
+      <small
+        [class]="
+          'd-flex w-100 justify-content-' +
+          (message.userType === 'receiver' ? 'start' : 'end')
+        "
+        >{{ message.name }}</small
+      >
+    </a></ng-container
+  >
+
+  <div class="input-group mb-3">
+    <input
+      type="text"
+      class="form-control"
+      [autofocus]="true"
+      aria-label="Text input with segmented dropdown button"
+      [(ngModel)]="senderMessage"
+      placeholder="Send Message"
+    />
+    <div *ngIf="senderMessage !== ''" class="input-group-prepend">
+      <button type="button" class="btn btn-outline-secondary">
+        <i class="bi bi-send"></i>
+      </button>
+    </div>
+  </div>
+</div>
