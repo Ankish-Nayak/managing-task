@@ -31,6 +31,13 @@ export class ChatBoxComponent implements OnInit {
       this.chatboxs = res;
     });
   }
+  getDisplayName(chatbox: ChatBox) {
+    if (this.loggedInUserId === chatbox.employeeId) {
+      return chatbox.recieverName;
+    } else {
+      return chatbox.employeeName;
+    }
+  }
   getRouterLink(chatbox: ChatBox) {
     // we sent message
     if (this.loggedInUserId === chatbox.employeeId) {

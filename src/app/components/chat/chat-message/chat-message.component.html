@@ -1,4 +1,9 @@
-<div class="list-group" *ngIf="!isLoading">
+<div
+  class="list-group"
+  *ngIf="!isLoading"
+  #scrollContainer
+  [scrollTop]="scrollContainer.scrollHeight"
+>
   <ng-container *ngFor="let message of messages"
     ><a
       href="#"
@@ -9,7 +14,7 @@
       "
     >
       <div [class]="'d-flex w-100 justify-content-' + 'start'">
-        <small>3 days ago</small>
+        <small>{{ message.messageDate | timeAgo }}</small>
       </div>
       <p class="mb-1" [class]="'d-flex w-100 justify-content-' + 'start'">
         {{ message.message }}
@@ -28,7 +33,7 @@
         "
       >
         <div [class]="'d-flex w-100 justify-content-' + 'end'">
-          <small>3 days ago</small>
+          <small>{{ message.messageDate | timeAgo }}</small>
         </div>
         <p class="mb-1" [class]="'d-flex w-100 justify-content-' + 'end'">
           {{ message.message }}
@@ -39,24 +44,22 @@
       </a>
     </ng-template>
   </ng-container>
-
-  <div class="input-group mb-3">
+</div>
+<form [formGroup]="chatForm" appClickedEnter (click)="sendMessage()">
+  <div class="input-group mb-3" [tabIndex]="1">
     <input
       type="text"
       class="form-control"
       [autofocus]="true"
+      formControlName="message"
       aria-label="Text input with segmented dropdown button"
       [(ngModel)]="senderMessage"
       placeholder="Send Message"
     />
     <div *ngIf="senderMessage !== ''" class="input-group-prepend">
-      <button
-        type="button"
-        class="btn btn-outline-secondary"
-        (click)="sendMessage()"
-      >
+      <button type="submit" class="btn btn-outline-secondary">
         <i class="bi bi-send"></i>
       </button>
     </div>
   </div>
-</div>
+</form>

@@ -1,37 +1,71 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { Message, MessageAdapter } from '../../../shared/models/message.model';
 import { conversationData, loggedInuserId, senderId } from './mock';
 import { CommonModule, JsonPipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChatboxService } from '../../../shared/services/chatbox/chatbox.service';
 import { AuthService } from '../../../shared/services/auth/auth.service';
+import { ClickedEnterDirective } from '../../../shared/directives/clicked-enter/clicked-enter.directive';
+import { TimeAgoPipe } from '../../../shared/pipes/time-ago/time-ago.pipe';
 
 @Component({
   selector: 'app-chat-message',
   standalone: true,
-  imports: [JsonPipe, CommonModule, FormsModule],
+  imports: [
+    JsonPipe,
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ClickedEnterDirective,
+    TimeAgoPipe,
+  ],
   templateUrl: './chat-message.component.html',
   styleUrl: './chat-message.component.scss',
 })
-export class ChatMessageComponent implements OnInit {
+export class ChatMessageComponent
+  implements OnInit, AfterViewInit, AfterViewChecked
+{
   isLoading = true;
   messages!: Message[];
   senderMessage: string = '';
   senderId!: number;
   loggedInuserId!: number;
+  chatForm!: FormGroup;
+  @ViewChild('scrollContainer', { static: true }) scrollContainer!: ElementRef;
   constructor(
     private chatMessageAdapter: MessageAdapter,
     private router: Router,
     private route: ActivatedRoute,
     private chatboxService: ChatboxService,
     private authService: AuthService,
+    private fb: FormBuilder,
   ) {}
   ngOnInit(): void {
+    this.chatForm = new FormGroup({
+      message: new FormControl(['']),
+    });
     this.getSenderId();
     this.getLoggedInUserId();
     this.getDisplayMessage();
   }
+  ngAfterViewInit(): void {
+    // this.scrollToBottom();
+  }
+  ngAfterViewChecked(): void {}
 
   getMockData() {
     this.senderId = Number(senderId);
@@ -70,11 +104,14 @@ export class ChatMessageComponent implements OnInit {
     );
   }
   sendMessage() {
-    this.chatboxService
-      .sendMessage(this.senderId, { message: this.senderMessage })
-      .subscribe((res) => {
-        this.getDisplayMessage();
-      });
+    const { message } = this.chatForm.value;
+    if (message.length > 0)
+      this.chatboxService
+        .sendMessage(this.senderId, { message: this.senderMessage })
+        .subscribe((res) => {
+          this.senderMessage = '';
+          this.getDisplayMessage();
+        });
   }
   onInputChange() {}
 }

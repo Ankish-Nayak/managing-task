@@ -1,0 +1,16 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+  position: relative;
+}
+
+.list-group {
+  overflow-y: auto;
+}
+
+form {
+  position: sticky;
+  bottom: 0px;
+}
