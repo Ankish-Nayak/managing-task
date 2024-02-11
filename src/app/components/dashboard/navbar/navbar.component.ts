@@ -40,7 +40,7 @@ export class NavbarComponent implements OnInit {
   userType!: TEmployee;
   readonly END_POINTS = END_POINTS;
   activeEndPoint!: string;
-  notificationCount: number = 5;
+  notificationCount!: number;
 
   constructor(
     private router: Router,
