@@ -4,17 +4,29 @@
       <ng-container *ngFor="let chatTab of chatTabs"
         ><li class="nav-item">
           <a
+            (click)="onSelectTab(chatTab)"
             [class]="
-              'nav-link ' + (selectedChatTab === chatTab ? 'active' : '')
+              'nav-link ' + (selectedChatTab.id === chatTab.id ? 'active' : '')
             "
-            [routerLink]="getNavLink(chatTab)"
-            >{{ chatTab }}</a
-          >
-        </li></ng-container
-      >
+            >{{ chatTab.name }}
+            <i
+              *ngIf="chatTab.id !== null"
+              (click)="deleteTab(chatTab)"
+              [class]="ICONS.cancel.class"
+            ></i>
+          </a>
+        </li>
+      </ng-container>
     </ul>
   </div>
   <div class="card-body">
-    <router-outlet></router-outlet>
+    <app-chat-box
+      *ngIf="selectedChatTab.id === null"
+      (addChatBox)="addingChatTab($event)"
+    ></app-chat-box>
+    <app-chat-message
+      *ngIf="selectedChatTab.id !== null"
+      [senderId]="selectedChatTab.id!"
+    ></app-chat-message>
   </div>
 </div>

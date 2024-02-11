@@ -6,15 +6,20 @@
 >
   <ng-container *ngFor="let message of messages"
     ><a
-      href="#"
       *ngIf="isLoggedInUserMessage(message); else recieverMessage"
       [class]="
         'list-group-item list-group-item-action flex-column align-items-start ' +
         'text-left'
       "
     >
-      <div [class]="'d-flex w-100 justify-content-' + 'start'">
+      <div [class]="'d-flex w-100 justify-content-' + 'between'">
         <small>{{ message.messageDate | timeAgo }}</small>
+        <small
+          ><i
+            (click)="deleteMessage(message.id)"
+            [class]="ICONS.delete.class"
+          ></i
+        ></small>
       </div>
       <p class="mb-1" [class]="'d-flex w-100 justify-content-' + 'start'">
         {{ message.message }}
@@ -26,14 +31,21 @@
 
     <ng-template #recieverMessage>
       <a
-        href="#"
         [class]="
           'list-group-item list-group-item-action flex-column align-items-start ' +
           'text-right'
         "
       >
-        <div [class]="'d-flex w-100 justify-content-' + 'end'">
+        <div
+          [class]="'d-flex flex-row-reverse w-100 justify-content-' + 'between'"
+        >
           <small>{{ message.messageDate | timeAgo }}</small>
+          <small
+            ><i
+              (click)="deleteMessage(message.id)"
+              [class]="ICONS.delete.class"
+            ></i
+          ></small>
         </div>
         <p class="mb-1" [class]="'d-flex w-100 justify-content-' + 'end'">
           {{ message.message }}

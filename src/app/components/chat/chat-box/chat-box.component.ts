@@ -1,11 +1,11 @@
 import { CommonModule, JsonPipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { ChatBox, ChatBoxAdapter } from '../../../shared/models/chat-box.model';
-import { TimeAgoPipe } from '../../../shared/pipes/time-ago/time-ago.pipe';
-import { ChatboxService } from '../../../shared/services/chatbox/chatbox.service';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { END_POINTS } from '../../../utils/constants';
+import { ChatBox } from '../../../shared/models/chat-box.model';
+import { TimeAgoPipe } from '../../../shared/pipes/time-ago/time-ago.pipe';
 import { AuthService } from '../../../shared/services/auth/auth.service';
+import { ChatboxService } from '../../../shared/services/chatbox/chatbox.service';
+import { ChatTab } from '../chat.component';
 
 @Component({
   selector: 'app-chat-box',
@@ -17,13 +17,12 @@ import { AuthService } from '../../../shared/services/auth/auth.service';
 export class ChatBoxComponent implements OnInit {
   chatboxs!: ChatBox[];
   loggedInUserId!: number;
+  @Output() addChatBox = new EventEmitter<ChatTab>();
   constructor(
     private chatBoxService: ChatboxService,
-    private chatboxAdpater: ChatBoxAdapter,
     private authService: AuthService,
   ) {}
   ngOnInit(): void {
-    // this.chatboxs = this.chatboxAdpater.adaptArray(chatBoxDataArray);
     this.authService.userMessageSource.subscribe((res) => {
       if (res) this.loggedInUserId = res.id!;
     });
@@ -38,11 +37,17 @@ export class ChatBoxComponent implements OnInit {
       return chatbox.employeeName;
     }
   }
-  getRouterLink(chatbox: ChatBox) {
-    // we sent message
+  onAddChatBox(chatbox: ChatBox) {
     if (this.loggedInUserId === chatbox.employeeId) {
-      return [`../${END_POINTS.message}/${chatbox.recieverId}`];
+      this.addChatBox.emit({
+        id: chatbox.recieverId,
+        name: chatbox.recieverName,
+      });
+    } else {
+      this.addChatBox.emit({
+        id: chatbox.employeeId,
+        name: chatbox.employeeName,
+      });
     }
-    return [`../${END_POINTS.message}/${chatbox.employeeId}`];
   }
 }

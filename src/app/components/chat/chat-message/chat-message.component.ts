@@ -3,7 +3,10 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  Input,
+  OnChanges,
   OnInit,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { Message, MessageAdapter } from '../../../shared/models/message.model';
@@ -21,6 +24,7 @@ import { ChatboxService } from '../../../shared/services/chatbox/chatbox.service
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { ClickedEnterDirective } from '../../../shared/directives/clicked-enter/clicked-enter.directive';
 import { TimeAgoPipe } from '../../../shared/pipes/time-ago/time-ago.pipe';
+import { ICONS } from '../../../shared/icons/icons';
 
 @Component({
   selector: 'app-chat-message',
@@ -37,12 +41,14 @@ import { TimeAgoPipe } from '../../../shared/pipes/time-ago/time-ago.pipe';
   styleUrl: './chat-message.component.scss',
 })
 export class ChatMessageComponent
-  implements OnInit, AfterViewInit, AfterViewChecked
+  implements OnInit, AfterViewInit, AfterViewChecked, OnChanges
 {
+  readonly ICONS = ICONS;
   isLoading = true;
+  isSubmitLoading = false;
   messages!: Message[];
   senderMessage: string = '';
-  senderId!: number;
+  @Input({ required: true }) senderId!: number;
   loggedInuserId!: number;
   chatForm!: FormGroup;
   @ViewChild('scrollContainer', { static: true }) scrollContainer!: ElementRef;
@@ -55,12 +61,19 @@ export class ChatMessageComponent
     private fb: FormBuilder,
   ) {}
   ngOnInit(): void {
+    console.log('senderId', this.senderId);
     this.chatForm = new FormGroup({
       message: new FormControl(['']),
     });
-    this.getSenderId();
+    // this.getSenderId();
     this.getLoggedInUserId();
     this.getDisplayMessage();
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes) {
+      this.getLoggedInUserId();
+      this.getDisplayMessage();
+    }
   }
   ngAfterViewInit(): void {
     // this.scrollToBottom();
@@ -104,14 +117,33 @@ export class ChatMessageComponent
     );
   }
   sendMessage() {
+    if (this.isSubmitLoading) {
+      return;
+    }
     const { message } = this.chatForm.value;
-    if (message.length > 0)
+    if (message.length > 0) {
+      this.isSubmitLoading = true;
       this.chatboxService
         .sendMessage(this.senderId, { message: this.senderMessage })
-        .subscribe((res) => {
-          this.senderMessage = '';
-          this.getDisplayMessage();
-        });
+        .subscribe(
+          (res) => {
+            this.senderMessage = '';
+            this.getDisplayMessage();
+          },
+          (e) => {
+            console.log(e);
+          },
+          () => {
+            this.isSubmitLoading = true;
+          },
+        );
+    }
   }
   onInputChange() {}
+  deleteMessage(id: number) {
+    this.chatboxService.deleteMessage(id).subscribe((res) => {
+      console.log(res);
+      this.getDisplayMessage();
+    });
+  }
 }

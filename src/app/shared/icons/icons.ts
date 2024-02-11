@@ -132,4 +132,11 @@ export const ICONS = {
     openDelay: 1000,
     closeDelay: 500,
   },
+  chatWith: {
+    class: 'bi bi-chat-dots',
+    name: 'chatWith',
+    toolTip: 'chatWith',
+    openDelay: 1000,
+    closeDelay: 500,
+  },
 };

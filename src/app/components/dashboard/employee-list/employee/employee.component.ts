@@ -4,7 +4,8 @@ import { ICONS } from '../../../../shared/icons/icons';
 import { Employee } from '../../../../shared/models/employee.model';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
-import { EMPLOYEE_TYPE } from '../../../../utils/constants';
+import { EMPLOYEE_TYPE, END_POINTS } from '../../../../utils/constants';
+import { Router } from '@angular/router';
 
 @Component({
   selector: '[app-employee]',
@@ -29,6 +30,7 @@ export class EmployeeComponent {
   };
   readonly ICONS = ICONS;
   readonly EMPLOYEE_TYPE = EMPLOYEE_TYPE;
+  constructor(private router: Router) {}
   update() {
     localStorage.setItem(
       `employee/${this.employee.id}`,
@@ -49,5 +51,20 @@ export class EmployeeComponent {
   }
   assinTask() {
     this.assignTask.emit(this.employee.id);
+  }
+  onChatWith() {
+    const queryParams = {
+      id: this.employee.id,
+      name: this.employee.name,
+    };
+    const url =
+      `${END_POINTS.portal}/${END_POINTS.chat}/${END_POINTS.chatBox}?` +
+      this.createQueryParamsString(queryParams);
+    this.router.navigateByUrl(url);
+  }
+  createQueryParamsString(queryParams: any): string {
+    return Object.keys(queryParams)
+      .map((key) => `${key}=${queryParams[key]}`)
+      .join('&');
   }
 }

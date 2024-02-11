@@ -59,6 +59,7 @@ export enum LocalStorageKeys {
   User = 'user',
   GetTodos = 'get_todos',
   GetEmployees = 'get_employees',
+  GetChatTabs = 'get_chat_tabs',
 }
 
 export enum NotificationType {
