@@ -198,4 +198,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       this.notifications.push(...res);
     });
   }
+  clearSelectedIds() {
+    this.selectedIds = [];
+  }
 }

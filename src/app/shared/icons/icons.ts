@@ -139,4 +139,18 @@ export const ICONS = {
     openDelay: 1000,
     closeDelay: 500,
   },
+  notSeen: {
+    class: 'bi bi-check',
+    name: 'notSeen',
+    toolTip: 'not seen yet',
+    openDelay: 1000,
+    closeDelay: 500,
+  },
+  seen: {
+    class: 'bi bi-check-all',
+    name: 'notSeen',
+    toolTip: 'not seen yet',
+    openDelay: 1000,
+    closeDelay: 500,
+  },
 };

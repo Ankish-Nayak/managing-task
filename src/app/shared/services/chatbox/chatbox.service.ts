@@ -73,10 +73,30 @@ export class ChatboxService {
         }),
       );
   }
+  convertToIST(utcTime: string): string {
+    const utcDate = new Date(utcTime);
+    const offsetIST = 5.5 * 60 * 60 * 1000; // Offset in milliseconds (5 hours 30 minutes)
+
+    const istTime = new Date(utcDate.getTime() + offsetIST);
+
+    const ISTTimeString = istTime.toLocaleString('en-IN', {
+      timeZone: 'Asia/Kolkata',
+    });
+    return ISTTimeString;
+  }
   convertUtcToIst(utcTime: string): string {
-    const date = new Date(utcTime);
-    // Apply IST offset (+0530) and format the date
-    return this.datePipe.transform(date, 'medium', '+0530', 'en-IN')!;
+    const utcDate = new Date(utcTime);
+    const offsetIST = 5.5 * 60 * 60 * 1000; // Offset in milliseconds (5 hours 30 minutes)
+
+    const istTime = new Date(utcDate.getTime() + offsetIST);
+
+    const ISTTimeString = istTime.toLocaleString('en-IN', {
+      timeZone: 'Asia/Kolkata',
+    });
+    return ISTTimeString;
+    // const date = new Date(utcTime);
+    // // Apply IST offset (+0530) and format the date
+    // return this.datePipe.transform(date, 'medium', '+0530', 'en-IN')!;
   }
   getChatBox() {
     return this.http

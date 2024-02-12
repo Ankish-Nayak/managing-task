@@ -1,12 +1,13 @@
 import { CommonModule, DatePipe, JsonPipe } from '@angular/common';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { ICONS } from '../../../shared/icons/icons';
 import { ChatBox } from '../../../shared/models/chat-box.model';
 import { TimeAgoPipe } from '../../../shared/pipes/time-ago/time-ago.pipe';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { ChatboxService } from '../../../shared/services/chatbox/chatbox.service';
-import { ChatTab } from '../chat.component';
 import { SpinnerComponent } from '../../../sharedComponents/spinners/spinner/spinner.component';
+import { ChatTab } from '../chat.component';
 
 @Component({
   selector: 'app-chat-box',
@@ -20,6 +21,7 @@ export class ChatBoxComponent implements OnInit {
   loggedInUserId!: number;
   @Output() addChatBox = new EventEmitter<ChatTab>();
   isLoading: boolean = false;
+  readonly ICONS = ICONS;
   constructor(
     private chatBoxService: ChatboxService,
     private authService: AuthService,
@@ -56,6 +58,9 @@ export class ChatBoxComponent implements OnInit {
         this.isLoading = false;
       },
     );
+  }
+  getIsSeen(chatbox: ChatBox) {
+    return this.loggedInUserId === chatbox.employeeId;
   }
   getDisplayName(chatbox: ChatBox) {
     if (this.loggedInUserId === chatbox.employeeId) {

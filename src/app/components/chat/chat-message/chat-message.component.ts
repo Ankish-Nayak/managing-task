@@ -38,6 +38,7 @@ import { SpinnerComponent } from '../../../sharedComponents/spinners/spinner/spi
     ClickedEnterDirective,
     TimeAgoPipe,
     DatePipe,
+    SpinnerComponent,
   ],
   templateUrl: './chat-message.component.html',
   styleUrl: './chat-message.component.scss',
@@ -54,7 +55,8 @@ export class ChatMessageComponent
   loggedInuserId!: number;
   chatForm!: FormGroup;
   @ViewChild('scrollContainer', { static: true }) scrollContainer!: ElementRef;
-  IdMap = new Map<number, number>();
+  // isDeleteLoading = false;
+  idToBeDeleted: null | number = null;
   constructor(
     private chatMessageAdapter: MessageAdapter,
     private router: Router,
@@ -117,6 +119,7 @@ export class ChatMessageComponent
             '+0530',
           )!,
         }));
+        this.messages = res;
       },
       () => {},
       () => {
@@ -162,8 +165,13 @@ export class ChatMessageComponent
   }
   onInputChange() {}
   deleteMessage(id: number) {
-    this.chatboxService.deleteMessage(id).subscribe((res) => {
-      this.getDisplayMessage();
+    if (this.idToBeDeleted) {
+      return;
+    }
+    this.idToBeDeleted = id;
+    this.chatboxService.deleteMessage(id).subscribe(() => {
+      this.idToBeDeleted = null;
+      this.messages = this.messages.filter((m) => m.id !== id);
     });
   }
   convertedIST() {}

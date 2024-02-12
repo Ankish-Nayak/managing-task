@@ -8,7 +8,15 @@
         <h6 class="mb-1">{{ getDisplayName(chatbox) }}</h6>
         <small>{{ chatbox.lastActive | timeAgo }}</small>
       </div>
-      <p class="mb-1">{{ chatbox.lastMessage }}</p>
+      <div class="d-flex align-items">
+        <small *ngIf="getIsSeen(chatbox)">
+          <i
+            [class]="chatbox.isSeen ? ICONS.seen.class : ICONS.notSeen.class"
+          ></i>
+        </small>
+
+        <p class="mb-1">{{ chatbox.lastMessage }}</p>
+      </div>
       <small *ngIf="chatbox.newMessages"
         >{{ chatbox.newMessages }} new messages</small
       >
