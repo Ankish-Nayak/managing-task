@@ -18,7 +18,7 @@
       *ngIf="selectedNotificationTab !== NotificationTab.Read"
     >
       <button class="btn btn-primary" (click)="markAllAsRead()">
-        Mark all as read
+        {{ select ? "Mark Select as Read" : "Select" }}
       </button>
     </div>
   </div>
@@ -51,10 +51,19 @@
         <button
           class="btn btn-primary btn-sm"
           (click)="markAsRead(notification.id)"
-          *ngIf="!notification.isSeen"
+          *ngIf="!notification.isSeen && !select"
         >
           mark as read
         </button>
+        <i
+          *ngIf="!notification.isSeen && select"
+          (click)="toggleSelectedIds(notification.id)"
+          [class]="
+            selectedIds.includes(notification.id)
+              ? ICONS.done.class
+              : ICONS.active.class
+          "
+        ></i>
       </div>
     </div>
   </ng-container>

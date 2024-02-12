@@ -15,6 +15,7 @@ import {
   removeLocalStorageItem,
   updateLocalStorageItem,
 } from '../../utils/localStorageCRUD';
+import { ICONS } from '../../shared/icons/icons';
 
 export enum NotificationTab {
   All = 'All',
@@ -49,6 +50,8 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       }
     })(),
   );
+  select!: boolean;
+  selectedIds: number[] = [];
   readonly NotificationTabs: NotificationTab[] = [
     NotificationTab.All,
     NotificationTab.Read,
@@ -57,11 +60,13 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   readonly NotificationTab = NotificationTab;
   selectedNotificationTab: NotificationTab = NotificationTab.All;
   scrollableIndex!: number;
+  readonly ICONS = ICONS;
   constructor(
     private notificationService: NotificationService,
     private elementRef: ElementRef,
   ) {}
   ngOnInit(): void {
+    this.select = false;
     this.scrollableIndex = this.pageState.index;
     this.selectedNotificationTab = (() => {
       if (this.pageState.isSeen === null) {
@@ -75,18 +80,56 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   }
   markAsRead(id: number) {
     this.notificationService.markNotificationAsRead(id).subscribe(
-      () => {},
+      () => {
+        if (this.selectedNotificationTab === NotificationTab.UnRead)
+          this.notifications = this.notifications.filter((n) => n.id !== id);
+        else {
+          this.notifications = this.notifications.map((n) => {
+            if (n.id === id) {
+              n.isSeen = true;
+            }
+            return n;
+          });
+        }
+      },
       (e) => {
         console.log(e);
       },
       () => {},
     );
   }
+  toggleSelectedIds(id: number) {
+    const exist = this.selectedIds.includes(id);
+    if (exist) {
+      this.selectedIds = this.selectedIds.filter((n) => n !== id);
+    } else {
+      this.selectedIds.push(id);
+    }
+  }
   markAllAsRead() {
-    const ids: number[] = [];
-    this.notificationService.markNotificationsAsRead({
-      notificationIDs: ids,
-    });
+    if (!this.select) {
+      this.select = !this.select;
+      return;
+    }
+    this.notificationService
+      .markNotificationsAsRead({
+        notificationIDs: this.selectedIds,
+      })
+      .subscribe(
+        () => {},
+        (e) => {
+          console.log(e);
+        },
+        () => {
+          if (this.selectedNotificationTab === NotificationTab.UnRead) {
+            this.notifications = this.notifications.filter((n) => {
+              return !this.selectedIds.includes(n.id);
+            });
+          }
+          this.select = !this.select;
+          this.selectedIds = [];
+        },
+      );
   }
   onPageStateChange() {
     updateLocalStorageItem(
