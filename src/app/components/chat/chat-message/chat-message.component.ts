@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { Message, MessageAdapter } from '../../../shared/models/message.model';
 import { conversationData, loggedInuserId, senderId } from './mock';
-import { CommonModule, JsonPipe } from '@angular/common';
+import { CommonModule, DatePipe, JsonPipe } from '@angular/common';
 import {
   FormBuilder,
   FormControl,
@@ -36,6 +36,7 @@ import { ICONS } from '../../../shared/icons/icons';
     ReactiveFormsModule,
     ClickedEnterDirective,
     TimeAgoPipe,
+    DatePipe,
   ],
   templateUrl: './chat-message.component.html',
   styleUrl: './chat-message.component.scss',
@@ -44,7 +45,7 @@ export class ChatMessageComponent
   implements OnInit, AfterViewInit, AfterViewChecked, OnChanges
 {
   readonly ICONS = ICONS;
-  isLoading = true;
+  isLoading = false;
   isSubmitLoading = false;
   messages!: Message[];
   senderMessage: string = '';
@@ -59,9 +60,9 @@ export class ChatMessageComponent
     private chatboxService: ChatboxService,
     private authService: AuthService,
     private fb: FormBuilder,
+    private datePipe: DatePipe,
   ) {}
   ngOnInit(): void {
-    console.log('senderId', this.senderId);
     this.chatForm = new FormGroup({
       message: new FormControl(['']),
     });
@@ -87,7 +88,6 @@ export class ChatMessageComponent
   }
   getLoggedInUserId() {
     this.authService.userMessageSource.subscribe((res) => {
-      console.log(res);
       if (res) this.loggedInuserId = res.id;
     });
   }
@@ -101,14 +101,20 @@ export class ChatMessageComponent
   }
   isLoggedInUserMessage(message: Message) {
     const boolean = message.senderId === this.loggedInuserId;
-    console.log('message', this.loggedInuserId, message.senderId, boolean);
     return message.senderId === this.loggedInuserId;
   }
   getDisplayMessage() {
     this.isLoading = true;
     this.chatboxService.displayMessage(this.senderId).subscribe(
       (res) => {
-        this.messages = res;
+        this.messages = res.map((m) => ({
+          ...m,
+          messageDate: this.datePipe.transform(
+            m.messageDate,
+            'yyyy-MM-ddTHH:mm:ss.SSSZ',
+            '+0530',
+          )!,
+        }));
       },
       () => {},
       () => {
@@ -126,7 +132,7 @@ export class ChatMessageComponent
       this.chatboxService
         .sendMessage(this.senderId, { message: this.senderMessage })
         .subscribe(
-          (res) => {
+          () => {
             this.senderMessage = '';
             this.getDisplayMessage();
           },
@@ -134,7 +140,7 @@ export class ChatMessageComponent
             console.log(e);
           },
           () => {
-            this.isSubmitLoading = true;
+            this.isSubmitLoading = false;
           },
         );
     }
@@ -142,8 +148,8 @@ export class ChatMessageComponent
   onInputChange() {}
   deleteMessage(id: number) {
     this.chatboxService.deleteMessage(id).subscribe((res) => {
-      console.log(res);
       this.getDisplayMessage();
     });
   }
+  convertedIST() {}
 }

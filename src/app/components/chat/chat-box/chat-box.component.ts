@@ -1,4 +1,4 @@
-import { CommonModule, JsonPipe } from '@angular/common';
+import { CommonModule, DatePipe, JsonPipe } from '@angular/common';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ChatBox } from '../../../shared/models/chat-box.model';
@@ -21,13 +21,29 @@ export class ChatBoxComponent implements OnInit {
   constructor(
     private chatBoxService: ChatboxService,
     private authService: AuthService,
+    private datePipe: DatePipe,
   ) {}
   ngOnInit(): void {
     this.authService.userMessageSource.subscribe((res) => {
       if (res) this.loggedInUserId = res.id!;
     });
     this.chatBoxService.getChatBox().subscribe((res) => {
-      this.chatboxs = res;
+      this.chatboxs = res
+        .map((m) => ({
+          ...m,
+          lastActive: this.datePipe.transform(
+            m.lastActive,
+            'yyyy-MM-dd HH:mm:ss',
+          )!,
+        }))
+        .filter(
+          (m) =>
+            !(
+              m.recieverId === this.loggedInUserId &&
+              m.employeeId === this.loggedInUserId
+            ),
+        );
+      console.log(this.chatboxs);
     });
   }
   getDisplayName(chatbox: ChatBox) {

@@ -12,6 +12,7 @@ import {
 import { map } from 'rxjs';
 import { ChatBoxAdapter } from '../../models/chat-box.model';
 import { MessageAdapter } from '../../models/message.model';
+import { DatePipe } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
@@ -22,6 +23,7 @@ export class ChatboxService {
     private http: HttpClient,
     private chatboxAdapter: ChatBoxAdapter,
     private messageAdpater: MessageAdapter,
+    private datePipe: DatePipe,
   ) {}
   get Headers() {
     const token = getLocalStorageItem(LocalStorageKeys.AuthToken);
@@ -62,9 +64,19 @@ export class ChatboxService {
       })
       .pipe(
         map((res) => {
-          return this.messageAdpater.adaptArray(res.iterableData);
+          return this.messageAdpater.adaptArray(
+            res.iterableData.map((m) => ({
+              ...m,
+              messageDate: this.convertUtcToIst(m.messageDate),
+            })),
+          );
         }),
       );
+  }
+  convertUtcToIst(utcTime: string): string {
+    const date = new Date(utcTime);
+    // Apply IST offset (+0530) and format the date
+    return this.datePipe.transform(date, 'medium', '+0530', 'en-IN')!;
   }
   getChatBox() {
     return this.http
@@ -74,7 +86,12 @@ export class ChatboxService {
       })
       .pipe(
         map((res) => {
-          return this.chatboxAdapter.adaptArray(res.iterableData);
+          return this.chatboxAdapter.adaptArray(
+            res.iterableData.map((m) => ({
+              ...m,
+              messageDate: this.convertUtcToIst(m.lastActive),
+            })),
+          );
         }),
       );
   }

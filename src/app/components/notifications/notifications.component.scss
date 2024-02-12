@@ -1,10 +1,16 @@
 .list-group-header {
   position: sticky;
   z-index: 100;
-  top: 40px;
+  top: 0px;
   background: white;
 }
 
 .pointer {
   cursor: pointer;
+}
+
+.list-group {
+  height: 600px;
+  overflow-y: auto;
+  width: 500px;
 }

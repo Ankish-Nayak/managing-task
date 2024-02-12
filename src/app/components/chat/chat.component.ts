@@ -41,6 +41,7 @@ const ChatTab: ChatTab = {
   styleUrl: './chat.component.scss',
 })
 export class ChatComponent implements OnInit, OnDestroy {
+  isLoading = false;
   chatTabs: ChatTab[] = (() => {
     const data = getLocalStorageItem(LocalStorageKeys.GetChatTabs);
     if (data) {
@@ -78,7 +79,6 @@ export class ChatComponent implements OnInit, OnDestroy {
     } else {
       this.route.queryParamMap.subscribe((params) => {
         const id = params.get('id');
-        console.log('id', id);
         if (id) {
           this.selectedChatTab =
             this.chatTabs.find((v) => v.id?.toString() === id) ?? ChatTab;

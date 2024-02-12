@@ -116,6 +116,12 @@ export class NavbarComponent implements OnInit {
         );
         break;
       }
+      case 'chats': {
+        this.router.navigateByUrl(
+          `${END_POINTS.portal}/${END_POINTS.chat}/${END_POINTS.chatBox}`,
+        );
+        break;
+      }
       case 'logout': {
         this.router.navigate([``]);
         this.authService.logout().subscribe(() => {

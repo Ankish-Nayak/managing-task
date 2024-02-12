@@ -1,4 +1,4 @@
-<div class="list-group">
+<div class="list-group" appScroll (hit)="onBottom()">
   <div class="list-group-header">
     <ul class="nav nav-tabs card-header-tabs">
       <li class="nav-item" *ngFor="let notificationTab of NotificationTabs">
@@ -15,7 +15,7 @@
     <div
       class="list-group-item d-flex justify-content-center align-items-center container-fuild"
       id="markAsAllRead"
-      *ngIf="selectedNotificationTab !== NotificationTab.UnRead"
+      *ngIf="selectedNotificationTab !== NotificationTab.Read"
     >
       <button class="btn btn-primary" (click)="markAllAsRead()">
         Mark all as read
@@ -23,8 +23,8 @@
     </div>
   </div>
   <div
-    class="list-group-item list-group-item-action flex-column align-items-start"
-    *ngIf="notifications.length === 0"
+    *ngIf="isLoading"
+    class="d-flex justify-content-center align-items-center"
   >
     <app-spinner *ngIf="isLoading"></app-spinner>
   </div>
@@ -51,6 +51,7 @@
         <button
           class="btn btn-primary btn-sm"
           (click)="markAsRead(notification.id)"
+          *ngIf="!notification.isSeen"
         >
           mark as read
         </button>
@@ -60,7 +61,7 @@
 
   <div
     class="list-group-item list-group-item-action flex-column align-items-start"
-    *ngIf="notifications.length === 0"
+    *ngIf="notifications && notifications.length === 0"
   >
     Nothing here
   </div>

@@ -8,7 +8,9 @@ import { getLocalStorageItem } from '../../../utils/localStorageCRUD';
 import {
   IGetNotificationPostData,
   IGetNotifications,
+  ISetNotificationMarkAsReadPostData,
 } from '../../interfaces/requests/notification.interface';
+import { IMarkTodoPostData } from '../../interfaces/requests/toto.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -38,6 +40,15 @@ export class NotificationService {
         ),
       );
   }
-  markNotificationAsRead(id: number) {}
-  markNotificationsAsRead(ids: number[]) {}
+  markNotificationAsRead(id: number) {
+    return this.markNotificationsAsRead({
+      notificationIDs: [id],
+    });
+  }
+  markNotificationsAsRead(data: ISetNotificationMarkAsReadPostData) {
+    return this.http.post(`${this.apiUrl}/SetMarkAsRead`, data, {
+      withCredentials: true,
+      headers: this.Headers,
+    });
+  }
 }

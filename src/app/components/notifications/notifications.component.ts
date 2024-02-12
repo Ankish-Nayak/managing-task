@@ -1,16 +1,20 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { IGetNotificationPostData } from '../../shared/interfaces/requests/notification.interface';
+import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
+import { ScrollDirective } from '../../shared/directives/scroll/scroll.directive';
+import {
+  GetNotificationsQueryParams,
+  IGetNotificationPostData,
+} from '../../shared/interfaces/requests/notification.interface';
 import { Notification } from '../../shared/models/notification.model';
 import { TimeAgoPipe } from '../../shared/pipes/time-ago/time-ago.pipe';
 import { NotificationService } from '../../shared/services/notification/notification.service';
+import { SpinnerComponent } from '../../sharedComponents/spinners/spinner/spinner.component';
 import { LocalStorageKeys } from '../../utils/constants';
 import {
   getLocalStorageItem,
   removeLocalStorageItem,
   updateLocalStorageItem,
 } from '../../utils/localStorageCRUD';
-import { SpinnerComponent } from '../../sharedComponents/spinners/spinner/spinner.component';
 
 export enum NotificationTab {
   All = 'All',
@@ -21,24 +25,30 @@ export enum NotificationTab {
 @Component({
   selector: 'app-notifications',
   standalone: true,
-  imports: [CommonModule, TimeAgoPipe, SpinnerComponent],
+  imports: [CommonModule, TimeAgoPipe, SpinnerComponent, ScrollDirective],
   templateUrl: './notifications.component.html',
   styleUrl: './notifications.component.scss',
 })
 export class NotificationsComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
   notifications!: Notification[];
-  pageState: IGetNotificationPostData = (() => {
-    const data = getLocalStorageItem(LocalStorageKeys.GetNotifications);
-    if (data) {
-      console.log(data);
-      return JSON.parse(data);
-    } else {
-      return {
-        isSeen: null,
-      };
-    }
-  })();
+  pageState: IGetNotificationPostData = new GetNotificationsQueryParams(
+    (() => {
+      const data = getLocalStorageItem(LocalStorageKeys.GetNotifications);
+      if (data) {
+        console.log(data);
+        return JSON.parse(data);
+      } else {
+        return {
+          isPagination: true,
+          index: 0,
+          take: 10,
+          isSeen: null,
+        };
+      }
+    })(),
+  );
+  scrollableElement!: HTMLElement;
   readonly NotificationTabs: NotificationTab[] = [
     NotificationTab.All,
     NotificationTab.Read,
@@ -46,8 +56,13 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   ];
   readonly NotificationTab = NotificationTab;
   selectedNotificationTab: NotificationTab = NotificationTab.All;
-  constructor(private notificationService: NotificationService) {}
+  constructor(
+    private notificationService: NotificationService,
+    private elementRef: ElementRef,
+  ) {}
   ngOnInit(): void {
+    this.scrollableElement =
+      this.elementRef.nativeElement.querySelector('list-group');
     this.selectedNotificationTab = (() => {
       if (this.pageState.isSeen === null) {
         return NotificationTab.All;
@@ -59,11 +74,19 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     this.onPageStateChange();
   }
   markAsRead(id: number) {
-    this.notificationService.markNotificationAsRead(id);
+    this.notificationService.markNotificationAsRead(id).subscribe(
+      () => {},
+      (e) => {
+        console.log(e);
+      },
+      () => {},
+    );
   }
   markAllAsRead() {
     const ids: number[] = [];
-    this.notificationService.markNotificationsAsRead(ids);
+    this.notificationService.markNotificationsAsRead({
+      notificationIDs: ids,
+    });
   }
   onPageStateChange() {
     updateLocalStorageItem(
@@ -100,6 +123,9 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       isSeen: updatedPageStateValue(),
     };
     this.onPageStateChange();
+  }
+  onBottom() {
+    console.log('hitting');
   }
   ngOnDestroy(): void {
     removeLocalStorageItem(LocalStorageKeys.GetNotifications);

@@ -58,7 +58,7 @@
   </ng-container>
 </div>
 <form [formGroup]="chatForm" appClickedEnter (click)="sendMessage()">
-  <div class="input-group mb-3" [tabIndex]="1">
+  <div class="input-group mb-3" [tabIndex]="0">
     <input
       type="text"
       class="form-control"
@@ -67,6 +67,7 @@
       aria-label="Text input with segmented dropdown button"
       [(ngModel)]="senderMessage"
       placeholder="Send Message"
+      (keydown.enter)="sendMessage()"
     />
     <div *ngIf="senderMessage !== ''" class="input-group-prepend">
       <button type="submit" class="btn btn-outline-secondary">

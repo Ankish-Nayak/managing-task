@@ -46,6 +46,7 @@ export const PROFILE_LINKS: TProfileLinks = [
   {
     name: 'notifications',
   },
+  { name: 'chats' },
   {
     name: 'logout',
   },
