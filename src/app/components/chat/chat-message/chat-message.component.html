@@ -2,9 +2,10 @@
   class="list-group"
   *ngIf="!isLoading"
   #scrollContainer
+  id="scrollContainer"
   [scrollTop]="scrollContainer.scrollHeight"
 >
-  <ng-container *ngFor="let message of messages"
+  <ng-container *ngFor="let message of messages; trackBy: trackById"
     ><a
       *ngIf="isLoggedInUserMessage(message); else recieverMessage"
       [class]="

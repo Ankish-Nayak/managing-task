@@ -25,6 +25,7 @@ import { AuthService } from '../../../shared/services/auth/auth.service';
 import { ClickedEnterDirective } from '../../../shared/directives/clicked-enter/clicked-enter.directive';
 import { TimeAgoPipe } from '../../../shared/pipes/time-ago/time-ago.pipe';
 import { ICONS } from '../../../shared/icons/icons';
+import { SpinnerComponent } from '../../../sharedComponents/spinners/spinner/spinner.component';
 
 @Component({
   selector: 'app-chat-message',
@@ -53,6 +54,7 @@ export class ChatMessageComponent
   loggedInuserId!: number;
   chatForm!: FormGroup;
   @ViewChild('scrollContainer', { static: true }) scrollContainer!: ElementRef;
+  IdMap = new Map<number, number>();
   constructor(
     private chatMessageAdapter: MessageAdapter,
     private router: Router,
@@ -134,7 +136,8 @@ export class ChatMessageComponent
         .subscribe(
           () => {
             this.senderMessage = '';
-            this.getDisplayMessage();
+            this.udpateDisplayMessage();
+            // this.getDisplayMessage();
           },
           (e) => {
             console.log(e);
@@ -144,6 +147,18 @@ export class ChatMessageComponent
           },
         );
     }
+  }
+  udpateDisplayMessage() {
+    this.chatboxService.displayMessage(this.senderId).subscribe((res) => {
+      const newMessages: Message[] = res;
+      const diffMessages = newMessages.filter((m) => {
+        return res.find((m2) => m2.id !== m.id);
+      });
+      this.messages.push(...newMessages);
+    });
+  }
+  trackById(index: number, message: Message) {
+    return message.id;
   }
   onInputChange() {}
   deleteMessage(id: number) {

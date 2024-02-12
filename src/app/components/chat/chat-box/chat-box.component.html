@@ -14,4 +14,10 @@
       >
     </a></ng-container
   >
+  <div
+    class="d-flex justify-content-center align-items-center container-fluid"
+    *ngIf="isLoading"
+  >
+    <app-spinner></app-spinner>
+  </div>
 </div>

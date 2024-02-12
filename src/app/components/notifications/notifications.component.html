@@ -1,4 +1,4 @@
-<div class="list-group" appScroll (hit)="onBottom()">
+<div class="list-group" #scrollableDiv id="scrollableDiv" (scroll)="onScroll()">
   <div class="list-group-header">
     <ul class="nav nav-tabs card-header-tabs">
       <li class="nav-item" *ngFor="let notificationTab of NotificationTabs">

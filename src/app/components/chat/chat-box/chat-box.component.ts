@@ -6,11 +6,12 @@ import { TimeAgoPipe } from '../../../shared/pipes/time-ago/time-ago.pipe';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { ChatboxService } from '../../../shared/services/chatbox/chatbox.service';
 import { ChatTab } from '../chat.component';
+import { SpinnerComponent } from '../../../sharedComponents/spinners/spinner/spinner.component';
 
 @Component({
   selector: 'app-chat-box',
   standalone: true,
-  imports: [CommonModule, JsonPipe, TimeAgoPipe, RouterLink],
+  imports: [CommonModule, JsonPipe, TimeAgoPipe, RouterLink, SpinnerComponent],
   templateUrl: './chat-box.component.html',
   styleUrl: './chat-box.component.scss',
 })
@@ -18,6 +19,7 @@ export class ChatBoxComponent implements OnInit {
   chatboxs!: ChatBox[];
   loggedInUserId!: number;
   @Output() addChatBox = new EventEmitter<ChatTab>();
+  isLoading: boolean = false;
   constructor(
     private chatBoxService: ChatboxService,
     private authService: AuthService,
@@ -27,24 +29,33 @@ export class ChatBoxComponent implements OnInit {
     this.authService.userMessageSource.subscribe((res) => {
       if (res) this.loggedInUserId = res.id!;
     });
-    this.chatBoxService.getChatBox().subscribe((res) => {
-      this.chatboxs = res
-        .map((m) => ({
-          ...m,
-          lastActive: this.datePipe.transform(
-            m.lastActive,
-            'yyyy-MM-dd HH:mm:ss',
-          )!,
-        }))
-        .filter(
-          (m) =>
-            !(
-              m.recieverId === this.loggedInUserId &&
-              m.employeeId === this.loggedInUserId
-            ),
-        );
-      console.log(this.chatboxs);
-    });
+    this.isLoading = true;
+    this.chatBoxService.getChatBox().subscribe(
+      (res) => {
+        this.chatboxs = res
+          .map((m) => ({
+            ...m,
+            lastActive: this.datePipe.transform(
+              m.lastActive,
+              'yyyy-MM-dd HH:mm:ss',
+            )!,
+          }))
+          .filter(
+            (m) =>
+              !(
+                m.recieverId === this.loggedInUserId &&
+                m.employeeId === this.loggedInUserId
+              ),
+          );
+        console.log(this.chatboxs);
+      },
+      (e) => {
+        console.log(e);
+      },
+      () => {
+        this.isLoading = false;
+      },
+    );
   }
   getDisplayName(chatbox: ChatBox) {
     if (this.loggedInUserId === chatbox.employeeId) {

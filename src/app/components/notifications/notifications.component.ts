@@ -3,7 +3,7 @@ import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { ScrollDirective } from '../../shared/directives/scroll/scroll.directive';
 import {
   GetNotificationsQueryParams,
-  IGetNotificationPostData,
+  IGetNotificationsQueryParams,
 } from '../../shared/interfaces/requests/notification.interface';
 import { Notification } from '../../shared/models/notification.model';
 import { TimeAgoPipe } from '../../shared/pipes/time-ago/time-ago.pipe';
@@ -32,7 +32,8 @@ export enum NotificationTab {
 export class NotificationsComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
   notifications!: Notification[];
-  pageState: IGetNotificationPostData = new GetNotificationsQueryParams(
+  scrollableDiv: any;
+  pageState: IGetNotificationsQueryParams = new GetNotificationsQueryParams(
     (() => {
       const data = getLocalStorageItem(LocalStorageKeys.GetNotifications);
       if (data) {
@@ -48,7 +49,6 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       }
     })(),
   );
-  scrollableElement!: HTMLElement;
   readonly NotificationTabs: NotificationTab[] = [
     NotificationTab.All,
     NotificationTab.Read,
@@ -56,13 +56,13 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   ];
   readonly NotificationTab = NotificationTab;
   selectedNotificationTab: NotificationTab = NotificationTab.All;
+  scrollableIndex!: number;
   constructor(
     private notificationService: NotificationService,
     private elementRef: ElementRef,
   ) {}
   ngOnInit(): void {
-    this.scrollableElement =
-      this.elementRef.nativeElement.querySelector('list-group');
+    this.scrollableIndex = this.pageState.index;
     this.selectedNotificationTab = (() => {
       if (this.pageState.isSeen === null) {
         return NotificationTab.All;
@@ -129,5 +129,30 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     removeLocalStorageItem(LocalStorageKeys.GetNotifications);
+  }
+  onScroll() {
+    setTimeout(() => {
+      const scrollableDiv =
+        this.elementRef.nativeElement.querySelector('#scrollableDiv');
+      if (
+        scrollableDiv &&
+        scrollableDiv.scrollHeight - scrollableDiv.scrollTop <=
+          scrollableDiv.clientHeight
+      ) {
+        console.log('load more items');
+        this.loadMore();
+      }
+    });
+  }
+  loadMore() {
+    console.log(this.scrollableIndex);
+    this.scrollableIndex++;
+    const newPageState = {
+      ...this.pageState,
+      index: this.scrollableIndex,
+    };
+    this.notificationService.getNotifications(newPageState).subscribe((res) => {
+      this.notifications.push(...res);
+    });
   }
 }
