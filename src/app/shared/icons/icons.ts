@@ -153,4 +153,11 @@ export const ICONS = {
     openDelay: 1000,
     closeDelay: 500,
   },
+  scrollDown: {
+    class: 'bi bi-arrow-down-circle',
+    name: 'scrollDown',
+    toolTip: 'not seen yet',
+    openDelay: 1000,
+    closeDelay: 500,
+  },
 };

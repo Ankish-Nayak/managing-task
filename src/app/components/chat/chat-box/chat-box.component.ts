@@ -17,6 +17,7 @@ import { ChatTab } from '../chat.component';
   styleUrl: './chat-box.component.scss',
 })
 export class ChatBoxComponent implements OnInit {
+  WORD_LIMIT = 30;
   chatboxs!: ChatBox[];
   loggedInUserId!: number;
   @Output() addChatBox = new EventEmitter<ChatTab>();

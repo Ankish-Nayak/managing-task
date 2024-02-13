@@ -24,3 +24,12 @@ i {
 i {
   padding-right: 5px;
 }
+
+#scrollToDown {
+  position: absolute;
+  right: 20px;
+  bottom: 80px;
+  font-size: 25px;
+  z-index: 100;
+  background: white;
+}

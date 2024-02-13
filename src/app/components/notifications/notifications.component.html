@@ -15,17 +15,12 @@
     <div
       class="list-group-item d-flex justify-content-center align-items-center container-fuild"
       id="markAsAllRead"
-      *ngIf="selectedNotificationTab !== NotificationTab.Read"
     >
-      <button class="btn btn-primary" (click)="markAllAsRead()">
-        {{ select ? "Mark Select as Read" : "Select" }}
-      </button>
-      <!-- <div -->
-      <!--   *ngIf="select" -->
-      <!--   class="d-flex flex--reverse align-items container-fuild" -->
-      <!-- > -->
-      <!--   <i [class]="ICONS.cancel.class" (click)="clearSelectedIds()"></i> -->
-      <!-- </div> -->
+      <ng-container *ngIf="selectedNotificationTab !== NotificationTab.Read">
+        <button class="btn btn-primary" (click)="markAllAsRead()">
+          {{ select ? "Mark Select as Read" : "Select" }}
+        </button></ng-container
+      >
     </div>
   </div>
   <div

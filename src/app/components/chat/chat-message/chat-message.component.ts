@@ -1,6 +1,5 @@
+import { CommonModule, DatePipe, JsonPipe } from '@angular/common';
 import {
-  AfterViewChecked,
-  AfterViewInit,
   Component,
   ElementRef,
   Input,
@@ -9,23 +8,21 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import { Message, MessageAdapter } from '../../../shared/models/message.model';
-import { conversationData, loggedInuserId, senderId } from './mock';
-import { CommonModule, DatePipe, JsonPipe } from '@angular/common';
 import {
-  FormBuilder,
   FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ChatboxService } from '../../../shared/services/chatbox/chatbox.service';
-import { AuthService } from '../../../shared/services/auth/auth.service';
+import { ActivatedRoute } from '@angular/router';
 import { ClickedEnterDirective } from '../../../shared/directives/clicked-enter/clicked-enter.directive';
-import { TimeAgoPipe } from '../../../shared/pipes/time-ago/time-ago.pipe';
 import { ICONS } from '../../../shared/icons/icons';
+import { Message, MessageAdapter } from '../../../shared/models/message.model';
+import { TimeAgoPipe } from '../../../shared/pipes/time-ago/time-ago.pipe';
+import { AuthService } from '../../../shared/services/auth/auth.service';
+import { ChatboxService } from '../../../shared/services/chatbox/chatbox.service';
 import { SpinnerComponent } from '../../../sharedComponents/spinners/spinner/spinner.component';
+import { conversationData, loggedInuserId, senderId } from './mock';
 
 @Component({
   selector: 'app-chat-message',
@@ -43,9 +40,7 @@ import { SpinnerComponent } from '../../../sharedComponents/spinners/spinner/spi
   templateUrl: './chat-message.component.html',
   styleUrl: './chat-message.component.scss',
 })
-export class ChatMessageComponent
-  implements OnInit, AfterViewInit, AfterViewChecked, OnChanges
-{
+export class ChatMessageComponent implements OnInit, OnChanges {
   readonly ICONS = ICONS;
   isLoading = false;
   isSubmitLoading = false;
@@ -55,22 +50,19 @@ export class ChatMessageComponent
   loggedInuserId!: number;
   chatForm!: FormGroup;
   @ViewChild('scrollContainer', { static: true }) scrollContainer!: ElementRef;
-  // isDeleteLoading = false;
   idToBeDeleted: null | number = null;
   constructor(
     private chatMessageAdapter: MessageAdapter,
-    private router: Router,
     private route: ActivatedRoute,
     private chatboxService: ChatboxService,
     private authService: AuthService,
-    private fb: FormBuilder,
     private datePipe: DatePipe,
+    private elementRef: ElementRef,
   ) {}
   ngOnInit(): void {
     this.chatForm = new FormGroup({
       message: new FormControl(['']),
     });
-    // this.getSenderId();
     this.getLoggedInUserId();
     this.getDisplayMessage();
   }
@@ -80,11 +72,6 @@ export class ChatMessageComponent
       this.getDisplayMessage();
     }
   }
-  ngAfterViewInit(): void {
-    // this.scrollToBottom();
-  }
-  ngAfterViewChecked(): void {}
-
   getMockData() {
     this.senderId = Number(senderId);
     this.loggedInuserId = Number(loggedInuserId);
@@ -104,21 +91,20 @@ export class ChatMessageComponent
     });
   }
   isLoggedInUserMessage(message: Message) {
-    const boolean = message.senderId === this.loggedInuserId;
     return message.senderId === this.loggedInuserId;
   }
   getDisplayMessage() {
     this.isLoading = true;
     this.chatboxService.displayMessage(this.senderId).subscribe(
       (res) => {
-        this.messages = res.map((m) => ({
-          ...m,
-          messageDate: this.datePipe.transform(
-            m.messageDate,
-            'yyyy-MM-ddTHH:mm:ss.SSSZ',
-            '+0530',
-          )!,
-        }));
+        // this.messages = res.map((m) => ({
+        //   ...m,
+        //   messageDate: this.datePipe.transform(
+        //     m.messageDate,
+        //     'yyyy-MM-ddTHH:mm:ss.SSSZ',
+        //     '+0530',
+        //   )!,
+        // }));
         this.messages = res;
       },
       () => {},
@@ -154,15 +140,13 @@ export class ChatMessageComponent
   udpateDisplayMessage() {
     this.chatboxService.displayMessage(this.senderId).subscribe((res) => {
       const newMessages: Message[] = res;
-      const diffMessages = newMessages.filter((m) => {
-        return res.find((m2) => m2.id !== m.id);
-      });
       this.messages.push(...newMessages);
     });
   }
-  trackById(index: number, message: Message) {
+  trackById(_index: number, message: Message) {
     return message.id;
   }
+
   onInputChange() {}
   deleteMessage(id: number) {
     if (this.idToBeDeleted) {
@@ -174,5 +158,17 @@ export class ChatMessageComponent
       this.messages = this.messages.filter((m) => m.id !== id);
     });
   }
-  convertedIST() {}
+  onScroll() {
+    setTimeout(() => {
+      const scrollableDiv =
+        this.elementRef.nativeElement.querySelector('#scrollContainer');
+      if (
+        scrollableDiv &&
+        scrollableDiv.scrollHeight - scrollableDiv.scrollTop >=
+          scrollableDiv.clientHeight
+      ) {
+        console.log('show icons');
+      }
+    });
+  }
 }

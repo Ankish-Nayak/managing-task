@@ -15,7 +15,13 @@
           ></i>
         </small>
 
-        <p class="mb-1">{{ chatbox.lastMessage }}</p>
+        <p class="mb-1">
+          {{
+            chatbox.lastMessage.length > WORD_LIMIT
+              ? chatbox.lastMessage.substr(0, WORD_LIMIT) + "..."
+              : chatbox.lastMessage
+          }}
+        </p>
       </div>
       <small *ngIf="chatbox.newMessages"
         >{{ chatbox.newMessages }} new messages</small
