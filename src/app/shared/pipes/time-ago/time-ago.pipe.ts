@@ -1,6 +1,4 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { formatDistanceToNow } from 'date-fns';
-import { utcToZonedTime } from 'date-fns-tz';
 import moment from 'moment-timezone';
 
 @Pipe({

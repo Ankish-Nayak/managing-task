@@ -9,6 +9,9 @@
 .list-group {
   overflow-y: auto;
 }
+#scrollContainer {
+  transition: all 0.3s ease; /* Adjust the duration and easing function as needed */
+}
 
 form {
   position: sticky;
@@ -23,6 +26,16 @@ i {
 }
 i {
   padding-right: 5px;
+}
+#dateChip {
+  background: white;
+  width: max-content;
+  margin: auto;
+  position: sticky;
+  top: 0px;
+  color: black;
+  border: 1px solid;
+  z-index: 100;
 }
 
 #scrollToDown {

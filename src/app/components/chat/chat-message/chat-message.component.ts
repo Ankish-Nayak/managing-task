@@ -1,10 +1,11 @@
-import { CommonModule, DatePipe, JsonPipe } from '@angular/common';
+import { CommonModule, JsonPipe } from '@angular/common';
 import {
   Component,
   ElementRef,
   Input,
   OnChanges,
   OnInit,
+  Renderer2,
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
@@ -23,6 +24,7 @@ import { AuthService } from '../../../shared/services/auth/auth.service';
 import { ChatboxService } from '../../../shared/services/chatbox/chatbox.service';
 import { SpinnerComponent } from '../../../sharedComponents/spinners/spinner/spinner.component';
 import { conversationData, loggedInuserId, senderId } from './mock';
+import { MomentTimePipe } from './pipes/moment-time.pipe';
 
 @Component({
   selector: 'app-chat-message',
@@ -34,8 +36,8 @@ import { conversationData, loggedInuserId, senderId } from './mock';
     ReactiveFormsModule,
     ClickedEnterDirective,
     TimeAgoPipe,
-    DatePipe,
     SpinnerComponent,
+    MomentTimePipe,
   ],
   templateUrl: './chat-message.component.html',
   styleUrl: './chat-message.component.scss',
@@ -56,8 +58,8 @@ export class ChatMessageComponent implements OnInit, OnChanges {
     private route: ActivatedRoute,
     private chatboxService: ChatboxService,
     private authService: AuthService,
-    private datePipe: DatePipe,
     private elementRef: ElementRef,
+    private renderer: Renderer2,
   ) {}
   ngOnInit(): void {
     this.chatForm = new FormGroup({
@@ -97,14 +99,6 @@ export class ChatMessageComponent implements OnInit, OnChanges {
     this.isLoading = true;
     this.chatboxService.displayMessage(this.senderId).subscribe(
       (res) => {
-        // this.messages = res.map((m) => ({
-        //   ...m,
-        //   messageDate: this.datePipe.transform(
-        //     m.messageDate,
-        //     'yyyy-MM-ddTHH:mm:ss.SSSZ',
-        //     '+0530',
-        //   )!,
-        // }));
         this.messages = res;
       },
       () => {},
@@ -162,13 +156,37 @@ export class ChatMessageComponent implements OnInit, OnChanges {
     setTimeout(() => {
       const scrollableDiv =
         this.elementRef.nativeElement.querySelector('#scrollContainer');
+      const scrollIcon =
+        this.elementRef.nativeElement.querySelector('#scrollToDown');
       if (
         scrollableDiv &&
-        scrollableDiv.scrollHeight - scrollableDiv.scrollTop >=
+        scrollableDiv.scrollHeight - scrollableDiv.scrollTop >
           scrollableDiv.clientHeight
       ) {
-        console.log('show icons');
+        this.renderer.removeClass(scrollIcon, 'invisible');
+      } else {
+        this.renderer.addClass(scrollIcon, 'invisible');
       }
+    });
+  }
+  renderDateChip(i: number, messages: Message[]) {
+    if (messages.length > 0) {
+      if (i > 0) {
+        return (
+          new Date(messages[i].messageDate).getDate() !==
+          new Date(messages[i - 1].messageDate).getDate()
+        );
+      } else if (i === 0 || messages.length === 1) {
+        return true;
+      }
+    }
+    return false;
+  }
+  onScrollToDown() {
+    setTimeout(() => {
+      const scrollableContainer =
+        this.elementRef.nativeElement.querySelector('#scrollContainer');
+      scrollableContainer.scrollTop = scrollableContainer.scrollHeight;
     });
   }
 }
