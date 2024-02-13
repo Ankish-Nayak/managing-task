@@ -1,18 +1,18 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { map } from 'rxjs';
 import { environment } from '../../../../environments/environment.development';
 import { LocalStorageKeys } from '../../../utils/constants';
 import { getLocalStorageItem } from '../../../utils/localStorageCRUD';
 import {
+  GetDisplayMessageQueryParams,
   IDeleteApiRes,
   IDisplayMessage,
   IGetChatBoxRes,
   ISendMessage,
 } from '../../interfaces/requests/chatbox.interface';
-import { map } from 'rxjs';
 import { ChatBoxAdapter } from '../../models/chat-box.model';
 import { MessageAdapter } from '../../models/message.model';
-import { DatePipe } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +23,6 @@ export class ChatboxService {
     private http: HttpClient,
     private chatboxAdapter: ChatBoxAdapter,
     private messageAdpater: MessageAdapter,
-    private datePipe: DatePipe,
   ) {}
   get Headers() {
     const token = getLocalStorageItem(LocalStorageKeys.AuthToken);
@@ -56,12 +55,20 @@ export class ChatboxService {
       },
     );
   }
-  displayMessage(employeeId: number) {
+  displayMessage(
+    employeeId: number,
+    data: Partial<GetDisplayMessageQueryParams>,
+  ) {
+    const transformedQueryParams = new GetDisplayMessageQueryParams(data);
     return this.http
-      .get<IDisplayMessage>(`${this.apiUrl}/DisplayMessage/${employeeId}`, {
-        withCredentials: true,
-        headers: this.Headers,
-      })
+      .post<IDisplayMessage>(
+        `${this.apiUrl}/DisplayMessage/${employeeId}`,
+        transformedQueryParams,
+        {
+          withCredentials: true,
+          headers: this.Headers,
+        },
+      )
       .pipe(
         map((res) => {
           return this.messageAdpater.adaptArray(
@@ -73,31 +80,8 @@ export class ChatboxService {
         }),
       );
   }
-  convertToIST(utcTime: string): string {
-    const utcDate = new Date(utcTime);
-    const offsetIST = 5.5 * 60 * 60 * 1000; // Offset in milliseconds (5 hours 30 minutes)
-
-    const istTime = new Date(utcDate.getTime() + offsetIST);
-
-    const ISTTimeString = istTime.toLocaleString('en-IN', {
-      timeZone: 'Asia/Kolkata',
-    });
-    return ISTTimeString;
-  }
   convertUtcToIst(utcTime: string): string {
     return utcTime;
-    // const utcDate = new Date(utcTime);
-    // const offsetIST = 5.5 * 60 * 60 * 1000; // Offset in milliseconds (5 hours 30 minutes)
-    //
-    // const istTime = new Date(utcDate.getTime() + offsetIST);
-    //
-    // const ISTTimeString = istTime.toLocaleString('en-IN', {
-    //   timeZone: 'Asia/Kolkata',
-    // });
-    // return ISTTimeString;
-    // const date = new Date(utcTime);
-    // // Apply IST offset (+0530) and format the date
-    // return this.datePipe.transform(date, 'medium', '+0530', 'en-IN')!;
   }
   getChatBox() {
     return this.http

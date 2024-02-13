@@ -1,5 +1,7 @@
 import { CommonModule, JsonPipe } from '@angular/common';
 import {
+  AfterViewChecked,
+  AfterViewInit,
   Component,
   ElementRef,
   Input,
@@ -7,7 +9,6 @@ import {
   OnInit,
   Renderer2,
   SimpleChanges,
-  ViewChild,
 } from '@angular/core';
 import {
   FormControl,
@@ -18,6 +19,7 @@ import {
 import { ActivatedRoute } from '@angular/router';
 import { ClickedEnterDirective } from '../../../shared/directives/clicked-enter/clicked-enter.directive';
 import { ICONS } from '../../../shared/icons/icons';
+import { GetDisplayMessageQueryParams } from '../../../shared/interfaces/requests/chatbox.interface';
 import { Message, MessageAdapter } from '../../../shared/models/message.model';
 import { TimeAgoPipe } from '../../../shared/pipes/time-ago/time-ago.pipe';
 import { AuthService } from '../../../shared/services/auth/auth.service';
@@ -25,6 +27,7 @@ import { ChatboxService } from '../../../shared/services/chatbox/chatbox.service
 import { SpinnerComponent } from '../../../sharedComponents/spinners/spinner/spinner.component';
 import { conversationData, loggedInuserId, senderId } from './mock';
 import { MomentTimePipe } from './pipes/moment-time.pipe';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-chat-message',
@@ -42,7 +45,9 @@ import { MomentTimePipe } from './pipes/moment-time.pipe';
   templateUrl: './chat-message.component.html',
   styleUrl: './chat-message.component.scss',
 })
-export class ChatMessageComponent implements OnInit, OnChanges {
+export class ChatMessageComponent
+  implements OnInit, OnChanges, AfterViewChecked, AfterViewInit
+{
   readonly ICONS = ICONS;
   isLoading = false;
   isSubmitLoading = false;
@@ -51,8 +56,20 @@ export class ChatMessageComponent implements OnInit, OnChanges {
   @Input({ required: true }) senderId!: number;
   loggedInuserId!: number;
   chatForm!: FormGroup;
-  @ViewChild('scrollContainer', { static: true }) scrollContainer!: ElementRef;
+  pageState: GetDisplayMessageQueryParams = new GetDisplayMessageQueryParams({
+    isPagination: true,
+    index: 0,
+    take: 10,
+  });
+  scrollableIndex!: number;
+  sendMessageSubscription: Subscription | undefined;
+  // @ViewChild('scrollContainer', { static: true }) scrollContainer!: ElementRef;
+  scrollableContainer!: HTMLElement;
   idToBeDeleted: null | number = null;
+  isLoadingMoreData: boolean = false;
+  isNoMoreData: boolean = false;
+  once = true;
+  scrollHeight: number = 0;
   constructor(
     private chatMessageAdapter: MessageAdapter,
     private route: ActivatedRoute,
@@ -62,17 +79,28 @@ export class ChatMessageComponent implements OnInit, OnChanges {
     private renderer: Renderer2,
   ) {}
   ngOnInit(): void {
+    console.log('runs');
+    this.scrollableIndex = this.pageState.index;
     this.chatForm = new FormGroup({
       message: new FormControl(['']),
     });
     this.getLoggedInUserId();
     this.getDisplayMessage();
   }
+  ngAfterViewChecked(): void {}
   ngOnChanges(changes: SimpleChanges): void {
     if (changes) {
       this.getLoggedInUserId();
       this.getDisplayMessage();
     }
+  }
+  ngAfterViewInit(): void {
+    this.scrollableContainer =
+      this.elementRef.nativeElement.querySelector('#scrollContainer');
+    console.log('changing');
+    this.scrollHeight = this.scrollableContainer.scrollHeight;
+
+    console.log(this.scrollHeight);
   }
   getMockData() {
     this.senderId = Number(senderId);
@@ -97,7 +125,7 @@ export class ChatMessageComponent implements OnInit, OnChanges {
   }
   getDisplayMessage() {
     this.isLoading = true;
-    this.chatboxService.displayMessage(this.senderId).subscribe(
+    this.chatboxService.displayMessage(this.senderId, this.pageState).subscribe(
       (res) => {
         this.messages = res;
       },
@@ -114,7 +142,7 @@ export class ChatMessageComponent implements OnInit, OnChanges {
     const { message } = this.chatForm.value;
     if (message.length > 0) {
       this.isSubmitLoading = true;
-      this.chatboxService
+      this.sendMessageSubscription = this.chatboxService
         .sendMessage(this.senderId, { message: this.senderMessage })
         .subscribe(
           () => {
@@ -127,21 +155,31 @@ export class ChatMessageComponent implements OnInit, OnChanges {
           },
           () => {
             this.isSubmitLoading = false;
+
+            // this.scrollHeight = this.scrollableContainer.clientHeight;
           },
         );
     }
   }
+
   udpateDisplayMessage() {
-    this.chatboxService.displayMessage(this.senderId).subscribe((res) => {
-      const newMessages: Message[] = res;
-      this.messages.push(...newMessages);
-    });
+    this.chatboxService.displayMessage(this.senderId, this.pageState).subscribe(
+      (res) => {
+        const diff = res.filter((n) => {
+          return this.messages.findIndex((m) => n.id === m.id) === -1;
+        });
+        this.messages.push(...diff);
+      },
+      (e) => {
+        console.log(e);
+      },
+      () => {},
+    );
   }
   trackById(_index: number, message: Message) {
     return message.id;
   }
 
-  onInputChange() {}
   deleteMessage(id: number) {
     if (this.idToBeDeleted) {
       return;
@@ -153,6 +191,18 @@ export class ChatMessageComponent implements OnInit, OnChanges {
     });
   }
   onScroll() {
+    if (!this.isNoMoreData && !this.isLoadingMoreData) {
+      setTimeout(() => {
+        const scrollableDiv =
+          this.elementRef.nativeElement.querySelector('#scrollContainer');
+        if (scrollableDiv && scrollableDiv.scrollTop < 100) {
+          console.log('load more items', scrollableDiv.scrollTop);
+          this.loadMore();
+        }
+      });
+    }
+
+    // showing down icon
     setTimeout(() => {
       const scrollableDiv =
         this.elementRef.nativeElement.querySelector('#scrollContainer');
@@ -188,5 +238,36 @@ export class ChatMessageComponent implements OnInit, OnChanges {
         this.elementRef.nativeElement.querySelector('#scrollContainer');
       scrollableContainer.scrollTop = scrollableContainer.scrollHeight;
     });
+  }
+  loadMore() {
+    this.isLoadingMoreData = true;
+    let tempIndex = this.messages.length / this.pageState.take;
+    if (tempIndex % 1 === 0) {
+      tempIndex++;
+    }
+    const nextIndex = Math.floor(tempIndex);
+    this.chatboxService
+      .displayMessage(this.senderId, {
+        ...this.pageState,
+        index: nextIndex,
+      })
+      .subscribe(
+        (res) => {
+          const diff = res.filter((n) => {
+            return this.messages.findIndex((m) => m.id === n.id) === -1;
+          });
+          if (diff.length === 0) {
+            this.isNoMoreData = true;
+          }
+          this.messages.unshift(...diff);
+          console.log(res);
+        },
+        (e) => {
+          console.log(e);
+        },
+        () => {
+          this.isLoadingMoreData = false;
+        },
+      );
   }
 }

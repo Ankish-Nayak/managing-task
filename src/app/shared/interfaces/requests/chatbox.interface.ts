@@ -44,3 +44,25 @@ export interface IMessage {
   messageDate: string; // Assuming messageDate is in ISO format
   senderId: number;
 }
+
+export interface IGetDisplayMessageQueryParams {
+  isPagination: boolean;
+  index: number;
+  take: number;
+  search: string;
+}
+
+export class GetDisplayMessageQueryParams
+  implements IGetDisplayMessageQueryParams
+{
+  isPagination: boolean;
+  index: number;
+  take: number;
+  search: string;
+  constructor(data: Partial<IGetDisplayMessageQueryParams>) {
+    this.isPagination = data.isPagination ?? false;
+    this.index = data.index ?? 0;
+    this.take = data.take ?? 0;
+    this.search = data.search ?? '';
+  }
+}

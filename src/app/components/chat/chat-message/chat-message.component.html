@@ -4,8 +4,10 @@
   #scrollContainer
   id="scrollContainer"
   (scroll)="onScroll()"
-  [scrollTop]="scrollContainer.scrollHeight"
+  [scrollTop]="scrollHeight"
 >
+  <!-- [scrollTop]="scrollContainer.scrollHeight" -->
+  <!-- [scrollTop]="once ? scrollContainer.scrollHeight : scrollContainer.scrollTop" -->
   <ng-container
     *ngFor="let message of messages; trackBy: trackById; let i = index"
   >
