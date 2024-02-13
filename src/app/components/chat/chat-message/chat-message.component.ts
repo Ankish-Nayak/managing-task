@@ -9,6 +9,7 @@ import {
   OnInit,
   Renderer2,
   SimpleChanges,
+  ViewChild,
 } from '@angular/core';
 import {
   FormControl,
@@ -17,6 +18,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { ClickedEnterDirective } from '../../../shared/directives/clicked-enter/clicked-enter.directive';
 import { ICONS } from '../../../shared/icons/icons';
 import { GetDisplayMessageQueryParams } from '../../../shared/interfaces/requests/chatbox.interface';
@@ -27,7 +29,6 @@ import { ChatboxService } from '../../../shared/services/chatbox/chatbox.service
 import { SpinnerComponent } from '../../../sharedComponents/spinners/spinner/spinner.component';
 import { conversationData, loggedInuserId, senderId } from './mock';
 import { MomentTimePipe } from './pipes/moment-time.pipe';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-chat-message',
@@ -63,12 +64,12 @@ export class ChatMessageComponent
   });
   scrollableIndex!: number;
   sendMessageSubscription: Subscription | undefined;
-  // @ViewChild('scrollContainer', { static: true }) scrollContainer!: ElementRef;
+  @ViewChild('scrollContainer', { static: true }) scrollContainer!: ElementRef;
   scrollableContainer!: HTMLElement;
   idToBeDeleted: null | number = null;
   isLoadingMoreData: boolean = false;
   isNoMoreData: boolean = false;
-  once = true;
+  toBottom = true;
   scrollHeight: number = 0;
   constructor(
     private chatMessageAdapter: MessageAdapter,
@@ -79,7 +80,6 @@ export class ChatMessageComponent
     private renderer: Renderer2,
   ) {}
   ngOnInit(): void {
-    console.log('runs');
     this.scrollableIndex = this.pageState.index;
     this.chatForm = new FormGroup({
       message: new FormControl(['']),
@@ -94,14 +94,7 @@ export class ChatMessageComponent
       this.getDisplayMessage();
     }
   }
-  ngAfterViewInit(): void {
-    this.scrollableContainer =
-      this.elementRef.nativeElement.querySelector('#scrollContainer');
-    console.log('changing');
-    this.scrollHeight = this.scrollableContainer.scrollHeight;
-
-    console.log(this.scrollHeight);
-  }
+  ngAfterViewInit(): void {}
   getMockData() {
     this.senderId = Number(senderId);
     this.loggedInuserId = Number(loggedInuserId);
@@ -155,8 +148,7 @@ export class ChatMessageComponent
           },
           () => {
             this.isSubmitLoading = false;
-
-            // this.scrollHeight = this.scrollableContainer.clientHeight;
+            this.toBottom = true;
           },
         );
     }
@@ -191,12 +183,18 @@ export class ChatMessageComponent
     });
   }
   onScroll() {
+    if (this.toBottom) {
+      this.toBottom = false;
+    }
     if (!this.isNoMoreData && !this.isLoadingMoreData) {
       setTimeout(() => {
         const scrollableDiv =
           this.elementRef.nativeElement.querySelector('#scrollContainer');
-        if (scrollableDiv && scrollableDiv.scrollTop < 100) {
-          console.log('load more items', scrollableDiv.scrollTop);
+        const scrollTop = scrollableDiv.scrollTop;
+        const scrollHeight = scrollableDiv.scrollHeight;
+
+        const twentyPercentScrollHeight = scrollHeight * 0.2;
+        if (scrollTop <= twentyPercentScrollHeight) {
           this.loadMore();
         }
       });
@@ -260,7 +258,6 @@ export class ChatMessageComponent
             this.isNoMoreData = true;
           }
           this.messages.unshift(...diff);
-          console.log(res);
         },
         (e) => {
           console.log(e);

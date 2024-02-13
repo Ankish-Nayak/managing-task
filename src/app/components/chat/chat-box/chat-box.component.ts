@@ -50,7 +50,6 @@ export class ChatBoxComponent implements OnInit {
                 m.employeeId === this.loggedInUserId
               ),
           );
-        console.log(this.chatboxs);
       },
       (e) => {
         console.log(e);

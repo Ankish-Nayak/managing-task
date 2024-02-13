@@ -4,7 +4,9 @@
   #scrollContainer
   id="scrollContainer"
   (scroll)="onScroll()"
-  [scrollTop]="scrollHeight"
+  [scrollTop]="
+    toBottom ? scrollContainer.scrollHeight : scrollContainer.scrollTop
+  "
 >
   <!-- [scrollTop]="scrollContainer.scrollHeight" -->
   <!-- [scrollTop]="once ? scrollContainer.scrollHeight : scrollContainer.scrollTop" -->
@@ -22,7 +24,7 @@
       }}</span
     >
     <a
-      *ngIf="isLoggedInUserMessage(message); else recieverMessage"
+      *ngIf="!isLoggedInUserMessage(message); else recieverMessage"
       [class]="
         'list-group-item list-group-item-action flex-column align-items-start ' +
         'text-left'
@@ -69,7 +71,7 @@
         <div
           [class]="'d-flex flex-row-reverse w-100 justify-content-' + 'between'"
         >
-          <small>{{ message.messageDate | timeAgo }}</small>
+          <small>{{ message.messageDate | momentTime }}</small>
           <small
             ><i
               (click)="deleteMessage(message.id)"
