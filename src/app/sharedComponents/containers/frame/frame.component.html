@@ -5,13 +5,11 @@
   [style.left.px]="position.x"
 >
   <div #topBar></div>
-  <div
-    class="content-wrapper"
-    [style.width.px]="size.w"
-    [style.height.px]="size.h"
-  >
+  <div class="content-wrapper bg-light">
     <div class="top-bar-wrapper" (mousedown)="startDrag($event)">
       <i [class]="ICONS.cancel.class" id="close-frame" (click)="close()"></i>
     </div>
+
+    <ng-content></ng-content>
   </div>
 </div>

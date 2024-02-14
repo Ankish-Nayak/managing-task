@@ -1,1 +1,7 @@
-<app-frame></app-frame>
+<app-frame *ngIf="showChat" (closeFrame)="onCloseFrame()">
+  <app-chat></app-chat>
+</app-frame>
+
+<button class="btn btn-primary btn-sm" *ngIf="!showChat" (click)="openFrame()">
+  open Frame
+</button>
