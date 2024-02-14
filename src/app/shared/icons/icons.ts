@@ -160,4 +160,11 @@ export const ICONS = {
     openDelay: 1000,
     closeDelay: 500,
   },
+  copy: {
+    class: 'bi bi-copy',
+    name: 'copy',
+    toolTip: 'not seen yet',
+    openDelay: 1000,
+    closeDelay: 500,
+  },
 };

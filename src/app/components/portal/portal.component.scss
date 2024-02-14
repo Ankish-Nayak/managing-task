@@ -5,3 +5,24 @@
   align-items: center;
   margin-top: 50px;
 }
+
+#chatWith {
+  font-size: 40px;
+  position: absolute;
+  right: 80px;
+  top: 90%;
+  cursor: pointer;
+}
+
+#closeChat {
+  position: absolute;
+  top: -25px;
+  z-index: 100;
+  right: -25px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.chat-container {
+  position: absolute;
+}

@@ -24,10 +24,10 @@
       }}</span
     >
     <a
-      *ngIf="!isLoggedInUserMessage(message); else recieverMessage"
+      *ngIf="!isLoggedInUserMessage(message); else senderMessage"
       [class]="
         'list-group-item list-group-item-action flex-column align-items-start ' +
-        'text-left'
+        'text-right'
       "
     >
       <div [class]="'d-flex w-100 justify-content-' + 'between'">
@@ -49,23 +49,16 @@
       <p class="mb-1" [class]="'d-flex w-100 justify-content-' + 'start'">
         {{ message.message }}
       </p>
-      <div class="d-flex align-items">
-        <small>
-          <i
-            [class]="message.isSeen ? ICONS.seen.class : ICONS.notSeen.class"
-          ></i>
-        </small>
-        <small [class]="'d-flex w-100 justify-content-' + 'start'">{{
-          message.name
-        }}</small>
-      </div>
+      <small [class]="'d-flex w-100 justify-content-' + 'end'">{{
+        message.name
+      }}</small>
     </a>
 
-    <ng-template #recieverMessage>
+    <ng-template #senderMessage>
       <a
         [class]="
           'list-group-item list-group-item-action flex-column align-items-start ' +
-          'text-right'
+          'text-left'
         "
       >
         <div
@@ -74,18 +67,31 @@
           <small>{{ message.messageDate | momentTime }}</small>
           <small
             ><i
+              *ngIf="idToBeDeleted !== message.id"
               (click)="deleteMessage(message.id)"
               [class]="ICONS.delete.class"
-            ></i
-          ></small>
+            ></i>
+            <div
+              *ngIf="idToBeDeleted === message.id"
+              class="spinner-border spinner-border-sm"
+              role="status"
+            ></div>
+          </small>
         </div>
         <p class="mb-1" [class]="'d-flex w-100 justify-content-' + 'end'">
           {{ message.message }}
         </p>
 
-        <small [class]="'d-flex w-100 justify-content-' + 'end'">{{
-          message.name
-        }}</small>
+        <div class="d-flex align-items">
+          <small>
+            <i
+              [class]="message.isSeen ? ICONS.seen.class : ICONS.notSeen.class"
+            ></i>
+          </small>
+          <small [class]="'d-flex w-100 justify-content-' + 'start'">{{
+            message.name
+          }}</small>
+        </div>
       </a>
     </ng-template>
   </ng-container>
