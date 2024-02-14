@@ -44,7 +44,16 @@ export class ChatboxService {
       }
     })(),
   );
-  private _selectedChatTab = new BehaviorSubject<ChatTab>(CHATTAB);
+  private _selectedChatTab = new BehaviorSubject<ChatTab>(
+    (() => {
+      const data = getLocalStorageItem(LocalStorageKeys.SelectedChatTab);
+      if (data) {
+        return JSON.parse(data);
+      } else {
+        return CHATTAB;
+      }
+    })(),
+  );
   chatTabsMessageSource$ = this._chatTabs.asObservable();
   chatOpenMessageSource$ = this._chatOpen.asObservable();
   selectedChatTabMessageSource$ = this._selectedChatTab.asObservable();
@@ -54,13 +63,19 @@ export class ChatboxService {
     private messageAdpater: MessageAdapter,
   ) {
     this._chatTabs.subscribe((res) => {
-      console.log('calling chatbox');
       setLocalStorageItem(LocalStorageKeys.GetChatTabs, JSON.stringify(res));
+    });
+    this._selectedChatTab.subscribe((res) => {
+      setLocalStorageItem(
+        LocalStorageKeys.SelectedChatTab,
+        JSON.stringify(res),
+      );
     });
   }
   closeChat() {
     if (this._chatOpen.getValue() === false) return;
     removeLocalStorageItem(LocalStorageKeys.GetChatTabs);
+    removeLocalStorageItem(LocalStorageKeys.SelectedChatTab);
     this._chatOpen.next(false);
   }
   openChat() {

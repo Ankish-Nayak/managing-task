@@ -61,6 +61,7 @@ export enum LocalStorageKeys {
   GetEmployees = 'get_employees',
   GetChatTabs = 'get_chat_tabs',
   GetNotifications = 'get_notifications',
+  SelectedChatTab = 'selected_chat_tab',
 }
 
 export enum NotificationType {

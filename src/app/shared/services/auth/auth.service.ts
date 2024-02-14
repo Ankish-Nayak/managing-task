@@ -74,8 +74,9 @@ export class AuthService {
     });
   }
   logout() {
-    removeLocalStorageItem(LocalStorageKeys.AuthToken);
-    removeLocalStorageItem(LocalStorageKeys.UserRole);
+    Object.values(LocalStorageKeys).forEach((v) => {
+      removeLocalStorageItem(v);
+    });
     return of();
   }
   login(email: string, password: string) {

@@ -20,6 +20,7 @@ import {
   TProfileLinks,
 } from './navBarLinks';
 import { NotificationService } from '../../../shared/services/notification/notification.service';
+import { ChatboxService } from '../../../shared/services/chatbox/chatbox.service';
 
 @Component({
   selector: 'app-navbar',
@@ -48,6 +49,7 @@ export class NavbarComponent implements OnInit {
     private authService: AuthService,
     private activeEndpoint: ActiveEndpointService,
     private notificationService: NotificationService,
+    private chatbosService: ChatboxService,
   ) {}
   ngOnInit(): void {
     this.activeEndPoint = getActiveEndpoint(this.route);
@@ -117,9 +119,7 @@ export class NavbarComponent implements OnInit {
         break;
       }
       case 'chats': {
-        this.router.navigateByUrl(
-          `${END_POINTS.portal}/${END_POINTS.chat}/${END_POINTS.chatBox}`,
-        );
+        this.chatbosService.openChat();
         break;
       }
       case 'logout': {
