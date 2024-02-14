@@ -10,14 +10,11 @@ import { ICONS } from '../../shared/icons/icons';
 import {
   CHATTAB,
   ChatTab,
+  ChatboxService,
 } from '../../shared/services/chatbox/chatbox.service';
 import { END_POINTS, LocalStorageKeys } from '../../utils/constants';
 import { getActiveEndpoint } from '../../utils/getActiveEndpoint';
-import {
-  getLocalStorageItem,
-  removeLocalStorageItem,
-  setLocalStorageItem,
-} from '../../utils/localStorageCRUD';
+import { removeLocalStorageItem } from '../../utils/localStorageCRUD';
 import { ChatBoxComponent } from './chat-box/chat-box.component';
 import { ChatMessageComponent } from './chat-message/chat-message.component';
 
@@ -36,22 +33,18 @@ import { ChatMessageComponent } from './chat-message/chat-message.component';
 })
 export class ChatComponent implements OnInit, OnDestroy {
   isLoading = false;
-  chatTabs: ChatTab[] = (() => {
-    const data = getLocalStorageItem(LocalStorageKeys.GetChatTabs);
-    if (data) {
-      return JSON.parse(data);
-    } else {
-      return [CHATTAB];
-    }
-  })();
+  chatTabs!: ChatTab[];
   readonly ICONS = ICONS;
-  selectedChatTab: ChatTab = CHATTAB;
+  selectedChatTab!: ChatTab;
   readonly END_POINTS = END_POINTS;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private chatboxService: ChatboxService,
   ) {}
   ngOnInit(): void {
+    this.getSelectedChatTab();
+    this.getChatTabs();
     this.route.queryParamMap.subscribe((params) => {
       const id = params.get('id');
       const name = params.get('name');
@@ -66,68 +59,41 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.getActiveTab();
     });
   }
+  getSelectedChatTab() {
+    this.chatboxService.selectedChatTabMessageSource$.subscribe((res) => {
+      this.selectedChatTab = res;
+    });
+  }
+  getChatTabs() {
+    this.chatboxService.chatTabsMessageSource$.subscribe((res) => {
+      this.chatTabs = res;
+    });
+  }
   getActiveTab() {
     const activeEndPoint = getActiveEndpoint(this.route);
     if (activeEndPoint === `./${END_POINTS.chatBox}`) {
-      this.selectedChatTab = this.chatTabs.find((v) => v.id === null)!;
+      this.chatboxService.changeSelectedTab(
+        this.chatTabs.find((v) => v.id === null)!,
+      );
     } else {
       this.route.queryParamMap.subscribe((params) => {
         const id = params.get('id');
         if (id) {
-          this.selectedChatTab =
-            this.chatTabs.find((v) => v.id?.toString() === id) ?? CHATTAB;
+          this.chatboxService.changeSelectedTab(
+            this.chatTabs.find((v) => v.id?.toString() === id) ?? CHATTAB,
+          );
         }
       });
     }
   }
   addingChatTab(tab: ChatTab) {
-    if (tab.id === null) {
-      this.selectedChatTab = tab;
-      return;
-    }
-    const existingTab = this.chatTabs.find((t) => t.id === tab.id);
-    if (existingTab) {
-      const messageTabs = this.chatTabs.filter(
-        (t) => t.id !== null && t.id !== existingTab.id,
-      );
-      this.chatTabs = [CHATTAB, existingTab, ...messageTabs];
-      setLocalStorageItem(
-        LocalStorageKeys.GetChatTabs,
-        JSON.stringify(this.chatTabs),
-      );
-      this.selectedChatTab = existingTab;
-    } else {
-      if (this.chatTabs.length === 4) {
-        this.chatTabs.pop();
-      }
-      const messageTabs = this.chatTabs.filter((t) => t.id !== null);
-      this.chatTabs = [
-        CHATTAB,
-        {
-          name: tab.name,
-          id: tab.id,
-        },
-        ...messageTabs,
-      ];
-      setLocalStorageItem(
-        LocalStorageKeys.GetChatTabs,
-        JSON.stringify(this.chatTabs),
-      );
-      this.selectedChatTab = tab;
-    }
+    this.chatboxService.addChatTab(tab);
   }
   onSelectTab(tab: ChatTab) {
-    this.selectedChatTab = tab;
+    this.chatboxService.changeSelectedTab(tab);
   }
   deleteTab(tab: ChatTab) {
-    if (this.selectedChatTab.id === tab.id) {
-      this.selectedChatTab = CHATTAB;
-    }
-    this.chatTabs = this.chatTabs.filter((c) => c.id !== tab.id);
-    setLocalStorageItem(
-      LocalStorageKeys.GetChatTabs,
-      JSON.stringify(this.chatTabs),
-    );
+    this.chatboxService.removeChatTab(tab);
   }
   ngOnDestroy(): void {
     removeLocalStorageItem(LocalStorageKeys.GetChatTabs);

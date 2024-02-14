@@ -1,11 +1,12 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Router } from '@angular/router';
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { HighlightDirective } from '../../../../shared/directives/highlight/highlight.directive';
 import { ICONS } from '../../../../shared/icons/icons';
 import { Employee } from '../../../../shared/models/employee.model';
-import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
-import { CommonModule } from '@angular/common';
-import { EMPLOYEE_TYPE, END_POINTS } from '../../../../utils/constants';
-import { Router } from '@angular/router';
+import { ChatboxService } from '../../../../shared/services/chatbox/chatbox.service';
+import { EMPLOYEE_TYPE } from '../../../../utils/constants';
 
 @Component({
   selector: '[app-employee]',
@@ -30,7 +31,10 @@ export class EmployeeComponent {
   };
   readonly ICONS = ICONS;
   readonly EMPLOYEE_TYPE = EMPLOYEE_TYPE;
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private chatBoxService: ChatboxService,
+  ) {}
   update() {
     localStorage.setItem(
       `employee/${this.employee.id}`,
@@ -53,14 +57,10 @@ export class EmployeeComponent {
     this.assignTask.emit(this.employee.id);
   }
   onChatWith() {
-    const queryParams = {
+    this.chatBoxService.addChatTab({
       id: this.employee.id,
       name: this.employee.name,
-    };
-    const url =
-      `${END_POINTS.portal}/${END_POINTS.chat}/${END_POINTS.chatBox}?` +
-      this.createQueryParamsString(queryParams);
-    this.router.navigateByUrl(url);
+    });
   }
   createQueryParamsString(queryParams: any): string {
     return Object.keys(queryParams)

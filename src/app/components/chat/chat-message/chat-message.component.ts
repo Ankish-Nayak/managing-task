@@ -213,6 +213,7 @@ export class ChatMessageComponent
       ) {
         this.renderer.removeClass(scrollIcon, 'invisible');
       } else {
+        console.log('adding invisible');
         this.renderer.addClass(scrollIcon, 'invisible');
       }
     });

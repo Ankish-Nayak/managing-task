@@ -2,9 +2,12 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map } from 'rxjs';
 import { environment } from '../../../../environments/environment.development';
-// import { CHATTAB, ChatTab } from '../../../components/chat/chat.component';
 import { LocalStorageKeys } from '../../../utils/constants';
-import { getLocalStorageItem } from '../../../utils/localStorageCRUD';
+import {
+  getLocalStorageItem,
+  removeLocalStorageItem,
+  setLocalStorageItem,
+} from '../../../utils/localStorageCRUD';
 import {
   GetDisplayMessageQueryParams,
   IDeleteApiRes,
@@ -25,18 +28,22 @@ export const CHATTAB: ChatTab = {
   id: null,
 };
 
-// const ChatTab: ChatTab = {
-//   name: 'Chats',
-//   id: null,
-// };
-
 @Injectable({
   providedIn: 'root',
 })
 export class ChatboxService {
   private apiUrl = `${environment.BASE_URL}/CommunityMessage`;
   private _chatOpen = new BehaviorSubject<boolean>(false);
-  private _chatTabs = new BehaviorSubject<ChatTab[]>([CHATTAB]);
+  private _chatTabs = new BehaviorSubject<ChatTab[]>(
+    (() => {
+      const data = getLocalStorageItem(LocalStorageKeys.GetChatTabs);
+      if (data) {
+        return JSON.parse(data);
+      } else {
+        return [CHATTAB];
+      }
+    })(),
+  );
   private _selectedChatTab = new BehaviorSubject<ChatTab>(CHATTAB);
   chatTabsMessageSource$ = this._chatTabs.asObservable();
   chatOpenMessageSource$ = this._chatOpen.asObservable();
@@ -45,18 +52,55 @@ export class ChatboxService {
     private http: HttpClient,
     private chatboxAdapter: ChatBoxAdapter,
     private messageAdpater: MessageAdapter,
-  ) {}
+  ) {
+    this._chatTabs.subscribe((res) => {
+      console.log('calling chatbox');
+      setLocalStorageItem(LocalStorageKeys.GetChatTabs, JSON.stringify(res));
+    });
+  }
   closeChat() {
+    if (this._chatOpen.getValue() === false) return;
+    removeLocalStorageItem(LocalStorageKeys.GetChatTabs);
     this._chatOpen.next(false);
   }
   openChat() {
+    if (this._chatOpen.getValue() === true) return;
     this._chatOpen.next(true);
   }
   addChatTab(tab: ChatTab) {
-    if (this._chatTabs.getValue().findIndex((t) => t.id === tab.id) !== -1) {
+    if (tab.id === null) {
+      this._selectedChatTab.next(tab);
       return;
     }
-    this._chatTabs.next([...this._chatTabs.getValue(), tab]);
+    const existingTab = this._chatTabs.getValue().find((t) => t.id === tab.id);
+    if (existingTab) {
+      const messageTabs = this._chatTabs
+        .getValue()
+        .filter((t) => t.id !== null && t.id !== existingTab.id);
+
+      const newTabs = [CHATTAB, existingTab, ...messageTabs];
+      this._chatTabs.next(newTabs);
+      this._selectedChatTab.next(existingTab);
+    } else {
+      const existingTabs = this._chatTabs.getValue();
+      if (existingTabs && existingTabs.length === 4) {
+        existingTabs.pop();
+      }
+      const messageTabs = existingTabs.filter((t) => t.id !== null);
+      const newTabs = [
+        CHATTAB,
+        {
+          name: tab.name,
+          id: tab.id,
+        },
+        ...messageTabs,
+      ];
+      this._chatTabs.next(newTabs);
+      this._selectedChatTab.next(tab);
+    }
+    if (this._chatOpen.getValue() === false) {
+      this.openChat();
+    }
   }
   changeSelectedTab(tab: ChatTab) {
     if (this._selectedChatTab.getValue().id === tab.id) {
@@ -68,8 +112,11 @@ export class ChatboxService {
     if (tab.id === null) {
       return;
     }
+    if (tab.id === this._selectedChatTab.getValue().id) {
+      this._selectedChatTab.next(CHATTAB);
+    }
     this._chatTabs.next([
-      ...this._chatTabs.getValue().filter((t) => t.id === tab.id),
+      ...this._chatTabs.getValue().filter((t) => t.id !== tab.id),
     ]);
   }
   get Headers() {
