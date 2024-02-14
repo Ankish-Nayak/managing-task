@@ -1,4 +1,5 @@
 .frame-wrapper {
+  z-index: 1000;
   position: absolute;
   border: 2px solid black;
 }
@@ -6,7 +7,6 @@
 .content-wrapper {
   position: absolute;
   background-color: lightblue;
-  // overflow: auto;
   width: max-content;
   height: max-content;
 }
@@ -14,13 +14,11 @@
 .top-bar-wrapper {
   width: 100%;
   height: 20px;
-  // background-color: black;
   cursor: move;
 }
 
 #close-frame {
   width: max-content;
-  // color: white;
   position: absolute;
   right: 2px;
   font-size: 14px;

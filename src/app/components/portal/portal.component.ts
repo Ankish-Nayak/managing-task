@@ -1,14 +1,21 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NavbarComponent } from '../dashboard/navbar/navbar.component';
 import { ICONS } from '../../shared/icons/icons';
+import { FrameComponent } from '../../sharedComponents/containers/frame/frame.component';
 import { ChatComponent } from '../chat/chat.component';
-import { CommonModule } from '@angular/common';
+import { NavbarComponent } from '../dashboard/navbar/navbar.component';
 
 @Component({
   selector: 'app-portal',
   standalone: true,
-  imports: [RouterModule, NavbarComponent, ChatComponent, CommonModule],
+  imports: [
+    RouterModule,
+    NavbarComponent,
+    ChatComponent,
+    CommonModule,
+    FrameComponent,
+  ],
   templateUrl: './portal.component.html',
   styleUrl: './portal.component.scss',
 })
