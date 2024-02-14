@@ -22,7 +22,7 @@ export interface ChatTab {
   id: number | null;
 }
 
-const ChatTab: ChatTab = {
+export const CHATTAB: ChatTab = {
   name: 'Chats',
   id: null,
 };
@@ -47,11 +47,11 @@ export class ChatComponent implements OnInit, OnDestroy {
     if (data) {
       return JSON.parse(data);
     } else {
-      return [ChatTab];
+      return [CHATTAB];
     }
   })();
   readonly ICONS = ICONS;
-  selectedChatTab: ChatTab = ChatTab;
+  selectedChatTab: ChatTab = CHATTAB;
   readonly END_POINTS = END_POINTS;
   constructor(
     private route: ActivatedRoute,
@@ -81,7 +81,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         const id = params.get('id');
         if (id) {
           this.selectedChatTab =
-            this.chatTabs.find((v) => v.id?.toString() === id) ?? ChatTab;
+            this.chatTabs.find((v) => v.id?.toString() === id) ?? CHATTAB;
         }
       });
     }
@@ -96,7 +96,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       const messageTabs = this.chatTabs.filter(
         (t) => t.id !== null && t.id !== existingTab.id,
       );
-      this.chatTabs = [ChatTab, existingTab, ...messageTabs];
+      this.chatTabs = [CHATTAB, existingTab, ...messageTabs];
       setLocalStorageItem(
         LocalStorageKeys.GetChatTabs,
         JSON.stringify(this.chatTabs),
@@ -108,7 +108,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       }
       const messageTabs = this.chatTabs.filter((t) => t.id !== null);
       this.chatTabs = [
-        ChatTab,
+        CHATTAB,
         {
           name: tab.name,
           id: tab.id,
@@ -127,7 +127,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
   deleteTab(tab: ChatTab) {
     if (this.selectedChatTab.id === tab.id) {
-      this.selectedChatTab = ChatTab;
+      this.selectedChatTab = CHATTAB;
     }
     this.chatTabs = this.chatTabs.filter((c) => c.id !== tab.id);
     setLocalStorageItem(

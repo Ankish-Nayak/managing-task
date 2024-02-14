@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ICONS } from '../../shared/icons/icons';
+import { ChatboxService } from '../../shared/services/chatbox/chatbox.service';
 import { FrameComponent } from '../../sharedComponents/containers/frame/frame.component';
 import { ChatComponent } from '../chat/chat.component';
 import { NavbarComponent } from '../dashboard/navbar/navbar.component';
@@ -19,10 +20,27 @@ import { NavbarComponent } from '../dashboard/navbar/navbar.component';
   templateUrl: './portal.component.html',
   styleUrl: './portal.component.scss',
 })
-export class PortalComponent {
+export class PortalComponent implements OnInit {
   readonly ICONS = ICONS;
-  showChatBox: boolean = false;
+  showChatBox!: boolean;
+  constructor(private chatBoxService: ChatboxService) {}
+  ngOnInit(): void {
+    this.chatBoxService.chatOpenMessageSource$.subscribe(
+      (res) => {
+        console.log('called');
+        this.showChatBox = res;
+      },
+      (e) => {
+        console.log(e);
+      },
+      () => {},
+    );
+  }
   toggleChatBox() {
-    this.showChatBox = !this.showChatBox;
+    if (this.showChatBox) {
+      this.chatBoxService.closeChat();
+    } else {
+      this.chatBoxService.openChat();
+    }
   }
 }
