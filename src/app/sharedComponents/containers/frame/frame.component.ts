@@ -49,7 +49,10 @@ export class FrameComponent {
     h: 200,
   };
   @Output() closeFrame = new EventEmitter();
-  constructor(@Inject(DOCUMENT) private _document: Document) {}
+  constructor(
+    @Inject(DOCUMENT) private _document: Document,
+    private window: Window,
+  ) {}
 
   startDrag($event: MouseEvent): void {
     $event.preventDefault();
@@ -60,12 +63,38 @@ export class FrameComponent {
     const positionX = this.position.x;
     const positionY = this.position.y;
 
+    const draggableDiv = this.wrapperRef.nativeElement;
+
+    const draggableWidth = draggableDiv.offsetWidth;
+    const draggableHeight = draggableDiv.offsetHeight;
+
     const duringDrag = (e: MouseEvent) => {
       const dx = e.clientX - mouseX;
       const dy = e.clientY - mouseY;
 
-      this.position.x = positionX + dx;
-      this.position.y = positionY + dy;
+      let newX = positionX + dx;
+      let newY = positionY + dy;
+
+      const windowWidth = this.window.innerWidth;
+      const windowHeight = this.window.innerHeight;
+
+      if (newX + draggableWidth > windowWidth) {
+        newX = windowWidth - draggableWidth;
+      } else if (newX < 0) {
+        // Adjust newX if it's less than 0
+        newX = 0;
+      }
+      // Adjust newY if it exceeds window height
+      if (newY + draggableHeight > windowHeight) {
+        newY = windowHeight - draggableHeight;
+      } else if (newY < 0) {
+        // Adjust newY if it's less than 0
+        newY = 0;
+      }
+
+      // Update position
+      this.position.x = newX;
+      this.position.y = newY;
 
       this.lastPosition = {
         ...this.position,

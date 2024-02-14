@@ -14,5 +14,9 @@ export const appConfig: ApplicationConfig = {
     BrowserModule,
     importProvidersFrom(HttpClientModule),
     DatePipe,
+    {
+      provide: Window,
+      useValue: window,
+    },
   ],
 };
