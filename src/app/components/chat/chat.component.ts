@@ -7,6 +7,10 @@ import {
   RouterOutlet,
 } from '@angular/router';
 import { ICONS } from '../../shared/icons/icons';
+import {
+  CHATTAB,
+  ChatTab,
+} from '../../shared/services/chatbox/chatbox.service';
 import { END_POINTS, LocalStorageKeys } from '../../utils/constants';
 import { getActiveEndpoint } from '../../utils/getActiveEndpoint';
 import {
@@ -16,16 +20,6 @@ import {
 } from '../../utils/localStorageCRUD';
 import { ChatBoxComponent } from './chat-box/chat-box.component';
 import { ChatMessageComponent } from './chat-message/chat-message.component';
-
-export interface ChatTab {
-  name: string;
-  id: number | null;
-}
-
-export const CHATTAB: ChatTab = {
-  name: 'Chats',
-  id: null,
-};
 
 @Component({
   selector: 'app-chat',

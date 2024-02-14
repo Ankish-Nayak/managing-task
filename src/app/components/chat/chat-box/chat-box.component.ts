@@ -5,9 +5,11 @@ import { ICONS } from '../../../shared/icons/icons';
 import { ChatBox } from '../../../shared/models/chat-box.model';
 import { TimeAgoPipe } from '../../../shared/pipes/time-ago/time-ago.pipe';
 import { AuthService } from '../../../shared/services/auth/auth.service';
-import { ChatboxService } from '../../../shared/services/chatbox/chatbox.service';
+import {
+  ChatTab,
+  ChatboxService,
+} from '../../../shared/services/chatbox/chatbox.service';
 import { SpinnerComponent } from '../../../sharedComponents/spinners/spinner/spinner.component';
-import { ChatTab } from '../chat.component';
 
 @Component({
   selector: 'app-chat-box',

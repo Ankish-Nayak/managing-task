@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map } from 'rxjs';
 import { environment } from '../../../../environments/environment.development';
-import { CHATTAB, ChatTab } from '../../../components/chat/chat.component';
+// import { CHATTAB, ChatTab } from '../../../components/chat/chat.component';
 import { LocalStorageKeys } from '../../../utils/constants';
 import { getLocalStorageItem } from '../../../utils/localStorageCRUD';
 import {
@@ -14,6 +14,16 @@ import {
 } from '../../interfaces/requests/chatbox.interface';
 import { ChatBoxAdapter } from '../../models/chat-box.model';
 import { MessageAdapter } from '../../models/message.model';
+
+export interface ChatTab {
+  name: string;
+  id: number | null;
+}
+
+export const CHATTAB: ChatTab = {
+  name: 'Chats',
+  id: null,
+};
 
 // const ChatTab: ChatTab = {
 //   name: 'Chats',

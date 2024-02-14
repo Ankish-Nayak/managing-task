@@ -3,9 +3,7 @@ import { AdminListComponent } from '../../components/dashboard/admin-list/admin-
 import { NotAllowedUserComponent } from '../../components/not-allowed-user/not-allowed-user.component';
 import { notSavedChangesGuard } from '../../shared/guards/notSavedChanges/not-saved-changes.guard';
 import { userBasedAuthGuard } from '../../shared/guards/userBasedAuth/user-based-auth.guard';
-import { PaginationComponent } from '../../sharedComponents/paginations/pagination/pagination.component';
 import { END_POINTS, UserRole } from '../../utils/constants';
-import { DatePickerComponent } from '../../sharedComponents/datePickers/date-picker/date-picker.component';
 import { TestComponent } from '../test/test.component';
 
 export const routes: Routes = [
