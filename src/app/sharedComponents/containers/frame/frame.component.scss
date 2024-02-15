@@ -17,10 +17,9 @@
   cursor: move;
 }
 
-#close-frame {
-  width: max-content;
-  position: absolute;
-  right: 2px;
-  font-size: 14px;
-  cursor: pointer;
+#icon-container {
+  gap: 5px;
+  i {
+    cursor: pointer;
+  }
 }

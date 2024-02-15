@@ -115,4 +115,6 @@ export class FrameComponent {
   close() {
     this.closeFrame.emit();
   }
+  minimizeTab() {}
+  toggleSize() {}
 }

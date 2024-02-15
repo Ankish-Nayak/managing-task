@@ -7,7 +7,14 @@
   <div #topBar></div>
   <div class="content-wrapper bg-light">
     <div class="top-bar-wrapper" (mousedown)="startDrag($event)">
-      <i [class]="ICONS.cancel.class" id="close-frame" (click)="close()"></i>
+      <div
+        class="d-flex justify-content-end align-items-center"
+        id="icon-container"
+      >
+        <i [class]="ICONS.minimizeTab.class" (click)="minimizeTab()"></i>
+        <i [class]="ICONS.fullScreen.class" (click)="close()"></i>
+        <i [class]="ICONS.closeTab.class" (click)="close()"></i>
+      </div>
     </div>
 
     <ng-content></ng-content>
