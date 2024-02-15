@@ -7,10 +7,13 @@ import {
   RouterLinkActive,
 } from '@angular/router';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { ICONS } from '../../../shared/icons/icons';
 import { TEmployee } from '../../../shared/interfaces/employee.type';
 import { UserViewNavLinksPipe } from '../../../shared/pipes/user-view-nav-links/user-view-nav-links.pipe';
 import { ActiveEndpointService } from '../../../shared/services/activeEndpoint/active-endpoint.service';
 import { AuthService } from '../../../shared/services/auth/auth.service';
+import { ChatboxService } from '../../../shared/services/chatbox/chatbox.service';
+import { NotificationService } from '../../../shared/services/notification/notification.service';
 import { END_POINTS } from '../../../utils/constants';
 import { getActiveEndpoint } from '../../../utils/getActiveEndpoint';
 import {
@@ -19,9 +22,6 @@ import {
   TNavLinks,
   TProfileLinks,
 } from './navBarLinks';
-import { NotificationService } from '../../../shared/services/notification/notification.service';
-import { ChatboxService } from '../../../shared/services/chatbox/chatbox.service';
-import { ICONS } from '../../../shared/icons/icons';
 
 @Component({
   selector: 'app-navbar',
@@ -45,6 +45,8 @@ export class NavbarComponent implements OnInit {
   activeEndPoint!: string;
   notificationCount!: number;
 
+  notificationState!: boolean;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -54,6 +56,9 @@ export class NavbarComponent implements OnInit {
     private chatbosService: ChatboxService,
   ) {}
   ngOnInit(): void {
+    this.notificationService.openNotificationMessageSource$.subscribe((res) => {
+      this.notificationState = res;
+    });
     this.activeEndPoint = getActiveEndpoint(this.route);
     this.getEmployeeType();
     this.route.data.subscribe(() => {
@@ -102,6 +107,9 @@ export class NavbarComponent implements OnInit {
     });
   }
   handleProfileLinks(event: MouseEvent, name: string) {
+    if (this.notificationState) {
+      this.toggleNotification();
+    }
     event.preventDefault();
     switch (name) {
       case 'profile': {
@@ -109,19 +117,6 @@ export class NavbarComponent implements OnInit {
           `${END_POINTS.portal}/${END_POINTS.upsertProfile}`,
           { replaceUrl: true },
         );
-        break;
-      }
-      case 'notifications': {
-        this.router.navigateByUrl(
-          `${END_POINTS.portal}/${END_POINTS.notifications}`,
-          {
-            replaceUrl: true,
-          },
-        );
-        break;
-      }
-      case 'chats': {
-        this.chatbosService.openChat();
         break;
       }
       case 'logout': {
@@ -134,6 +129,13 @@ export class NavbarComponent implements OnInit {
       default: {
         console.log(name);
       }
+    }
+  }
+  toggleNotification() {
+    if (this.notificationState) {
+      this.notificationService.closeNotification();
+    } else {
+      this.notificationService.openNotification();
     }
   }
 }

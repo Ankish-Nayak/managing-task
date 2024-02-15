@@ -26,3 +26,10 @@
 .chat-container {
   position: absolute;
 }
+
+.notification-container {
+  position: absolute;
+  top: 54px;
+  right: 0px;
+  z-index: 100;
+}

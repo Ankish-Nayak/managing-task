@@ -2,15 +2,10 @@
 <div class="portal-body">
   <router-outlet></router-outlet>
   <i [class]="ICONS.chatWith.class" id="chatWith" (click)="toggleChatBox()"></i>
-  <!-- <div class="chat-container" *ngIf="showChatBox"> -->
-  <!--   <i -->
-  <!--     [class]="ICONS.cancel.class" -->
-  <!--     id="closeChat" -->
-  <!--     (click)="toggleChatBox()" -->
-  <!--   ></i> -->
-  <!--   <app-chat></app-chat> -->
-  <!-- </div> -->
-
+  <app-notifications
+    class="notification-container"
+    *ngIf="showNotification"
+  ></app-notifications>
   <app-frame *ngIf="showChatBox" (closeFrame)="toggleChatBox()">
     <app-chat></app-chat>
   </app-frame>

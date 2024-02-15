@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs';
+import { BehaviorSubject, map } from 'rxjs';
 import { environment } from '../../../../environments/environment.development';
 import { LocalStorageKeys } from '../../../utils/constants';
 import { getNotificationType } from '../../../utils/get-notification-type';
@@ -10,12 +10,13 @@ import {
   IGetNotifications,
   ISetNotificationMarkAsReadPostData,
 } from '../../interfaces/requests/notification.interface';
-import { IMarkTodoPostData } from '../../interfaces/requests/toto.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NotificationService {
+  private _openNotification = new BehaviorSubject<boolean>(false);
+  openNotificationMessageSource$ = this._openNotification.asObservable();
   private apiUrl = `${environment.BASE_URL}/Notification`;
   constructor(private http: HttpClient) {}
   get Headers() {
@@ -24,6 +25,18 @@ export class NotificationService {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     });
+  }
+  openNotification() {
+    if (this._openNotification.getValue()) {
+      return;
+    }
+    this._openNotification.next(true);
+  }
+  closeNotification() {
+    if (!this._openNotification.getValue()) {
+      return;
+    }
+    this._openNotification.next(false);
   }
   getNotifications(data: IGetNotificationPostData) {
     return this.http

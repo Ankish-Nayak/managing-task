@@ -42,7 +42,7 @@
         [style.width.px]="100"
       >
         <div class="nav-item">
-          <i [class]="ICONS.bell.class"></i>
+          <i [class]="ICONS.bell.class" (click)="toggleNotification()"></i>
           <span
             class="badge badge-dark text-dark position-absolute top-0 border border-primary rounded-circle"
             >{{ notificationCount }}</span
