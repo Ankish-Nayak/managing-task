@@ -1,7 +1,10 @@
-<app-frame *ngIf="showChat" (closeFrame)="onCloseFrame()">
-  <app-chat></app-chat>
-</app-frame>
+<div class="d-flex justify-content-center align-itmes-center">
+  <p>select emoji</p>
 
-<button class="btn btn-primary btn-sm" *ngIf="!showChat" (click)="openFrame()">
-  open Frame
-</button>
+  <emoji-mart
+    (emojiClick)="addEmoji($event)"
+    [include]="['people']"
+  ></emoji-mart>
+
+  <p *ngFor="let emoji of listEmojis">{{ emoji }}</p>
+</div>

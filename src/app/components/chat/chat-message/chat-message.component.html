@@ -8,8 +8,6 @@
     toBottom ? scrollContainer.scrollHeight : scrollContainer.scrollTop
   "
 >
-  <!-- [scrollTop]="scrollContainer.scrollHeight" -->
-  <!-- [scrollTop]="once ? scrollContainer.scrollHeight : scrollContainer.scrollTop" -->
   <ng-container
     *ngFor="let message of messages; trackBy: trackById; let i = index"
   >
@@ -101,22 +99,33 @@
     (click)="onScrollToDown()"
   ></i>
 </div>
-<form [formGroup]="chatForm" appClickedEnter (click)="sendMessage()">
-  <div class="input-group mb-3" [tabIndex]="0">
+<!-- <form appClickedEnter> -->
+<div class="form">
+  <div class="input-group mb-3 form">
     <input
       type="text"
       class="form-control"
       autofocus
-      formControlName="message"
       aria-label="Text input with segmented dropdown button"
       [(ngModel)]="senderMessage"
       placeholder="Send Message"
       (keydown.enter)="sendMessage()"
     />
+    <i
+      [class]="showEmoji ? ICONS.emoji.class : ICONS.emojiFilled.class"
+      id="emojiIcon"
+      (click)="toggleEmoji()"
+    ></i>
+
+    <emoji-mart
+      *ngIf="showEmoji"
+      (emojiClick)="addEmoji($event)"
+      [include]="['people']"
+    ></emoji-mart>
     <div *ngIf="senderMessage !== ''" class="input-group-prepend">
-      <button type="submit" class="btn btn-outline-secondary">
+      <button (click)="sendMessage()" class="btn btn-outline-secondary">
         <i class="bi bi-send"></i>
       </button>
     </div>
   </div>
-</form>
+</div>

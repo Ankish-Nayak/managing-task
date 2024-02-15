@@ -188,4 +188,18 @@ export const ICONS = {
     openDelay: 1000,
     closeDelay: 500,
   },
+  emoji: {
+    class: 'bi bi-emoji-grin-fill',
+    name: 'bell',
+    toolTip: 'close notifications',
+    openDelay: 1000,
+    closeDelay: 500,
+  },
+  emojiFilled: {
+    class: 'bi bi-emoji-grin',
+    name: 'bell',
+    toolTip: 'close notifications',
+    openDelay: 1000,
+    closeDelay: 500,
+  },
 };

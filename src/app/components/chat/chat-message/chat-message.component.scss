@@ -13,6 +13,10 @@
   transition: all 0.3s ease; /* Adjust the duration and easing function as needed */
 }
 
+.list-group-item {
+  cursor: default;
+}
+
 form {
   position: sticky;
   bottom: 0px;
@@ -36,6 +40,12 @@ i {
   color: black;
   border: 1px solid;
   z-index: 100;
+}
+#emojiIcon {
+  font-size: 20px;
+  text-align: center;
+  vertical-align: middle;
+  margin: auto;
 }
 
 #scrollToDown {

@@ -6,6 +6,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { routes } from './app.routes';
 import { DatePipe } from '@angular/common';
+import { EmojiModule } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 
 export const appConfig: ApplicationConfig = {
   providers: [

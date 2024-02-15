@@ -33,7 +33,16 @@ export const CHATTAB: ChatTab = {
 })
 export class ChatboxService {
   private apiUrl = `${environment.BASE_URL}/CommunityMessage`;
-  private _chatOpen = new BehaviorSubject<boolean>(false);
+  private _chatOpen = new BehaviorSubject<boolean>(
+    (() => {
+      const data = getLocalStorageItem(LocalStorageKeys.OpenChatBox);
+      if (data) {
+        return JSON.parse(data);
+      } else {
+        return false;
+      }
+    })(),
+  );
   private _chatTabs = new BehaviorSubject<ChatTab[]>(
     (() => {
       const data = getLocalStorageItem(LocalStorageKeys.GetChatTabs);
@@ -70,6 +79,9 @@ export class ChatboxService {
         LocalStorageKeys.SelectedChatTab,
         JSON.stringify(res),
       );
+    });
+    this._chatOpen.subscribe((res) => {
+      setLocalStorageItem(LocalStorageKeys.OpenChatBox, JSON.stringify(res));
     });
   }
   closeChat() {

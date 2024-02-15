@@ -17,6 +17,7 @@ import { getActiveEndpoint } from '../../utils/getActiveEndpoint';
 import { removeLocalStorageItem } from '../../utils/localStorageCRUD';
 import { ChatBoxComponent } from './chat-box/chat-box.component';
 import { ChatMessageComponent } from './chat-message/chat-message.component';
+import { EmojiModule } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 
 @Component({
   selector: 'app-chat',

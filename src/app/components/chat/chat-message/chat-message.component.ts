@@ -11,13 +11,10 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { PickerComponent } from '@ctrl/ngx-emoji-mart';
+import { EmojiEvent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 import { Subscription } from 'rxjs';
 import { ClickedEnterDirective } from '../../../shared/directives/clicked-enter/clicked-enter.directive';
 import { ICONS } from '../../../shared/icons/icons';
@@ -35,6 +32,7 @@ import { MomentTimePipe } from './pipes/moment-time.pipe';
   standalone: true,
   imports: [
     JsonPipe,
+    PickerComponent,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
@@ -71,6 +69,7 @@ export class ChatMessageComponent
   isNoMoreData: boolean = false;
   toBottom = true;
   scrollHeight: number = 0;
+  showEmoji: boolean = false;
   constructor(
     private chatMessageAdapter: MessageAdapter,
     private route: ActivatedRoute,
@@ -81,9 +80,6 @@ export class ChatMessageComponent
   ) {}
   ngOnInit(): void {
     this.scrollableIndex = this.pageState.index;
-    this.chatForm = new FormGroup({
-      message: new FormControl(['']),
-    });
     this.getLoggedInUserId();
     this.getDisplayMessage();
   }
@@ -132,7 +128,8 @@ export class ChatMessageComponent
     if (this.isSubmitLoading) {
       return;
     }
-    const { message } = this.chatForm.value;
+    const message = this.senderMessage;
+    // const { message } = this.chatForm.value;
     if (message.length > 0) {
       this.isSubmitLoading = true;
       this.sendMessageSubscription = this.chatboxService
@@ -213,7 +210,6 @@ export class ChatMessageComponent
       ) {
         this.renderer.removeClass(scrollIcon, 'invisible');
       } else {
-        console.log('adding invisible');
         this.renderer.addClass(scrollIcon, 'invisible');
       }
     });
@@ -239,9 +235,13 @@ export class ChatMessageComponent
     });
   }
   loadMore() {
+    if (this.isLoadingMoreData) {
+      return;
+    }
     this.isLoadingMoreData = true;
     let tempIndex = this.messages.length / this.pageState.take;
-    if (tempIndex % 1 === 0) {
+    console.log(this.messages.length, this.pageState.take, tempIndex);
+    if (tempIndex % 1 === 0 && tempIndex !== 1) {
       tempIndex++;
     }
     const nextIndex = Math.floor(tempIndex);
@@ -267,5 +267,12 @@ export class ChatMessageComponent
           this.isLoadingMoreData = false;
         },
       );
+  }
+  toggleEmoji() {
+    this.showEmoji = !this.showEmoji;
+  }
+  addEmoji(e: EmojiEvent) {
+    e.$event.preventDefault();
+    this.senderMessage = this.senderMessage + ' ' + e.emoji.native;
   }
 }

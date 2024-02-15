@@ -62,6 +62,7 @@ export enum LocalStorageKeys {
   GetChatTabs = 'get_chat_tabs',
   GetNotifications = 'get_notifications',
   SelectedChatTab = 'selected_chat_tab',
+  OpenChatBox = 'open_chat_box',
 }
 
 export enum NotificationType {

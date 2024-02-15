@@ -1,21 +1,19 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FrameComponent } from '../../sharedComponents/containers/frame/frame.component';
-import { ChatComponent } from '../chat/chat.component';
+import { PickerComponent } from '@ctrl/ngx-emoji-mart';
+import { EmojiEvent, EmojiModule } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 
 @Component({
   selector: 'app-test',
   standalone: true,
-  imports: [CommonModule, FrameComponent, ChatComponent],
+  imports: [CommonModule, EmojiModule, PickerComponent],
   templateUrl: './test.component.html',
   styleUrl: './test.component.scss',
 })
 export class TestComponent {
-  showChat: boolean = true;
-  onCloseFrame() {
-    this.showChat = false;
-  }
-  openFrame() {
-    this.showChat = true;
+  listEmojis: string[] = [];
+  addEmoji(e: EmojiEvent) {
+    const selectedEmoji = e.emoji.native;
+    this.listEmojis.push(selectedEmoji!);
   }
 }
