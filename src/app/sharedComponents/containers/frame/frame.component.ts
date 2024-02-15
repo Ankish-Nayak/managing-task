@@ -4,6 +4,7 @@ import {
   ElementRef,
   EventEmitter,
   Inject,
+  Input,
   Output,
   ViewChild,
 } from '@angular/core';
@@ -29,7 +30,8 @@ interface ISize {
 export class FrameComponent {
   @ViewChild('wrapper') wrapperRef!: ElementRef;
   @ViewChild('topBar') topBarRef!: ElementRef;
-
+  @Input({ required: true }) fullSize!: boolean;
+  @Output() fullSizeChange = new EventEmitter<boolean>();
   position: ICooridinate = {
     x: 100,
     y: 100,
@@ -114,6 +116,10 @@ export class FrameComponent {
   }
   close() {
     this.closeFrame.emit();
+  }
+  changeSize() {
+    this.fullSize = !this.fullSize;
+    this.fullSizeChange.emit(this.fullSize);
   }
   minimizeTab() {}
   toggleSize() {}

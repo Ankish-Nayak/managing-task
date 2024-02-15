@@ -23,6 +23,7 @@ import { NavbarComponent } from '../dashboard/navbar/navbar.component';
 export class PortalComponent implements OnInit {
   readonly ICONS = ICONS;
   showChatBox!: boolean;
+  chatFullSize!: boolean;
   constructor(private chatBoxService: ChatboxService) {}
   ngOnInit(): void {
     this.chatBoxService.chatOpenMessageSource$.subscribe(
@@ -35,12 +36,22 @@ export class PortalComponent implements OnInit {
       },
       () => {},
     );
+    this.chatBoxService.chatBoxFullSizeMessageSource$.subscribe((res) => {
+      this.chatFullSize = res;
+    });
   }
   toggleChatBox() {
     if (this.showChatBox) {
       this.chatBoxService.closeChat();
     } else {
       this.chatBoxService.openChat();
+    }
+  }
+  onFullSizeChange(e: boolean) {
+    if (e) {
+      this.chatBoxService.fullChatBoxSize();
+    } else {
+      this.chatBoxService.smallChatBoxSize();
     }
   }
 }

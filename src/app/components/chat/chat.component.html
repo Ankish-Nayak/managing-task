@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card" *ngIf="!fullSize">
   <div class="card-header">
     <ul class="nav nav-tabs card-header-tabs">
       <ng-container *ngFor="let chatTab of chatTabs"
@@ -26,6 +26,47 @@
     ></app-chat-box>
     <app-chat-message
       *ngIf="selectedChatTab.id !== null"
+      [senderId]="selectedChatTab.id!"
+    ></app-chat-message>
+  </div>
+</div>
+
+<div class="card" [style.width.px]="800" *ngIf="fullSize">
+  <div class="card-header">
+    <ul class="nav nav-tabs card-header-tabs">
+      <ng-container *ngFor="let chatTab of chatTabs"
+        ><li class="nav-item">
+          <a
+            (click)="onSelectTab(chatTab)"
+            [class]="
+              'nav-link ' + (selectedChatTab.id === chatTab.id ? 'active' : '')
+            "
+            >{{ chatTab.name }}
+            <i
+              *ngIf="chatTab.id !== null"
+              (click)="deleteTab(chatTab)"
+              [class]="ICONS.cancel.class"
+            ></i>
+          </a>
+        </li>
+      </ng-container>
+    </ul>
+  </div>
+  <div class="card-body d-flex justify-content-between container-fuild">
+    <app-chat-box
+      [style.width.px]="400"
+      (addChatBox)="addingChatTab($event)"
+    ></app-chat-box>
+    <div
+      [style.width.px]="400"
+      *ngIf="selectedChatTab.id === null"
+      class="d-flex justify-content-center align-items-center container-fuild"
+    >
+      <i [style.font-size.px]="200" [class]="ICONS.chatWith.class"></i>
+    </div>
+    <app-chat-message
+      *ngIf="selectedChatTab.id !== null"
+      [style.width.px]="400"
       [senderId]="selectedChatTab.id!"
     ></app-chat-message>
   </div>

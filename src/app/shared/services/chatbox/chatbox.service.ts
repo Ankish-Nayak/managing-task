@@ -53,6 +53,7 @@ export class ChatboxService {
       }
     })(),
   );
+  private _chatBoxFullSize = new BehaviorSubject<boolean>(true);
   private _selectedChatTab = new BehaviorSubject<ChatTab>(
     (() => {
       const data = getLocalStorageItem(LocalStorageKeys.SelectedChatTab);
@@ -63,6 +64,7 @@ export class ChatboxService {
       }
     })(),
   );
+  chatBoxFullSizeMessageSource$ = this._chatBoxFullSize.asObservable();
   chatTabsMessageSource$ = this._chatTabs.asObservable();
   chatOpenMessageSource$ = this._chatOpen.asObservable();
   selectedChatTabMessageSource$ = this._selectedChatTab.asObservable();
@@ -83,6 +85,12 @@ export class ChatboxService {
     this._chatOpen.subscribe((res) => {
       setLocalStorageItem(LocalStorageKeys.OpenChatBox, JSON.stringify(res));
     });
+  }
+  smallChatBoxSize() {
+    this._chatBoxFullSize.next(false);
+  }
+  fullChatBoxSize() {
+    this._chatBoxFullSize.next(true);
   }
   closeChat() {
     if (this._chatOpen.getValue() === false) return;

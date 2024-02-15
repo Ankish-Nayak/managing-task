@@ -6,7 +6,12 @@
     id="chatWith"
     (click)="toggleChatBox()"
   ></i>
-  <app-frame *ngIf="showChatBox" (closeFrame)="toggleChatBox()">
+  <app-frame
+    *ngIf="showChatBox"
+    [(fullSize)]="chatFullSize"
+    (closeFrame)="toggleChatBox()"
+    (fullSizeChange)="onFullSizeChange($event)"
+  >
     <app-chat></app-chat>
   </app-frame>
 </div>

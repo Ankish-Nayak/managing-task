@@ -17,7 +17,6 @@ import { getActiveEndpoint } from '../../utils/getActiveEndpoint';
 import { removeLocalStorageItem } from '../../utils/localStorageCRUD';
 import { ChatBoxComponent } from './chat-box/chat-box.component';
 import { ChatMessageComponent } from './chat-message/chat-message.component';
-import { EmojiModule } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 
 @Component({
   selector: 'app-chat',
@@ -38,6 +37,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   readonly ICONS = ICONS;
   selectedChatTab!: ChatTab;
   readonly END_POINTS = END_POINTS;
+  fullSize!: boolean;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -59,6 +59,18 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.router.events.subscribe(() => {
       this.getActiveTab();
     });
+    this.getFullSize();
+  }
+  getFullSize() {
+    this.chatboxService.chatBoxFullSizeMessageSource$.subscribe(
+      (res) => {
+        this.fullSize = res;
+      },
+      (e) => {
+        console.log(e);
+      },
+      () => {},
+    );
   }
   getSelectedChatTab() {
     this.chatboxService.selectedChatTabMessageSource$.subscribe((res) => {

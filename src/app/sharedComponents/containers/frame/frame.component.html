@@ -12,7 +12,12 @@
         id="icon-container"
       >
         <i [class]="ICONS.minimizeTab.class" (click)="minimizeTab()"></i>
-        <i [class]="ICONS.fullScreen.class" (click)="close()"></i>
+        <i
+          [class]="
+            fullSize ? ICONS.fullScreenExit.class : ICONS.fullScreen.class
+          "
+          (click)="changeSize()"
+        ></i>
         <i [class]="ICONS.closeTab.class" (click)="close()"></i>
       </div>
     </div>
