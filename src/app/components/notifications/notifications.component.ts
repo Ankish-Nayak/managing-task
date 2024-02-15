@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { ScrollDirective } from '../../shared/directives/scroll/scroll.directive';
+import { ICONS } from '../../shared/icons/icons';
 import {
   GetNotificationsQueryParams,
   IGetNotificationsQueryParams,
@@ -15,7 +16,6 @@ import {
   removeLocalStorageItem,
   updateLocalStorageItem,
 } from '../../utils/localStorageCRUD';
-import { ICONS } from '../../shared/icons/icons';
 
 export enum NotificationTab {
   All = 'All',
@@ -34,6 +34,8 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
   notifications!: Notification[];
   scrollableDiv: any;
+  isLoadingMore: boolean = false;
+  isMoreData: boolean = true;
   pageState: IGetNotificationsQueryParams = new GetNotificationsQueryParams(
     (() => {
       const data = getLocalStorageItem(LocalStorageKeys.GetNotifications);
@@ -151,6 +153,12 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     );
   }
   onTabChange(updatedTab: NotificationTab) {
+    this.isMoreData = true;
+    this.isLoadingMore = false;
+    if (updatedTab === this.selectedNotificationTab) {
+      return;
+    }
+    this.scrollableIndex = 0;
     this.selectedNotificationTab = updatedTab;
     const updatedPageStateValue = () => {
       if (updatedTab === NotificationTab.All) {
@@ -175,6 +183,9 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   }
   onScroll() {
     setTimeout(() => {
+      if (this.isLoadingMore || !this.isMoreData) {
+        return;
+      }
       const scrollableDiv =
         this.elementRef.nativeElement.querySelector('#scrollableDiv');
       if (
@@ -188,15 +199,29 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     });
   }
   loadMore() {
+    this.isLoadingMore = true;
     console.log(this.scrollableIndex);
-    this.scrollableIndex++;
     const newPageState = {
       ...this.pageState,
       index: this.scrollableIndex,
     };
-    this.notificationService.getNotifications(newPageState).subscribe((res) => {
-      this.notifications.push(...res);
-    });
+    this.notificationService.getNotifications(newPageState).subscribe(
+      (res) => {
+        this.notifications.push(...res);
+        if (res.length > 0) {
+          this.scrollableIndex++;
+        }
+        if (res.length === 0) {
+          this.isMoreData = false;
+        }
+      },
+      (e) => {
+        console.log(e);
+      },
+      () => {
+        this.isLoadingMore = false;
+      },
+    );
   }
   clearSelectedIds() {
     this.selectedIds = [];

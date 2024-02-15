@@ -3,11 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ICONS } from '../../shared/icons/icons';
 import { ChatboxService } from '../../shared/services/chatbox/chatbox.service';
-import { NotificationService } from '../../shared/services/notification/notification.service';
 import { FrameComponent } from '../../sharedComponents/containers/frame/frame.component';
 import { ChatComponent } from '../chat/chat.component';
 import { NavbarComponent } from '../dashboard/navbar/navbar.component';
-import { NotificationsComponent } from '../notifications/notifications.component';
 
 @Component({
   selector: 'app-portal',
@@ -18,7 +16,6 @@ import { NotificationsComponent } from '../notifications/notifications.component
     ChatComponent,
     CommonModule,
     FrameComponent,
-    NotificationsComponent,
   ],
   templateUrl: './portal.component.html',
   styleUrl: './portal.component.scss',
@@ -26,11 +23,7 @@ import { NotificationsComponent } from '../notifications/notifications.component
 export class PortalComponent implements OnInit {
   readonly ICONS = ICONS;
   showChatBox!: boolean;
-  showNotification!: boolean;
-  constructor(
-    private chatBoxService: ChatboxService,
-    private notificationService: NotificationService,
-  ) {}
+  constructor(private chatBoxService: ChatboxService) {}
   ngOnInit(): void {
     this.chatBoxService.chatOpenMessageSource$.subscribe(
       (res) => {
@@ -42,9 +35,6 @@ export class PortalComponent implements OnInit {
       },
       () => {},
     );
-    this.notificationService.openNotificationMessageSource$.subscribe((res) => {
-      this.showNotification = res;
-    });
   }
   toggleChatBox() {
     if (this.showChatBox) {

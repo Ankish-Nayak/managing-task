@@ -139,6 +139,13 @@ export const ICONS = {
     openDelay: 1000,
     closeDelay: 500,
   },
+  chatWithFilled: {
+    class: 'bi bi-chat-dots-fill',
+    name: 'chatWith',
+    toolTip: 'chatWith',
+    openDelay: 1000,
+    closeDelay: 500,
+  },
   notSeen: {
     class: 'bi bi-check',
     name: 'notSeen',
@@ -169,8 +176,15 @@ export const ICONS = {
   },
   bell: {
     class: 'bi bi-bell',
-    name: 'copy',
-    toolTip: 'not seen yet',
+    name: 'bell',
+    toolTip: 'open notifications',
+    openDelay: 1000,
+    closeDelay: 500,
+  },
+  bellFilled: {
+    class: 'bi bi-bell-fill',
+    name: 'bell',
+    toolTip: 'close notifications',
     openDelay: 1000,
     closeDelay: 500,
   },

@@ -1,2 +1,7 @@
 <router-outlet></router-outlet>
 <app-message-toast></app-message-toast>
+
+<app-notifications
+  class="notification-container"
+  *ngIf="showNotification"
+></app-notifications>
