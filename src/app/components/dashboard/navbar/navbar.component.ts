@@ -21,6 +21,7 @@ import {
 } from './navBarLinks';
 import { NotificationService } from '../../../shared/services/notification/notification.service';
 import { ChatboxService } from '../../../shared/services/chatbox/chatbox.service';
+import { ICONS } from '../../../shared/icons/icons';
 
 @Component({
   selector: 'app-navbar',
@@ -40,6 +41,7 @@ export class NavbarComponent implements OnInit {
   profileLinks: TProfileLinks = PROFILE_LINKS;
   userType!: TEmployee;
   readonly END_POINTS = END_POINTS;
+  readonly ICONS = ICONS;
   activeEndPoint!: string;
   notificationCount!: number;
 

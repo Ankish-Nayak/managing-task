@@ -37,31 +37,38 @@
           >
         </li>
       </ul>
-      <div class="nav-item dropdown">
-        <a
-          class="nav-link"
-          href="#"
-          role="button"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-        >
-          <!-- {{ userType }} -->
-          <i class="bi bi-person-circle"> </i>
+      <div
+        class="d-flex justify-content-between align-items-center container-fuild icons-container"
+        [style.width.px]="100"
+      >
+        <div class="nav-item">
+          <i [class]="ICONS.bell.class"></i>
           <span
             class="badge badge-dark text-dark position-absolute top-0 border border-primary rounded-circle"
             >{{ notificationCount }}</span
           >
-        </a>
-        <ul class="dropdown-menu">
-          <li *ngFor="let profileLink of profileLinks">
-            <a
-              href="#"
-              class="dropdown-item"
-              (click)="handleProfileLinks($event, profileLink.name)"
-              >{{ profileLink.name }}</a
-            >
-          </li>
-        </ul>
+        </div>
+        <div class="nav-item dropdown">
+          <a
+            class="nav-link"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <i class="bi bi-person-circle"> </i>
+          </a>
+          <ul class="dropdown-menu">
+            <li *ngFor="let profileLink of profileLinks">
+              <a
+                href="#"
+                class="dropdown-item"
+                (click)="handleProfileLinks($event, profileLink.name)"
+                >{{ profileLink.name }}</a
+              >
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>

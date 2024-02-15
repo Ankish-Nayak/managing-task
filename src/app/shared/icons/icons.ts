@@ -167,4 +167,11 @@ export const ICONS = {
     openDelay: 1000,
     closeDelay: 500,
   },
+  bell: {
+    class: 'bi bi-bell',
+    name: 'copy',
+    toolTip: 'not seen yet',
+    openDelay: 1000,
+    closeDelay: 500,
+  },
 };
