@@ -12,7 +12,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Event } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { EmojiEvent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 import { Subscription } from 'rxjs';
@@ -62,7 +62,7 @@ export class ChatMessageComponent
   });
   scrollableIndex!: number;
   sendMessageSubscription: Subscription | undefined;
-  @ViewChild('scrollContainer', { static: true }) scrollContainer!: ElementRef;
+  @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   scrollableContainer!: HTMLElement;
   idToBeDeleted: null | number = null;
   isLoadingMoreData: boolean = false;
@@ -107,7 +107,6 @@ export class ChatMessageComponent
     return this.route.paramMap.subscribe((params) => {
       const senderId = params.get('senderId');
       if (senderId) {
-        console.log('changing senderId');
         this.toBottom = true;
         this.senderId = Number(senderId);
       }
@@ -245,7 +244,6 @@ export class ChatMessageComponent
     }
     this.isLoadingMoreData = true;
     let tempIndex = this.messages.length / this.pageState.take;
-    console.log(this.messages.length, this.pageState.take, tempIndex);
     if (tempIndex % 1 === 0 && tempIndex !== 1) {
       tempIndex++;
     }
@@ -279,5 +277,10 @@ export class ChatMessageComponent
   addEmoji(e: EmojiEvent) {
     e.$event.preventDefault();
     this.senderMessage = this.senderMessage + ' ' + e.emoji.native;
+  }
+  scrollToBottom() {
+    // const scrollContainerEl = this.scrollContainer.nativeElement;
+    this.scrollContainer.nativeElement.scrollTop =
+      this.scrollContainer.nativeElement.scrollHeight;
   }
 }
