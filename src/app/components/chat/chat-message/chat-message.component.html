@@ -5,9 +5,13 @@
   id="scrollContainer"
   (scroll)="onScroll($event)"
 >
-  <!-- [scrollTop]=" -->
-  <!--   toBottom ? scrollContainer.scrollHeight : scrollContainer.scrollTop -->
-  <!-- " -->
+  <div
+    *ngIf="isLoadingMoreData"
+    class="d-flex justify-content-center align-items-center container-fuild"
+  >
+    <app-spinner></app-spinner>
+  </div>
+
   <ng-container
     *ngFor="let message of messages; trackBy: trackById; let i = index"
   >
@@ -18,7 +22,7 @@
       >{{
         message.messageDate
           | date: "EEEE, MMMM d, y" : "ISO"
-          | date: "EEEE, MMMM d, y" : "IST"
+          | date: "MMMM d, y" : "IST"
       }}</span
     >
     <a
@@ -54,26 +58,51 @@
 
     <ng-template #senderMessage>
       <a
+        appLongPress
+        (longPressed)="onLongPress()"
+        [timer]="1000"
         [class]="
           'list-group-item list-group-item-action flex-column align-items-start align-self-end ' +
-          'text-left'
+          'text-left' +
+          (selectedIdsToBeDeleted.includes(message.id) ? ' active' : '')
         "
       >
         <div
           [class]="'d-flex flex-row-reverse w-100 justify-content-' + 'between'"
         >
           <small>{{ message.messageDate | momentTime }}</small>
-          <small
-            ><i
-              *ngIf="idToBeDeleted !== message.id"
-              (click)="deleteMessage(message.id)"
-              [class]="ICONS.delete.class"
-            ></i>
-            <div
-              *ngIf="idToBeDeleted === message.id"
-              class="spinner-border spinner-border-sm"
-              role="status"
-            ></div>
+          <small>
+            <ng-container *ngIf="deletingMultipleMessages">
+              <i
+                *ngIf="!deletingMultipleMessagesLoading"
+                [class]="
+                  selectedIdsToBeDeleted.includes(message.id)
+                    ? ICONS.done.class
+                    : ICONS.active.class
+                "
+                (click)="toggleIdToBeDeleted(message, $event)"
+              ></i>
+              <div
+                *ngIf="
+                  selectedIdsToBeDeleted.includes(message.id) &&
+                  deletingMultipleMessagesLoading
+                "
+                class="spinner-border spinner-border-sm"
+                role="status"
+              ></div>
+            </ng-container>
+            <ng-container *ngIf="!deletingMultipleMessages">
+              <i
+                *ngIf="idToBeDeleted !== message.id"
+                (click)="deleteMessage(message.id)"
+                [class]="ICONS.delete.class"
+              ></i>
+              <div
+                *ngIf="idToBeDeleted === message.id"
+                class="spinner-border spinner-border-sm"
+                role="status"
+              ></div>
+            </ng-container>
           </small>
         </div>
         <p class="mb-1" [class]="'d-flex w-100 justify-content-' + 'end'">
@@ -100,7 +129,28 @@
   ></i>
 </div>
 <!-- <form appClickedEnter> -->
-<div class="form">
+<div
+  *ngIf="deletingMultipleMessages"
+  class="d-flex justify-content-between align-items-center container-fuild"
+>
+  <div class="d-flex flex-column m-auto w-50 text-center">
+    <small> {{ selectedIdsToBeDeleted.length }} selected </small>
+    <div
+      class="d-flex justify-content-between align-items-center container-fluid"
+    >
+      <button class="btn btn-primary btn-sm" (click)="deleteSeletedIds()">
+        forward
+      </button>
+      <button class="btn btn-danger btn-sm" (click)="deleteSeletedIds()">
+        delete
+      </button>
+    </div>
+  </div>
+  <button class="btn btn-primary btn-sm" (click)="cancelSelection()">
+    cancel
+  </button>
+</div>
+<div class="form" *ngIf="!deletingMultipleMessages">
   <div class="input-group mb-3 form">
     <input
       type="text"

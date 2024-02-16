@@ -123,4 +123,19 @@ export class EmployeeService {
       headers: this.Headers,
     });
   }
+  getSuggestions(searchItem: string) {
+    const queryParams = new GetEmployeesQueryParams({ search: searchItem });
+    return this.getEmployeesAndAdmins(queryParams).pipe(
+      map((res) => {
+        return res.iterableData
+          .map((item) => {
+            return {
+              id: item.id,
+              name: item.name,
+            };
+          })
+          .splice(0, 5);
+      }),
+    );
+  }
 }

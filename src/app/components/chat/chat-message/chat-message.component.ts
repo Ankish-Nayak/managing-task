@@ -17,6 +17,7 @@ import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { EmojiEvent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 import { Subscription } from 'rxjs';
 import { ClickedEnterDirective } from '../../../shared/directives/clicked-enter/clicked-enter.directive';
+import { LongPressDirective } from '../../../shared/directives/longPress/long-press.directive';
 import { ICONS } from '../../../shared/icons/icons';
 import { GetDisplayMessageQueryParams } from '../../../shared/interfaces/requests/chatbox.interface';
 import { Message, MessageAdapter } from '../../../shared/models/message.model';
@@ -31,6 +32,7 @@ import { MomentTimePipe } from './pipes/moment-time.pipe';
   selector: 'app-chat-message',
   standalone: true,
   imports: [
+    SpinnerComponent,
     JsonPipe,
     PickerComponent,
     CommonModule,
@@ -40,6 +42,7 @@ import { MomentTimePipe } from './pipes/moment-time.pipe';
     TimeAgoPipe,
     SpinnerComponent,
     MomentTimePipe,
+    LongPressDirective,
   ],
   templateUrl: './chat-message.component.html',
   styleUrl: './chat-message.component.scss',
@@ -47,6 +50,9 @@ import { MomentTimePipe } from './pipes/moment-time.pipe';
 export class ChatMessageComponent
   implements OnInit, OnChanges, AfterViewChecked, AfterViewInit
 {
+  deletingMultipleMessages: boolean = false;
+  selectedIdsToBeDeleted: number[] = [];
+  deletingMultipleMessagesLoading: boolean = false;
   readonly ICONS = ICONS;
   isLoading = false;
   isSubmitLoading = false;
@@ -297,5 +303,41 @@ export class ChatMessageComponent
       this.scrollContainer.nativeElement.scrollTop =
         this.scrollContainer.nativeElement.scrollHeight;
     }
+  }
+  onLongPress() {
+    this.selectedIdsToBeDeleted = [];
+    this.deletingMultipleMessages = true;
+  }
+  toggleIdToBeDeleted(message: Message, e: MouseEvent) {
+    e.preventDefault();
+    if (this.selectedIdsToBeDeleted.includes(message.id)) {
+      this.selectedIdsToBeDeleted = this.selectedIdsToBeDeleted.filter(
+        (n) => n !== message.id,
+      );
+    } else {
+      this.selectedIdsToBeDeleted.push(message.id);
+    }
+  }
+  deleteSeletedIds() {
+    this.deletingMultipleMessagesLoading = true;
+    this.chatboxService.deleteMessages(this.selectedIdsToBeDeleted).subscribe(
+      (res) => {
+        this.messages = this.messages.filter(
+          (m) => !this.selectedIdsToBeDeleted.includes(m.id),
+        );
+        this.selectedIdsToBeDeleted = [];
+        this.deletingMultipleMessages = false;
+      },
+      (e) => {
+        console.log(e);
+      },
+      () => {
+        this.deletingMultipleMessagesLoading = false;
+      },
+    );
+  }
+  cancelSelection() {
+    this.deletingMultipleMessages = false;
+    this.selectedIdsToBeDeleted = [];
   }
 }

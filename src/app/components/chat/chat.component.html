@@ -20,10 +20,53 @@
     </ul>
   </div>
   <div class="card-body">
-    <app-chat-box
+    <div
+      class="d-flex flex-column justify-content-start"
       *ngIf="selectedChatTab.id === null"
-      (addChatBox)="addingChatTab($event)"
-    ></app-chat-box>
+    >
+      <div class="d-flex flex-column">
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="searchBoxInput"
+            (ngModelChange)="onSearchBoxChange()"
+            (focus)="onFocus()"
+            (keydown.enter)="searchEmployees()"
+            placeholder="Search"
+            aria-label=""
+          />
+          <div class="input-group-prepend">
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              (click)="searchEmployees()"
+            >
+              <i [class]="ICONS.search.class"></i>
+            </button>
+          </div>
+        </div>
+        <ul class="list-group" id="suggestions">
+          <li
+            class="list-group-item list-group-item-action list-group-item-dark"
+            (click)="addingChatTab(suggestion)"
+            *ngFor="let suggestion of suggestions"
+          >
+            {{ suggestion.name }}
+          </li>
+        </ul>
+      </div>
+
+      <app-chat-box (addChatBox)="addingChatTab($event)"></app-chat-box>
+      <!-- <app-chat-box -->
+      <!--   [style.width.px]="400" -->
+      <!--   (addChatBox)="addingChatTab($event)" -->
+      <!-- ></app-chat-box> -->
+    </div>
+    <!-- <app-chat-box -->
+    <!--   *ngIf="selectedChatTab.id === null" -->
+    <!--   (addChatBox)="addingChatTab($event)" -->
+    <!-- ></app-chat-box> -->
     <app-chat-message
       *ngIf="selectedChatTab.id !== null"
       [senderId]="selectedChatTab.id!"
@@ -53,10 +96,44 @@
     </ul>
   </div>
   <div class="card-body d-flex justify-content-between container-fuild">
-    <app-chat-box
-      [style.width.px]="400"
-      (addChatBox)="addingChatTab($event)"
-    ></app-chat-box>
+    <div class="d-flex flex-column justify-content-start">
+      <div class="d-flex flex-column">
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="searchBoxInput"
+            (ngModelChange)="onSearchBoxChange()"
+            (focus)="onFocus()"
+            (keydown.enter)="searchEmployees()"
+            placeholder="Search"
+            aria-label=""
+          />
+          <div class="input-group-prepend">
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              (click)="searchEmployees()"
+            >
+              <i [class]="ICONS.search.class"></i>
+            </button>
+          </div>
+        </div>
+        <ul class="list-group" id="suggestions">
+          <li
+            class="list-group-item list-group-item-action list-group-item-dark"
+            (click)="addingChatTab(suggestion)"
+            *ngFor="let suggestion of suggestions"
+          >
+            {{ suggestion.name }}
+          </li>
+        </ul>
+      </div>
+      <app-chat-box
+        [style.width.px]="400"
+        (addChatBox)="addingChatTab($event)"
+      ></app-chat-box>
+    </div>
     <div
       [style.width.px]="400"
       *ngIf="selectedChatTab.id === null"

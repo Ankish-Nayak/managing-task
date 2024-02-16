@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import {
   ActivatedRoute,
   Router,
@@ -12,6 +13,7 @@ import {
   ChatTab,
   ChatboxService,
 } from '../../shared/services/chatbox/chatbox.service';
+import { EmployeeService } from '../../shared/services/employee/employee.service';
 import { END_POINTS, LocalStorageKeys } from '../../utils/constants';
 import { getActiveEndpoint } from '../../utils/getActiveEndpoint';
 import { removeLocalStorageItem } from '../../utils/localStorageCRUD';
@@ -27,21 +29,26 @@ import { ChatMessageComponent } from './chat-message/chat-message.component';
     RouterLink,
     ChatBoxComponent,
     ChatMessageComponent,
+    FormsModule,
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
 })
 export class ChatComponent implements OnInit, OnDestroy {
+  searchBoxInput: string = '';
   isLoading = false;
   chatTabs!: ChatTab[];
   readonly ICONS = ICONS;
   selectedChatTab!: ChatTab;
   readonly END_POINTS = END_POINTS;
   fullSize!: boolean;
+  suggestions: ChatTab[] = [];
+  renderSuggestions: boolean = false;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private chatboxService: ChatboxService,
+    private employeeService: EmployeeService,
   ) {}
   ngOnInit(): void {
     this.getSelectedChatTab();
@@ -100,6 +107,10 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
   }
   addingChatTab(tab: ChatTab) {
+    if (this.suggestions.length > 0) {
+      this.suggestions = [];
+      this.searchBoxInput = '';
+    }
     this.chatboxService.addChatTab(tab);
   }
   onSelectTab(tab: ChatTab) {
@@ -111,4 +122,19 @@ export class ChatComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     removeLocalStorageItem(LocalStorageKeys.GetChatTabs);
   }
+  searchEmployees() {
+    this.renderSuggestions = true;
+    this.employeeService
+      .getSuggestions(this.searchBoxInput)
+      .subscribe((res) => {
+        this.suggestions = res;
+      });
+  }
+  onSearchBoxChange() {
+    console.log(this.searchBoxInput);
+    if (this.searchBoxInput === '') {
+      this.suggestions = [];
+    }
+  }
+  onFocus() {}
 }

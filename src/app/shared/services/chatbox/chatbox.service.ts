@@ -11,6 +11,7 @@ import {
 import {
   GetDisplayMessageQueryParams,
   IDeleteApiRes,
+  IDeleteMessagePostData,
   IDisplayMessage,
   IGetChatBoxRes,
   ISendMessage,
@@ -162,13 +163,14 @@ export class ChatboxService {
     });
   }
   deleteMessage(id: number) {
-    return this.http.delete<IDeleteApiRes>(
-      `${this.apiUrl}/DeleteMessage/${id}`,
-      {
-        withCredentials: true,
-        headers: this.Headers,
-      },
-    );
+    return this.deleteMessages([id]);
+    // return this.http.delete<IDeleteApiRes>(
+    //   `${this.apiUrl}/DeleteMessage/${id}`,
+    //   {
+    //     withCredentials: true,
+    //     headers: this.Headers,
+    //   },
+    // );
   }
   sendMessage(
     recieverId: number,
@@ -229,5 +231,20 @@ export class ChatboxService {
           );
         }),
       );
+  }
+  deleteMessages(idsTodDeleted: number[]) {
+    //TODO: ask for api implementation.
+    //
+    const data: IDeleteMessagePostData = {
+      ids: idsTodDeleted,
+    };
+    const options = {
+      headers: this.Headers,
+      body: data,
+    };
+    return this.http.delete<IDeleteApiRes>(
+      `${this.apiUrl}/DeleteMessage`,
+      options,
+    );
   }
 }

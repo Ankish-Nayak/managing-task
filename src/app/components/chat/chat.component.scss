@@ -9,3 +9,15 @@ a {
 .card-body {
   overflow-y: auto;
 }
+
+#suggestions {
+  position: absolute;
+  width: 400px;
+  z-index: 100;
+  top: 106px;
+
+  .list-group-item {
+    color: black;
+    cursor: pointer;
+  }
+}

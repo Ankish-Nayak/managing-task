@@ -66,3 +66,7 @@ export class GetDisplayMessageQueryParams
     this.search = data.search ?? '';
   }
 }
+
+export interface IDeleteMessagePostData {
+  ids: number[];
+}

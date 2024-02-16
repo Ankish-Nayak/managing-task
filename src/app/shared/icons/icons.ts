@@ -230,4 +230,11 @@ export const ICONS = {
     openDelay: 1000,
     closeDelay: 500,
   },
+  search: {
+    class: 'bi bi-search',
+    name: 'search',
+    toolTip: 'minimize',
+    openDelay: 1000,
+    closeDelay: 500,
+  },
 };
