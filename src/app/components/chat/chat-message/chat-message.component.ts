@@ -12,7 +12,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Event } from '@angular/router';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { EmojiEvent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 import { Subscription } from 'rxjs';
@@ -67,7 +67,7 @@ export class ChatMessageComponent
   idToBeDeleted: null | number = null;
   isLoadingMoreData: boolean = false;
   isNoMoreData: boolean = false;
-  toBottom = true;
+  toBottom: boolean = true;
   scrollHeight: number = 0;
   showEmoji: boolean = false;
   constructor(
@@ -90,7 +90,9 @@ export class ChatMessageComponent
       this.getDisplayMessage();
     }
   }
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void {
+    this.toBottom = true;
+  }
   getMockData() {
     this.senderId = Number(senderId);
     this.loggedInuserId = Number(loggedInuserId);
@@ -105,6 +107,8 @@ export class ChatMessageComponent
     return this.route.paramMap.subscribe((params) => {
       const senderId = params.get('senderId');
       if (senderId) {
+        console.log('changing senderId');
+        this.toBottom = true;
         this.senderId = Number(senderId);
       }
     });
@@ -121,6 +125,7 @@ export class ChatMessageComponent
       () => {},
       () => {
         this.isLoading = false;
+        this.toBottom = true;
       },
     );
   }

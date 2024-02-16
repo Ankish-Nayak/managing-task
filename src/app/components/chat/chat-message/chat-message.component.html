@@ -1,5 +1,5 @@
 <div
-  class="list-group"
+  class="list-group container-fuild"
   *ngIf="!isLoading"
   #scrollContainer
   id="scrollContainer"
@@ -55,7 +55,7 @@
     <ng-template #senderMessage>
       <a
         [class]="
-          'list-group-item list-group-item-action flex-column align-items-start ' +
+          'list-group-item list-group-item-action flex-column align-items-start align-self-end ' +
           'text-left'
         "
       >
