@@ -63,7 +63,7 @@ export class ChatMessageComponent
   scrollableIndex!: number;
   sendMessageSubscription: Subscription | undefined;
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
-  scrollableContainer!: HTMLElement;
+  // scrollableContainer!: HTMLElement;
   idToBeDeleted: null | number = null;
   isLoadingMoreData: boolean = false;
   isNoMoreData: boolean = false;
@@ -83,15 +83,21 @@ export class ChatMessageComponent
     this.getLoggedInUserId();
     this.getDisplayMessage();
   }
-  ngAfterViewChecked(): void {}
+  ngAfterViewChecked(): void {
+    if (this.toBottom) {
+      this.scrollToBottom();
+    }
+  }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes) {
       this.getLoggedInUserId();
       this.getDisplayMessage();
+      this.isNoMoreData = false;
     }
   }
   ngAfterViewInit(): void {
-    this.toBottom = true;
+    this.scrollToBottom();
+    // this.toBottom = true;
   }
   getMockData() {
     this.senderId = Number(senderId);
@@ -183,16 +189,24 @@ export class ChatMessageComponent
       this.messages = this.messages.filter((m) => m.id !== id);
     });
   }
-  onScroll() {
+  onScroll(event: any) {
+    if (this.isLoadingMoreData) {
+      event.preventDefault();
+    }
     if (this.toBottom) {
       this.toBottom = false;
     }
+
+    const scrollableElement = event.target as HTMLElement;
+    // const scrollableDiv =
+    //   this.elementRef.nativeElement.querySelector('#scrollContainer');
+
+    // const scrollableDiv =
+    //   this.scrollContainer.nativeElement.querySelector('#scrollContainer');
     if (!this.isNoMoreData && !this.isLoadingMoreData) {
       setTimeout(() => {
-        const scrollableDiv =
-          this.elementRef.nativeElement.querySelector('#scrollContainer');
-        const scrollTop = scrollableDiv.scrollTop;
-        const scrollHeight = scrollableDiv.scrollHeight;
+        const scrollTop = scrollableElement.scrollTop;
+        const scrollHeight = scrollableElement.scrollHeight;
 
         const twentyPercentScrollHeight = scrollHeight * 0.2;
         if (scrollTop <= twentyPercentScrollHeight) {
@@ -203,14 +217,12 @@ export class ChatMessageComponent
 
     // showing down icon
     setTimeout(() => {
-      const scrollableDiv =
-        this.elementRef.nativeElement.querySelector('#scrollContainer');
       const scrollIcon =
         this.elementRef.nativeElement.querySelector('#scrollToDown');
       if (
-        scrollableDiv &&
-        scrollableDiv.scrollHeight - scrollableDiv.scrollTop >
-          scrollableDiv.clientHeight
+        scrollableElement &&
+        scrollableElement.scrollHeight - scrollableElement.scrollTop >
+          scrollableElement.clientHeight
       ) {
         this.renderer.removeClass(scrollIcon, 'invisible');
       } else {
@@ -233,8 +245,10 @@ export class ChatMessageComponent
   }
   onScrollToDown() {
     setTimeout(() => {
-      const scrollableContainer =
-        this.elementRef.nativeElement.querySelector('#scrollContainer');
+      const scrollableContainer = this.scrollContainer
+        .nativeElement as HTMLElement;
+
+      this.renderer.setStyle(scrollableContainer, 'scroll-behavior', 'smooth');
       scrollableContainer.scrollTop = scrollableContainer.scrollHeight;
     });
   }
@@ -279,8 +293,9 @@ export class ChatMessageComponent
     this.senderMessage = this.senderMessage + ' ' + e.emoji.native;
   }
   scrollToBottom() {
-    // const scrollContainerEl = this.scrollContainer.nativeElement;
-    this.scrollContainer.nativeElement.scrollTop =
-      this.scrollContainer.nativeElement.scrollHeight;
+    if (this.scrollContainer) {
+      this.scrollContainer.nativeElement.scrollTop =
+        this.scrollContainer.nativeElement.scrollHeight;
+    }
   }
 }

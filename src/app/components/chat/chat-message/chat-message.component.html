@@ -3,11 +3,11 @@
   *ngIf="!isLoading"
   #scrollContainer
   id="scrollContainer"
-  (scroll)="onScroll()"
-  [scrollTop]="
-    toBottom ? scrollContainer.scrollHeight : scrollContainer.scrollTop
-  "
+  (scroll)="onScroll($event)"
 >
+  <!-- [scrollTop]=" -->
+  <!--   toBottom ? scrollContainer.scrollHeight : scrollContainer.scrollTop -->
+  <!-- " -->
   <ng-container
     *ngFor="let message of messages; trackBy: trackById; let i = index"
   >
@@ -118,7 +118,9 @@
     ></i>
 
     <emoji-mart
+      id="emoji-mart"
       *ngIf="showEmoji"
+      [perLine]="5"
       (emojiClick)="addEmoji($event)"
       [include]="['people']"
     ></emoji-mart>

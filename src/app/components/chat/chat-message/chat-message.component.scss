@@ -18,6 +18,12 @@
   word-wrap: break-word;
   max-width: max-content;
 }
+#emoji-mart {
+  position: absolute;
+  top: -425px;
+  right: 19px;
+  z-index: 100;
+}
 
 form {
   position: sticky;
