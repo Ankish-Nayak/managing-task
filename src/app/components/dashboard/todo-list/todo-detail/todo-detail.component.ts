@@ -20,11 +20,11 @@ import { END_POINTS } from '../../../../utils/constants';
   styleUrl: './todo-detail.component.scss',
 })
 export class TodoDetailComponent implements OnInit, OnDestroy {
-  todo!: Todo;
-  wrapped: boolean = true;
-  canWrap: boolean = false;
-  SHOWN_WORD_COUNT = 100;
-  END_POINTS = END_POINTS;
+  public todo!: Todo;
+  public wrapped: boolean = true;
+  public canWrap: boolean = false;
+  public SHOWN_WORD_COUNT = 100;
+  readonly END_POINTS = END_POINTS;
   @Input({ required: true }) id!: string;
   @Output() edit: EventEmitter<boolean> = new EventEmitter<boolean>();
   constructor(private todoService: TodoService) {}
@@ -33,11 +33,11 @@ export class TodoDetailComponent implements OnInit, OnDestroy {
     this.getTodo();
   }
 
-  getTodo() {
+  private getTodo() {
     const todo = JSON.parse(this.todoService.getTodo(this.id.toString()));
     this.todo = todo;
   }
-  getDescription() {
+  protected getDescription() {
     const words = this.todo.description.split(' ');
     this.canWrap = words.length > this.SHOWN_WORD_COUNT;
     if (!this.canWrap) {
@@ -49,10 +49,10 @@ export class TodoDetailComponent implements OnInit, OnDestroy {
       return words.join(' ');
     }
   }
-  toogleWrap() {
+  public toogleWrap() {
     this.wrapped = !this.wrapped;
   }
-  editTodo() {
+  public editTodo() {
     this.edit.emit(true);
   }
   ngOnDestroy(): void {}

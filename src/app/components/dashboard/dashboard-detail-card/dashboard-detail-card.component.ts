@@ -18,12 +18,11 @@ export class DashboardDetailCardComponent {
     endPoint: string;
     queryParams?: Params | null;
   }[] = [];
-  employeesCount: number = 0;
   constructor(
     private router: Router,
     private route: ActivatedRoute,
   ) {}
-  handleCardLink(cardLink: {
+  public handleCardLink(cardLink: {
     label: string;
     endPoint: string;
     queryParams?: Params | null;

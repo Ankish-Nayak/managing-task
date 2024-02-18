@@ -12,7 +12,6 @@ import { TEmployee } from '../../../shared/interfaces/employee.type';
 import { UserViewNavLinksPipe } from '../../../shared/pipes/user-view-nav-links/user-view-nav-links.pipe';
 import { ActiveEndpointService } from '../../../shared/services/activeEndpoint/active-endpoint.service';
 import { AuthService } from '../../../shared/services/auth/auth.service';
-import { ChatboxService } from '../../../shared/services/chatbox/chatbox.service';
 import { NotificationService } from '../../../shared/services/notification/notification.service';
 import { END_POINTS } from '../../../utils/constants';
 import { getActiveEndpoint } from '../../../utils/getActiveEndpoint';
@@ -37,15 +36,15 @@ import {
   styleUrl: './navbar.component.scss',
 })
 export class NavbarComponent implements OnInit {
-  navLinks: TNavLinks = NAV_LINKS;
-  profileLinks: TProfileLinks = PROFILE_LINKS;
-  userType!: TEmployee;
+  public navLinks: TNavLinks = NAV_LINKS;
+  public profileLinks: TProfileLinks = PROFILE_LINKS;
+  public userType!: TEmployee;
   readonly END_POINTS = END_POINTS;
   readonly ICONS = ICONS;
-  activeEndPoint!: string;
-  notificationCount!: number;
+  public activeEndPoint!: string;
+  public notificationCount!: number;
 
-  notificationState!: boolean;
+  public notificationState!: boolean;
 
   constructor(
     private router: Router,
@@ -53,7 +52,6 @@ export class NavbarComponent implements OnInit {
     private authService: AuthService,
     private activeEndpoint: ActiveEndpointService,
     private notificationService: NotificationService,
-    private chatbosService: ChatboxService,
   ) {}
   ngOnInit(): void {
     this.notificationService.openNotificationMessageSource$.subscribe((res) => {
@@ -69,14 +67,14 @@ export class NavbarComponent implements OnInit {
     });
     this.getNotificationCount();
   }
-  getNotificationCount() {
+  private getNotificationCount() {
     this.notificationService
       .getNotifications({ isSeen: false })
       .subscribe((res) => {
         this.notificationCount = res.length;
       });
   }
-  updateNavLinks(endpoint: string) {
+  private updateNavLinks(endpoint: string) {
     this.navLinks = this.navLinks.map((n) => {
       const newN = {
         ...n,
@@ -90,7 +88,7 @@ export class NavbarComponent implements OnInit {
     });
     console.log(this.navLinks);
   }
-  processClass(id: number) {
+  public processClass(id: number) {
     let style = 'nav-link';
     const navLink = this.navLinks.at(id);
     if (!navLink) {
@@ -101,12 +99,12 @@ export class NavbarComponent implements OnInit {
     }
     return style;
   }
-  getEmployeeType() {
+  private getEmployeeType() {
     this.authService.userTypeMessage$.subscribe((res) => {
       if (res !== null) this.userType = res;
     });
   }
-  handleProfileLinks(event: MouseEvent, name: string) {
+  public handleProfileLinks(event: MouseEvent, name: string) {
     if (this.notificationState) {
       this.toggleNotification();
     }
@@ -131,7 +129,7 @@ export class NavbarComponent implements OnInit {
       }
     }
   }
-  toggleNotification() {
+  public toggleNotification() {
     if (this.notificationState) {
       this.notificationService.closeNotification();
     } else {

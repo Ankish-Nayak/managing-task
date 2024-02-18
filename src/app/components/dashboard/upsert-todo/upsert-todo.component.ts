@@ -61,20 +61,19 @@ type IPropertyName =
   styleUrl: './upsert-todo.component.scss',
 })
 export class UpsertTodoComponent {
-  isLoading: boolean = true;
-  isSubmitLoading: boolean = false;
+  public isLoading: boolean = true;
+  public isSubmitLoading: boolean = false;
   todoForm!: FormGroup;
-  displayFeedback: { [key in IPropertyName]?: string } = {};
+  public displayFeedback: { [key in IPropertyName]?: string } = {};
   @ViewChildren(FormControlName, { read: ElementRef })
   formInputElements!: ElementRef[];
   @Input() id!: string;
   @Input() displayTitle: boolean = true;
 
-  cardBodyHeader: string[] = ['card-body-header'];
-  employees!: Employee[];
+  public employees!: Employee[];
   readonly Months = Months;
 
-  employeeId: number | null = null;
+  private employeeId: number | null = null;
   @Input({ required: true }) updateForm!: boolean;
   @Output() updated: EventEmitter<boolean> = new EventEmitter<boolean>();
   private validatioMessages!: { [key: string]: { [key: string]: string } };
@@ -131,7 +130,7 @@ export class UpsertTodoComponent {
         );
       });
   }
-  getEmployees() {
+  private getEmployees() {
     this.employeeService.getEmployees({}).subscribe((res) => {
       this.employees = this.employeeAdapter.adaptArray(res.iterableData);
       if (this.employeeId !== null) {
@@ -161,13 +160,7 @@ export class UpsertTodoComponent {
       }
     });
   }
-  checkSubmit() {
-    this.markAsTouchedAndDirty();
-    const data = this.todoForm.value;
-    console.log(data);
-  }
-  onSubmit() {
-    console.log('submiting');
+  public onSubmit() {
     if (this.updateForm) {
       const { title, description, deadlineDate, deadlineTime } =
         this.todoForm.value;
@@ -186,8 +179,8 @@ export class UpsertTodoComponent {
             ) + 'Z',
         };
 
-        this.todoService.updateTodo(data.employeeId, data).subscribe(
-          () => {
+        this.todoService.updateTodo(data.employeeId, data).subscribe({
+          next: () => {
             this.updated.emit(true);
             this.toastService.show(
               'Todo',
@@ -196,7 +189,7 @@ export class UpsertTodoComponent {
               2000,
             );
           },
-          (e) => {
+          error: (e) => {
             // this.isLoading = false;
             console.log(e);
             this.toastService.show(
@@ -206,13 +199,12 @@ export class UpsertTodoComponent {
               2000,
             );
           },
-          () => {
+          complete: () => {
             this.isSubmitLoading = false;
           },
-        );
+        });
       }
     } else {
-      console.log('submiting');
       const { title, description, employeeId, deadlineDate, deadlineTime } =
         this.todoForm.value;
       const data: ICreateTodoPostData = {
@@ -235,9 +227,8 @@ export class UpsertTodoComponent {
       if (this.todoForm.valid) {
         this.isSubmitLoading = true;
         // this.isLoading = true;
-        this.todoService.createTodo(data).subscribe(
-          () => {
-            // this.router.navigate(['../todos'], { relativeTo: this.route });
+        this.todoService.createTodo(data).subscribe({
+          next: () => {
             if (this.employeeId) {
               this.router.navigate([`../../${END_POINTS.employeeList}`], {
                 relativeTo: this.route,
@@ -250,11 +241,8 @@ export class UpsertTodoComponent {
               'success',
               2000,
             );
-            // this.isLoading = false;
           },
-          (e) => {
-            // this.isLoading = false;
-
+          error: (e) => {
             this.toastService.show(
               'Todo',
               'Failed to create todo',
@@ -263,17 +251,17 @@ export class UpsertTodoComponent {
             );
             console.log(e);
           },
-          () => {
+          complete: () => {
             this.isSubmitLoading = false;
           },
-        );
+        });
       }
     }
   }
-  trimValue(value: any) {
+  private trimValue(value: any) {
     return value.trim();
   }
-  todoFormInit() {
+  private todoFormInit() {
     this.todoForm = new FormGroup({
       title: new FormControl('', [
         Validators.required,
@@ -309,14 +297,14 @@ export class UpsertTodoComponent {
     }
   }
 
-  reset() {
+  public reset() {
     if (this.updateForm) this.todoFormInit();
   }
 
-  neitherTouchedNorDirty(element: AbstractControl<any, any>) {
+  private neitherTouchedNorDirty(element: AbstractControl<any, any>) {
     return !(element.touched && element.dirty);
   }
-  validProperty(propertyName: IPropertyName) {
+  public validProperty(propertyName: IPropertyName) {
     let style = 'form-control';
     const property = this.formValue(propertyName);
     if (this.neitherTouchedNorDirty(property)) {
@@ -328,10 +316,10 @@ export class UpsertTodoComponent {
     }
     return style;
   }
-  formValue(propertyName: IPropertyName) {
+  private formValue(propertyName: IPropertyName) {
     return this.todoForm.get(propertyName)!;
   }
-  markAsTouchedAndDirty() {
+  private markAsTouchedAndDirty() {
     Object.values(this.todoForm.controls).forEach((control) => {
       if (!control.disabled) {
         control.markAsTouched();

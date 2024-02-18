@@ -12,8 +12,8 @@ import { DepartmentService } from '../../shared/services/department/department.s
 import { EmployeeService } from '../../shared/services/employee/employee.service';
 import { TodoService } from '../../shared/services/todo/todo.service';
 import { END_POINTS, UserRole } from '../../utils/constants';
-import { DashboardDetailCardComponent } from './dashboard-detail-card/dashboard-detail-card.component';
 import { EmployeeTab } from '../portal/employee-list/employee-list.component';
+import { DashboardDetailCardComponent } from './dashboard-detail-card/dashboard-detail-card.component';
 import { NavbarComponent } from './navbar/navbar.component';
 //TODO: make user based rendering of dashboard component
 
@@ -39,9 +39,9 @@ export interface ICard {
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent implements OnInit {
-  isLoading: boolean = false;
-  cards: ICard[] = [];
-  userType!: UserRole;
+  public isLoading: boolean = false;
+  public cards: ICard[] = [];
+  public userType!: UserRole;
   constructor(
     private employeeService: EmployeeService,
     private todoService: TodoService,
@@ -51,7 +51,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.getEmployeeType();
   }
-  getEmployeeType() {
+  private getEmployeeType() {
     this.authService.userTypeMessage$.subscribe((res) => {
       if (res !== null) {
         this.userType = res;
@@ -63,7 +63,7 @@ export class DashboardComponent implements OnInit {
       }
     });
   }
-  cardDataInOrderInitForEmployee() {
+  private cardDataInOrderInitForEmployee() {
     if (this.isLoading) {
       return;
     }
@@ -73,7 +73,7 @@ export class DashboardComponent implements OnInit {
       this.isLoading = false;
     });
   }
-  cardDataInOrderInit() {
+  private cardDataInOrderInit() {
     if (this.isLoading) {
       return;
     }
@@ -94,17 +94,19 @@ export class DashboardComponent implements OnInit {
           return this.departmentService.getDepartments();
         }),
       )
-      .subscribe(
-        (fourthApiRes) => {
+      .subscribe({
+        next: (fourthApiRes) => {
           this.cards.push(this.getDepartmentDetails(fourthApiRes));
         },
-        () => {},
-        () => {
+        error: (e) => {
+          console.log(e);
+        },
+        complete: () => {
           this.isLoading = false;
         },
-      );
+      });
   }
-  getEmployeeesDetails(res: IGetEmployees) {
+  private getEmployeeesDetails(res: IGetEmployees) {
     return {
       title: 'Employees',
       description: 'Place to create and delete employees.',
@@ -125,7 +127,10 @@ export class DashboardComponent implements OnInit {
       allowedUsers: [UserRole.Admin, UserRole.SuperAdmin],
     };
   }
-  getTodosDetails(res: { iterableData: ITask[]; totalPageCount: number }) {
+  private getTodosDetails(res: {
+    iterableData: ITask[];
+    totalPageCount: number;
+  }) {
     return {
       title: 'Todos',
       description: (() => {
@@ -153,7 +158,7 @@ export class DashboardComponent implements OnInit {
       allowedUsers: [UserRole.Admin, UserRole.SuperAdmin, UserRole.Employee],
     };
   }
-  getAdminsDetails(res: IGetEmployees) {
+  private getAdminsDetails(res: IGetEmployees) {
     return {
       title: 'Admins',
       description: 'Assign and view assigned tasks.',
@@ -176,7 +181,7 @@ export class DashboardComponent implements OnInit {
       allowedUsers: [UserRole.SuperAdmin],
     };
   }
-  getDepartmentDetails(res: IDepartment[]) {
+  private getDepartmentDetails(res: IDepartment[]) {
     return {
       title: 'Departments',
       description: 'View Department and their admins',
@@ -190,7 +195,7 @@ export class DashboardComponent implements OnInit {
       allowedUsers: [UserRole.SuperAdmin],
     };
   }
-  processLinks(
+  private processLinks(
     links: {
       label: string;
       endPoint: string;

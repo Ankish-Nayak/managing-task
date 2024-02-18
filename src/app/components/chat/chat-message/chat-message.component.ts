@@ -12,7 +12,6 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { EmojiEvent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 import { Subscription } from 'rxjs';
@@ -50,42 +49,38 @@ import { MomentTimePipe } from './pipes/moment-time.pipe';
 export class ChatMessageComponent
   implements OnInit, OnChanges, AfterViewChecked, AfterViewInit
 {
-  deletingMultipleMessages: boolean = false;
-  selectedIdsToBeDeleted: number[] = [];
-  deletingMultipleMessagesLoading: boolean = false;
+  public deletingMultipleMessages: boolean = false;
+  public selectedIdsToBeDeleted: number[] = [];
+  public deletingMultipleMessagesLoading: boolean = false;
   readonly ICONS = ICONS;
-  isLoading = false;
-  isSubmitLoading = false;
-  messages!: Message[];
-  senderMessage: string = '';
+  public isLoading = false;
+  private isSubmitLoading = false;
+  public messages!: Message[];
+  public senderMessage: string = '';
   @Input({ required: true }) senderId!: number;
-  loggedInuserId!: number;
-  chatForm!: FormGroup;
-  pageState: GetDisplayMessageQueryParams = new GetDisplayMessageQueryParams({
-    isPagination: true,
-    index: 0,
-    take: 10,
-  });
-  scrollableIndex!: number;
+  private loggedInuserId!: number;
+  public chatForm!: FormGroup;
+  private pageState: GetDisplayMessageQueryParams =
+    new GetDisplayMessageQueryParams({
+      isPagination: true,
+      index: 0,
+      take: 10,
+    });
   sendMessageSubscription: Subscription | undefined;
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
-  // scrollableContainer!: HTMLElement;
-  idToBeDeleted: null | number = null;
-  isLoadingMoreData: boolean = false;
-  isNoMoreData: boolean = false;
-  toBottom: boolean = true;
-  scrollHeight: number = 0;
+  public idToBeDeleted: null | number = null;
+  public isLoadingMoreData: boolean = false;
+  private isNoMoreData: boolean = false;
+  private toBottom: boolean = true;
   showEmoji: boolean = false;
   constructor(
     private chatMessageAdapter: MessageAdapter,
-    private route: ActivatedRoute,
     private chatboxService: ChatboxService,
     private authService: AuthService,
     private elementRef: ElementRef,
     private renderer: Renderer2,
   ) {}
   ngOnInit(): void {
-    this.scrollableIndex = this.pageState.index;
     this.getLoggedInUserId();
     this.getDisplayMessage();
   }
@@ -105,42 +100,35 @@ export class ChatMessageComponent
     this.scrollToBottom();
     // this.toBottom = true;
   }
-  getMockData() {
+  public getMockData() {
     this.senderId = Number(senderId);
     this.loggedInuserId = Number(loggedInuserId);
     this.messages = this.chatMessageAdapter.adaptArray(conversationData);
   }
-  getLoggedInUserId() {
+  private getLoggedInUserId() {
     this.authService.userMessageSource.subscribe((res) => {
       if (res) this.loggedInuserId = res.id;
     });
   }
-  getSenderId() {
-    return this.route.paramMap.subscribe((params) => {
-      const senderId = params.get('senderId');
-      if (senderId) {
-        this.toBottom = true;
-        this.senderId = Number(senderId);
-      }
-    });
-  }
-  isLoggedInUserMessage(message: Message) {
+  public isLoggedInUserMessage(message: Message) {
     return message.senderId === this.loggedInuserId;
   }
-  getDisplayMessage() {
+  private getDisplayMessage() {
     this.isLoading = true;
-    this.chatboxService.displayMessage(this.senderId, this.pageState).subscribe(
-      (res) => {
-        this.messages = res;
-      },
-      () => {},
-      () => {
-        this.isLoading = false;
-        this.toBottom = true;
-      },
-    );
+    this.chatboxService
+      .displayMessage(this.senderId, this.pageState)
+      .subscribe({
+        next: (res) => {
+          this.messages = res;
+        },
+        error: () => {},
+        complete: () => {
+          this.isLoading = false;
+          this.toBottom = true;
+        },
+      });
   }
-  sendMessage() {
+  public sendMessage() {
     if (this.isSubmitLoading) {
       return;
     }
@@ -150,42 +138,44 @@ export class ChatMessageComponent
       this.isSubmitLoading = true;
       this.sendMessageSubscription = this.chatboxService
         .sendMessage(this.senderId, { message: this.senderMessage })
-        .subscribe(
-          () => {
+        .subscribe({
+          next: () => {
             this.senderMessage = '';
             this.udpateDisplayMessage();
             // this.getDisplayMessage();
           },
-          (e) => {
+          error: (e) => {
             console.log(e);
           },
-          () => {
+          complete: () => {
             this.isSubmitLoading = false;
             this.toBottom = true;
           },
-        );
+        });
     }
   }
 
-  udpateDisplayMessage() {
-    this.chatboxService.displayMessage(this.senderId, this.pageState).subscribe(
-      (res) => {
-        const diff = res.filter((n) => {
-          return this.messages.findIndex((m) => n.id === m.id) === -1;
-        });
-        this.messages.push(...diff);
-      },
-      (e) => {
-        console.log(e);
-      },
-      () => {},
-    );
+  private udpateDisplayMessage() {
+    this.chatboxService
+      .displayMessage(this.senderId, this.pageState)
+      .subscribe({
+        next: (res) => {
+          const diff = res.filter((n) => {
+            return this.messages.findIndex((m) => n.id === m.id) === -1;
+          });
+          this.messages.push(...diff);
+        },
+        error: (e) => {
+          console.log(e);
+        },
+        complete: () => {},
+      });
   }
-  trackById(_index: number, message: Message) {
+  public trackById(_index: number, message: Message) {
     return message.id;
   }
 
-  deleteMessage(id: number) {
+  public deleteMessage(id: number) {
     if (this.idToBeDeleted) {
       return;
     }
@@ -195,7 +185,7 @@ export class ChatMessageComponent
       this.messages = this.messages.filter((m) => m.id !== id);
     });
   }
-  onScroll(event: any) {
+  public onScroll(event: any) {
     if (this.isLoadingMoreData) {
       event.preventDefault();
     }
@@ -236,7 +226,7 @@ export class ChatMessageComponent
       }
     });
   }
-  renderDateChip(i: number, messages: Message[]) {
+  public renderDateChip(i: number, messages: Message[]) {
     if (messages.length > 0) {
       if (i > 0) {
         return (
@@ -249,7 +239,7 @@ export class ChatMessageComponent
     }
     return false;
   }
-  onScrollToDown() {
+  public onScrollToDown() {
     setTimeout(() => {
       const scrollableContainer = this.scrollContainer
         .nativeElement as HTMLElement;
@@ -258,7 +248,7 @@ export class ChatMessageComponent
       scrollableContainer.scrollTop = scrollableContainer.scrollHeight;
     });
   }
-  loadMore() {
+  private loadMore() {
     if (this.isLoadingMoreData) {
       return;
     }
@@ -273,8 +263,8 @@ export class ChatMessageComponent
         ...this.pageState,
         index: nextIndex,
       })
-      .subscribe(
-        (res) => {
+      .subscribe({
+        next: (res) => {
           const diff = res.filter((n) => {
             return this.messages.findIndex((m) => m.id === n.id) === -1;
           });
@@ -283,32 +273,32 @@ export class ChatMessageComponent
           }
           this.messages.unshift(...diff);
         },
-        (e) => {
+        error: (e) => {
           console.log(e);
         },
-        () => {
+        complete: () => {
           this.isLoadingMoreData = false;
         },
-      );
+      });
   }
-  toggleEmoji() {
+  public toggleEmoji() {
     this.showEmoji = !this.showEmoji;
   }
-  addEmoji(e: EmojiEvent) {
+  public addEmoji(e: EmojiEvent) {
     e.$event.preventDefault();
     this.senderMessage = this.senderMessage + ' ' + e.emoji.native;
   }
-  scrollToBottom() {
+  public scrollToBottom() {
     if (this.scrollContainer) {
       this.scrollContainer.nativeElement.scrollTop =
         this.scrollContainer.nativeElement.scrollHeight;
     }
   }
-  onLongPress() {
+  public onLongPress() {
     this.selectedIdsToBeDeleted = [];
     this.deletingMultipleMessages = true;
   }
-  toggleIdToBeDeleted(message: Message, e: MouseEvent) {
+  public toggleIdToBeDeleted(message: Message, e: MouseEvent) {
     e.preventDefault();
     if (this.selectedIdsToBeDeleted.includes(message.id)) {
       this.selectedIdsToBeDeleted = this.selectedIdsToBeDeleted.filter(
@@ -318,25 +308,25 @@ export class ChatMessageComponent
       this.selectedIdsToBeDeleted.push(message.id);
     }
   }
-  deleteSeletedIds() {
+  public deleteSeletedIds() {
     this.deletingMultipleMessagesLoading = true;
-    this.chatboxService.deleteMessages(this.selectedIdsToBeDeleted).subscribe(
-      () => {
+    this.chatboxService.deleteMessages(this.selectedIdsToBeDeleted).subscribe({
+      next: () => {
         this.messages = this.messages.filter(
           (m) => !this.selectedIdsToBeDeleted.includes(m.id),
         );
         this.selectedIdsToBeDeleted = [];
         this.deletingMultipleMessages = false;
       },
-      (e) => {
+      error: (e) => {
         console.log(e);
       },
-      () => {
+      complete: () => {
         this.deletingMultipleMessagesLoading = false;
       },
-    );
+    });
   }
-  cancelSelection() {
+  public cancelSelection() {
     this.deletingMultipleMessages = false;
     this.selectedIdsToBeDeleted = [];
   }

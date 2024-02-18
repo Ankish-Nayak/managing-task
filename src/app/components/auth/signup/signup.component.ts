@@ -155,7 +155,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
     this.signupForm.get(propertyName)?.disable();
   }
 
-  signupFormInit() {
+  private signupFormInit() {
     this.signupForm = new FormGroup({
       name: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required, Validators.email]),
@@ -190,14 +190,20 @@ export class SignupComponent implements OnInit, AfterViewInit {
     });
   }
 
-  getDepartments() {
-    this.departmentService.getDepartments().subscribe((res) => {
-      this.departments = res.map(
-        (d) => new Department(d.id, d.departmentName, d.employeesCount),
-      );
+  private getDepartments() {
+    this.departmentService.getDepartments().subscribe({
+      next: (res) => {
+        this.departments = res.map(
+          (d) => new Department(d.id, d.departmentName, d.employeesCount),
+        );
+      },
+      error: (e) => {
+        console.log(e);
+      },
+      complete: () => {},
     });
   }
-  onSubmit(e: SubmitEvent) {
+  public onSubmit(e: SubmitEvent) {
     e.preventDefault();
     // Mark all form as touched to trigger validation messages
     this.markAsTouchedAndDirty();
@@ -240,10 +246,10 @@ export class SignupComponent implements OnInit, AfterViewInit {
       });
     }
   }
-  neitherTouchedNorDirty(element: AbstractControl<any, any>) {
+  private neitherTouchedNorDirty(element: AbstractControl<any, any>) {
     return !(element.touched && element.dirty);
   }
-  validProperty(propertyName: IPropertyName) {
+  public validProperty(propertyName: IPropertyName) {
     let style = 'form-control';
     const property = this.formValue(propertyName);
     if (this.neitherTouchedNorDirty(property)) {
@@ -255,10 +261,10 @@ export class SignupComponent implements OnInit, AfterViewInit {
     }
     return style;
   }
-  formValue(propertyName: IPropertyName) {
+  public formValue(propertyName: IPropertyName) {
     return this.signupForm.get(propertyName)!;
   }
-  markAsTouchedAndDirty() {
+  public markAsTouchedAndDirty() {
     Object.values(this.signupForm.controls).forEach((control) => {
       if (!control.disabled) {
         control.markAsTouched();

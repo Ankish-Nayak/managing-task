@@ -91,7 +91,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
       });
   }
 
-  formInit() {
+  private formInit() {
     this.loginForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [
@@ -103,17 +103,17 @@ export class LoginComponent implements OnInit, AfterViewInit {
       ]),
     });
   }
-  onSubmit() {
+  public onSubmit() {
     // mark as touched and dirty
     this.markAsTouchedAndDirty();
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
       this.isSubmitLoading = true;
-      this.authService.login(email, password).subscribe(
-        () => {
+      this.authService.login(email, password).subscribe({
+        next: () => {
           this.router.navigate(['', 'dashboard']);
         },
-        (e) => {
+        error: (e) => {
           this.errorMessage = e;
           this.toastService.show(
             'Unauthorized',
@@ -122,17 +122,17 @@ export class LoginComponent implements OnInit, AfterViewInit {
           );
           console.log(e);
         },
-        () => {
+        complete: () => {
           this.isSubmitLoading = false;
         },
-      );
+      });
     } else {
     }
   }
-  neitherTouchedNorDirty(element: AbstractControl<any, any>) {
+  private neitherTouchedNorDirty(element: AbstractControl<any, any>) {
     return !(element.touched && element.dirty);
   }
-  validProperty(propertyName: IPropertyName) {
+  public validProperty(propertyName: IPropertyName) {
     let style = 'form-control';
     const property = this.formValue(propertyName);
     if (this.neitherTouchedNorDirty(property)) {
@@ -144,10 +144,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
     }
     return style;
   }
-  formValue(propertyName: IPropertyName) {
+  private formValue(propertyName: IPropertyName) {
     return this.loginForm.get(propertyName)!;
   }
-  markAsTouchedAndDirty() {
+  private markAsTouchedAndDirty() {
     Object.values(this.loginForm.controls).forEach((control) => {
       control.markAsDirty();
       control.markAsTouched();

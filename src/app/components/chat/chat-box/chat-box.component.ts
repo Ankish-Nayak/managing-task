@@ -19,11 +19,11 @@ import {
   styleUrl: './chat-box.component.scss',
 })
 export class ChatBoxComponent implements OnInit {
-  WORD_LIMIT = 30;
-  chatboxs!: ChatBox[];
-  loggedInUserId!: number;
+  public WORD_LIMIT = 30;
+  public chatboxs!: ChatBox[];
+  public loggedInUserId!: number;
   @Output() addChatBox = new EventEmitter<ChatTab>();
-  isLoading: boolean = false;
+  public isLoading: boolean = false;
   readonly ICONS = ICONS;
   constructor(
     private chatBoxService: ChatboxService,
@@ -35,8 +35,8 @@ export class ChatBoxComponent implements OnInit {
       if (res) this.loggedInUserId = res.id!;
     });
     this.isLoading = true;
-    this.chatBoxService.getChatBox().subscribe(
-      (res) => {
+    this.chatBoxService.getChatBox().subscribe({
+      next: (res) => {
         this.chatboxs = res
           .map((m) => ({
             ...m,
@@ -53,25 +53,25 @@ export class ChatBoxComponent implements OnInit {
               ),
           );
       },
-      (e) => {
+      error: (e) => {
         console.log(e);
       },
-      () => {
+      complete: () => {
         this.isLoading = false;
       },
-    );
+    });
   }
-  getIsSeen(chatbox: ChatBox) {
+  public getIsSeen(chatbox: ChatBox) {
     return this.loggedInUserId === chatbox.employeeId;
   }
-  getDisplayName(chatbox: ChatBox) {
+  public getDisplayName(chatbox: ChatBox) {
     if (this.loggedInUserId === chatbox.employeeId) {
       return chatbox.recieverName;
     } else {
       return chatbox.employeeName;
     }
   }
-  onAddChatBox(chatbox: ChatBox) {
+  public onAddChatBox(chatbox: ChatBox) {
     if (this.loggedInUserId === chatbox.employeeId) {
       this.addChatBox.emit({
         id: chatbox.recieverId,

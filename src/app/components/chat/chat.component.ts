@@ -35,15 +35,15 @@ import { ChatMessageComponent } from './chat-message/chat-message.component';
   styleUrl: './chat.component.scss',
 })
 export class ChatComponent implements OnInit, OnDestroy {
-  searchBoxInput: string = '';
-  isLoading = false;
-  chatTabs!: ChatTab[];
+  public searchBoxInput: string = '';
+  public isLoading = false;
+  public chatTabs!: ChatTab[];
   readonly ICONS = ICONS;
-  selectedChatTab!: ChatTab;
+  public selectedChatTab!: ChatTab;
   readonly END_POINTS = END_POINTS;
-  fullSize!: boolean;
-  suggestions: ChatTab[] = [];
-  renderSuggestions: boolean = false;
+  public fullSize!: boolean;
+  public suggestions: ChatTab[] = [];
+  public renderSuggestions: boolean = false;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -68,28 +68,40 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
     this.getFullSize();
   }
-  getFullSize() {
-    this.chatboxService.chatBoxFullSizeMessageSource$.subscribe(
-      (res) => {
+  private getFullSize() {
+    this.chatboxService.chatBoxFullSizeMessageSource$.subscribe({
+      next: (res) => {
         this.fullSize = res;
       },
-      (e) => {
+      error: (e) => {
         console.log(e);
       },
-      () => {},
-    );
-  }
-  getSelectedChatTab() {
-    this.chatboxService.selectedChatTabMessageSource$.subscribe((res) => {
-      this.selectedChatTab = res;
+      complete: () => {},
     });
   }
-  getChatTabs() {
-    this.chatboxService.chatTabsMessageSource$.subscribe((res) => {
-      this.chatTabs = res;
+  private getSelectedChatTab() {
+    this.chatboxService.selectedChatTabMessageSource$.subscribe({
+      next: (res) => {
+        this.selectedChatTab = res;
+      },
+      error: (e) => {
+        console.log(e);
+      },
+      complete: () => {},
     });
   }
-  getActiveTab() {
+  private getChatTabs() {
+    this.chatboxService.chatTabsMessageSource$.subscribe({
+      next: (res) => {
+        this.chatTabs = res;
+      },
+      error: (e) => {
+        console.log(e);
+      },
+      complete: () => {},
+    });
+  }
+  private getActiveTab() {
     const activeEndPoint = getActiveEndpoint(this.route);
     if (activeEndPoint === `./${END_POINTS.chatBox}`) {
       this.chatboxService.changeSelectedTab(
@@ -106,23 +118,23 @@ export class ChatComponent implements OnInit, OnDestroy {
       });
     }
   }
-  addingChatTab(tab: ChatTab) {
+  public addingChatTab(tab: ChatTab) {
     if (this.suggestions.length > 0) {
       this.suggestions = [];
       this.searchBoxInput = '';
     }
     this.chatboxService.addChatTab(tab);
   }
-  onSelectTab(tab: ChatTab) {
+  public onSelectTab(tab: ChatTab) {
     this.chatboxService.changeSelectedTab(tab);
   }
-  deleteTab(tab: ChatTab) {
+  public deleteTab(tab: ChatTab) {
     this.chatboxService.removeChatTab(tab);
   }
   ngOnDestroy(): void {
     removeLocalStorageItem(LocalStorageKeys.GetChatTabs);
   }
-  searchEmployees() {
+  public searchEmployees() {
     this.renderSuggestions = true;
     this.employeeService
       .getSuggestions(this.searchBoxInput)
@@ -130,11 +142,11 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.suggestions = res;
       });
   }
-  onSearchBoxChange() {
+  public onSearchBoxChange() {
     console.log(this.searchBoxInput);
     if (this.searchBoxInput === '') {
       this.suggestions = [];
     }
   }
-  onFocus() {}
+  public onFocus() {}
 }

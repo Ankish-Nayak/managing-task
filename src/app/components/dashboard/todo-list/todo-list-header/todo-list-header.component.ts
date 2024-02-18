@@ -24,7 +24,7 @@ export class TodoListHeaderComponent implements OnInit {
   @Output() pageStateChange: EventEmitter<Partial<GetTodosQueryParams>> =
     new EventEmitter<Partial<GetTodosQueryParams>>();
   readonly ICONS = ICONS;
-  sortBy: {
+  public sortBy: {
     name: keyof Todo;
     asc: boolean;
   } | null = null;
@@ -34,9 +34,8 @@ export class TodoListHeaderComponent implements OnInit {
         name: this.pageState.orderBy as keyof Todo,
         asc: this.pageState.orders === 0 ? true : false,
       };
-    console.log(this.sortBy);
   }
-  onClicked(name: string) {
+  public onClicked(name: string) {
     if (name.includes('|')) {
       // up -> 0 -> means asc
       // down -> 1 -> means dsc
@@ -48,7 +47,6 @@ export class TodoListHeaderComponent implements OnInit {
         ((this.sortBy.asc && array.includes('up')) ||
           (!this.sortBy.asc && array.includes('down')))
       ) {
-        console.log('has to toggle it');
         this.sortBy = null;
       } else {
         this.sortBy = {
@@ -56,8 +54,6 @@ export class TodoListHeaderComponent implements OnInit {
           asc: array.includes('up'),
         };
       }
-      console.log('sortBy', this.sortBy);
-      console.log(this.sortBy);
       if (this.sortBy)
         this.pageStateChange.emit({
           orderBy: this.sortBy.name,

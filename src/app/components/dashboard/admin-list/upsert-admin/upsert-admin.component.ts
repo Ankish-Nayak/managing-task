@@ -62,27 +62,27 @@ type IPropertyName =
   styleUrl: './upsert-admin.component.scss',
 })
 export class UpsertAdminComponent implements OnInit, AfterViewInit {
-  isLoading: boolean = true;
-  signupForm!: FormGroup;
+  public isLoading: boolean = true;
+  public signupForm!: FormGroup;
   // returns the query list of FormControlName
   @ViewChildren(FormControlName, { read: ElementRef })
   formInputElements!: ElementRef[];
   @Input() displayTitle: boolean = true;
-  displayFeedback: { [key in IPropertyName]?: string } = {};
-  employees: { name: string; value: number }[] = [
+  public displayFeedback: { [key in IPropertyName]?: string } = {};
+  public employees: { name: string; value: number }[] = [
     { name: 'Employee', value: 0 },
     { name: 'Admin', value: 1 },
   ];
-  isSubmitLoading = false;
+  public isSubmitLoading = false;
 
   @Output() updated: EventEmitter<boolean> = new EventEmitter<boolean>();
-  employee!: Employee;
-  departments!: Department[];
+  private employee!: Employee;
+  public departments!: Department[];
   @Input() id!: string;
 
   @Input({ alias: 'updateForm', transform: (value: boolean) => !value })
-  adminRegistration: boolean = true;
-  endPoint: string = '';
+  public adminRegistration: boolean = true;
+  private endPoint: string = '';
 
   private validatioMessages!: { [key: string]: { [key: string]: string } };
   private genericValidator!: GenericValidators;
@@ -135,15 +135,12 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
         );
       });
   }
-  disabling(propertyName: IPropertyName) {
-    this.signupForm.get(propertyName)?.disable();
-  }
 
-  reset() {
+  public reset() {
     this.signupFormInit();
   }
 
-  signupFormInit() {
+  private signupFormInit() {
     this.signupForm = new FormGroup({
       name: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required, Validators.email]),
@@ -203,7 +200,7 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
     }
   }
 
-  getDepartments() {
+  private getDepartments() {
     this.departmentService.getDepartments().subscribe((res) => {
       this.departments = this.departmentAdapter.adaptArray(res);
       if (!this.adminRegistration) {
@@ -221,7 +218,7 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
       this.isLoading = false;
     });
   }
-  onSubmit() {
+  public onSubmit() {
     // Mark all form as touched to trigger validation messages
     this.markAsTouchedAndDirty();
 
@@ -229,8 +226,8 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
       this.isSubmitLoading = true;
       if (this.adminRegistration) {
         const data = this.signupForm.value;
-        this.authService.signup(data).subscribe(
-          () => {
+        this.authService.signup(data).subscribe({
+          next: () => {
             this.updated.emit(true);
             if (this.endPoint == `./${END_POINTS.createAdmin}`) {
               this.router.navigate([`../${END_POINTS.adminList}`], {
@@ -238,11 +235,13 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
               });
             }
           },
-          () => {},
-          () => {
+          error: (e) => {
+            console.log(e);
+          },
+          complete: () => {
             this.isSubmitLoading = false;
           },
-        );
+        });
       } else {
         const departmentName = this.departments.find(
           (d) => d.id.toString() === this.signupForm.value.departmentID,
@@ -253,8 +252,8 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
           employeeType: Number(this.signupForm.value.employeeType),
           departmentName,
         };
-        this.employeeService.updateEmployee(Number(this.id), data).subscribe(
-          () => {
+        this.employeeService.updateEmployee(Number(this.id), data).subscribe({
+          next: () => {
             this.updated.emit(true);
             if (this.endPoint === `./${END_POINTS.updateAdmin}`) {
               this.router.navigate(['', END_POINTS.portal.toString()]);
@@ -266,24 +265,25 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
               'success',
             );
           },
-          () => {
+          error: (e) => {
+            console.log(e);
             this.toastService.show(
               'Admin Updatation',
               'Failed to update admin',
               'error',
             );
           },
-          () => {
+          complete: () => {
             this.isSubmitLoading = false;
           },
-        );
+        });
       }
     }
   }
-  neitherTouchedNorDirty(element: AbstractControl<any, any>) {
+  private neitherTouchedNorDirty(element: AbstractControl<any, any>) {
     return !(element.touched && element.dirty);
   }
-  validProperty(propertyName: IPropertyName) {
+  public validProperty(propertyName: IPropertyName) {
     let style = 'form-control';
     const property = this.formValue(propertyName);
     if (this.neitherTouchedNorDirty(property)) {
@@ -295,10 +295,10 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
     }
     return style;
   }
-  formValue(propertyName: IPropertyName) {
+  private formValue(propertyName: IPropertyName) {
     return this.signupForm.get(propertyName)!;
   }
-  markAsTouchedAndDirty() {
+  private markAsTouchedAndDirty() {
     Object.values(this.signupForm.controls).forEach((control) => {
       if (!control.disabled) {
         control.markAsTouched();
@@ -306,7 +306,7 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
       }
     });
   }
-  onClickedEnter() {
+  public onClickedEnter() {
     this.onSubmit();
   }
 }

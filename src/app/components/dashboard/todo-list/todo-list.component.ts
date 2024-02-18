@@ -6,7 +6,7 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DataTableControlPanelComponent } from '../../../shared/components/controlPanels/data-table-control-panel/data-table-control-panel.component';
 import { ConfirmationModalComponent } from '../../../shared/components/modals/confirmation-modal/confirmation-modal.component';
@@ -66,14 +66,13 @@ export enum TodoTab {
 export class TodoListComponent
   implements OnInit, AfterViewInit, OnDestroy, DoCheck
 {
-  isLoading: boolean = true;
-  todoForm!: FormGroup;
-  todos!: Todo[];
-  todoIdTobeDeleted: null | number = null;
-  userType!: UserRole;
-  cols: TCOLS = COLS;
-  UserRole = UserRole;
-  pageState = new GetTodosQueryParams(
+  public isLoading: boolean = true;
+  public todos!: Todo[];
+  private todoIdTobeDeleted: null | number = null;
+  public userType!: UserRole;
+  public cols: TCOLS = COLS;
+  public UserRole = UserRole;
+  public pageState = new GetTodosQueryParams(
     (() => {
       const data = getLocalStorageItem(LocalStorageKeys.GetTodos);
       if (data) {
@@ -88,17 +87,17 @@ export class TodoListComponent
       }
     })(),
   );
-  todoTab: TodoTab = TodoTab.All;
-  columnSortBy: { name: keyof ITask | null; dsc: boolean } = {
+  public todoTab: TodoTab = TodoTab.All;
+  public columnSortBy: { name: keyof ITask | null; dsc: boolean } = {
     name: null,
     dsc: false,
   };
-  searchByCols: { name: keyof Todo }[] = [
-    { name: 'title' },
-    { name: 'description' },
+  public todosTabs: TodoTab[] = [
+    TodoTab.All,
+    TodoTab.Completed,
+    TodoTab.Pending,
   ];
-  todosTabs: TodoTab[] = [TodoTab.All, TodoTab.Completed, TodoTab.Pending];
-  totalPagesCount: number = 0;
+  public totalPagesCount: number = 0;
   constructor(
     private todoService: TodoService,
     private authService: AuthService,
@@ -108,7 +107,6 @@ export class TodoListComponent
   ) {}
   ngOnInit(): void {
     this.getTodos();
-    this.todoFormInit();
     this.getUserType();
     this.todoTab = (() => {
       if (this.pageState.isCompleted === null) {
@@ -121,46 +119,31 @@ export class TodoListComponent
     })();
     this.processCols();
   }
-  getUserType() {
+  private getUserType() {
     this.authService.userTypeMessage$.subscribe((res) => {
       if (res !== null) {
         this.userType = res;
       }
     });
   }
-  ngDoCheck(): void {
-    // console.log('changed');
-  }
-  todoFormInit() {
-    this.todoForm = new FormGroup({
-      title: new FormControl(''),
-      description: new FormControl(''),
-      employeeId: new FormControl(''),
-    });
-  }
+  ngDoCheck(): void {}
   ngAfterViewInit(): void {}
-  getTodos() {
+  private getTodos() {
     this.isLoading = true;
-    this.todoService.getTodos(this.pageState).subscribe(
-      (res) => {
+    this.todoService.getTodos(this.pageState).subscribe({
+      next: (res) => {
         this.todos = res.iterableData;
         this.totalPagesCount = res.totalPageCount;
-        this.isLoading = false;
       },
-      (e) => {
-        this.isLoading = false;
+      error: (e) => {
         console.log(e);
       },
-    );
+      complete: () => {
+        this.isLoading = false;
+      },
+    });
   }
-  //TODO: make request to show employee name rather than id.
-  getEmployee() {
-    // this.employeeService.getEmployee(id).subscribe((res) => {
-    //   console.log(res);
-    // });
-  }
-
-  navigateTo(id: number) {
+  public navigateTo(id: number) {
     const ref = this.modalService.open(UpsertContentModalComponent, {
       size: 'lg',
       backdrop: 'static',
@@ -172,7 +155,7 @@ export class TodoListComponent
       this.getTodos();
     });
   }
-  updateTodo(id: number) {
+  public updateTodo(id: number) {
     const ref = this.modalService.open(UpsertContentModalComponent, {
       size: 'lg',
       backdrop: 'static',
@@ -191,10 +174,10 @@ export class TodoListComponent
       );
     });
   }
-  deleteTodo(id: number) {
+  public deleteTodo(id: number) {
     this.todoIdTobeDeleted = id;
   }
-  confirm(confirmation: boolean) {
+  public confirm(confirmation: boolean) {
     if (confirmation && this.todoIdTobeDeleted !== null) {
       this.todoService.deleteTodo(this.todoIdTobeDeleted).subscribe(() => {
         this.toastService.show(
@@ -208,7 +191,7 @@ export class TodoListComponent
     }
     this.todoIdTobeDeleted = null;
   }
-  canAssignTask() {
+  private canAssignTask() {
     this.employeeService.getEmployees({}).subscribe((res) => {
       if (res.iterableData.length === 0) {
         this.toastService.show(
@@ -238,26 +221,10 @@ export class TodoListComponent
       }
     });
   }
-  assignTo() {
+  public assignTo() {
     this.canAssignTask();
   }
-  onClickedHeader(name: keyof Todo) {
-    if (this.columnSortBy.name === name) {
-      this.columnSortBy.dsc = !this.columnSortBy.dsc;
-    } else {
-      this.columnSortBy.name = name;
-      this.columnSortBy.dsc = false;
-    }
-    // this.todoService.getTodos(this.pageState).subscribe((res) => {
-    //   this.todos = sortTasksByProperty(
-    //     res.iterableData,
-    //     name,
-    //     this.columnSortBy.dsc,
-    //   );
-    //   this.totalPagesCount = res.totalPageCount;
-    // });
-  }
-  onPageChange(pageStateUpdates: Partial<GetEmployeesQueryParams>) {
+  public onPageChange(pageStateUpdates: Partial<GetEmployeesQueryParams>) {
     if (pageStateUpdates.take) {
       this.pageState.index = 0;
     }
@@ -275,13 +242,13 @@ export class TodoListComponent
       this.pageState.take = Math.min(this.pageState.take, res.totalPageCount);
     });
   }
-  allowedToView(allowedUsers: TEmployee[]) {
+  public allowedToView(allowedUsers: TEmployee[]) {
     return allowedUsers.includes(this.userType);
   }
   ngOnDestroy(): void {
     removeLocalStorageItem(LocalStorageKeys.GetTodos);
   }
-  handleTabChange(tab: TodoTab) {
+  public handleTabChange(tab: TodoTab) {
     this.todoTab = tab;
     this.pageState = {
       ...this.pageState,
@@ -299,7 +266,7 @@ export class TodoListComponent
     this.processCols();
     this.onPageChange(this.pageState);
   }
-  processCols() {
+  private processCols() {
     if (this.todoTab !== TodoTab.All) {
       this.cols = this.cols.map((col) => {
         if (col.name === 'IsCompleted') {

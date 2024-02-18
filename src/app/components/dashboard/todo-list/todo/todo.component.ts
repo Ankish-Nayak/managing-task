@@ -30,7 +30,7 @@ import { TodoTab } from '../todo-list.component';
   styleUrl: './todo.component.scss',
 })
 export class TodoComponent implements OnInit {
-  todoMarkLoading = false;
+  private todoMarkLoading = false;
   @Input({ required: true }) todo!: Todo;
   @Input({ required: true }) sno!: number;
   @Output() deleteTodo = new EventEmitter<number>();
@@ -40,40 +40,39 @@ export class TodoComponent implements OnInit {
   @Input({ required: true }) isLoading!: boolean;
   @Input({ required: true }) todoTab!: TodoTab;
   readonly TodoTab = TodoTab;
-  highlight: { edit: boolean; delete: boolean } = {
+  public highlight: { edit: boolean; delete: boolean } = {
     edit: false,
     delete: false,
   };
-  cols: TCOLS = COLS;
-  UserRole = UserRole;
+  public cols: TCOLS = COLS;
+  readonly UserRole = UserRole;
   readonly ICONS = ICONS;
-  deadline!: string;
-
-  wantToChangeDeadline = false;
+  public deadline!: string;
+  public wantToChangeDeadline = false;
   constructor(
     private todoService: TodoService,
     private toastService: ToastService,
   ) {}
-  delete() {
-    this.deleteTodo.emit(this.todo.id);
-  }
   ngOnInit(): void {
     this.deadline = this.todo.deadLine!;
   }
-  getDescription(description: string) {
+  public delete() {
+    this.deleteTodo.emit(this.todo.id);
+  }
+  public getDescription(description: string) {
     return description.length > 115
       ? description.substring(0, 115) + '...'
       : description;
   }
-  update() {
+  public update() {
     localStorage.setItem(`todo/${this.todo.id}`, JSON.stringify(this.todo));
     this.updateTodo.emit(this.todo.id);
   }
-  navigate() {
+  public navigate() {
     localStorage.setItem(`todo/${this.todo.id}`, JSON.stringify(this.todo));
     this.navigateTo.emit(this.todo.id);
   }
-  userAllowedToView(colName: TcolsName) {
+  public userAllowedToView(colName: TcolsName) {
     const col = this.cols.find((e) => e.name === colName);
     return (
       col !== undefined &&
@@ -82,10 +81,10 @@ export class TodoComponent implements OnInit {
           !col.notAllowedUsers.includes(this.userType)))
     );
   }
-  allowedToView(allowedUsers: TEmployee[]) {
+  public allowedToView(allowedUsers: TEmployee[]) {
     return allowedUsers.includes(this.userType);
   }
-  mark() {
+  public mark() {
     this.todoMarkLoading = true;
     this.todoService
       .markTodo(this.todo.id, {
@@ -101,17 +100,17 @@ export class TodoComponent implements OnInit {
       });
   }
 
-  onHighlight(type: 'edit' | 'delete', binary: boolean) {
+  public onHighlight(type: 'edit' | 'delete', binary: boolean) {
     if (type === 'edit') {
       this.highlight.edit = binary;
     } else {
       this.highlight.delete = binary;
     }
   }
-  togglewantToChangeDeadline() {
+  public togglewantToChangeDeadline() {
     this.wantToChangeDeadline = !this.wantToChangeDeadline;
   }
-  assignDeadline() {
+  public assignDeadline() {
     this.isLoading = true;
     const data: IUpdateTodoPostData = {
       ...this.todo,

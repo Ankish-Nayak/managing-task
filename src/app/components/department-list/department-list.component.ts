@@ -41,20 +41,21 @@ type IPropertyName = 'departmentName';
   styleUrl: './department-list.component.scss',
 })
 export class DepartmentListComponent implements OnInit, AfterViewInit {
-  isLoading: boolean = true;
-  departments!: Department[];
+  public isLoading: boolean = true;
+  public departments!: Department[];
   departmentForm!: FormGroup;
   readonly UserRole = UserRole;
-  departmentIdTobeDeleted!: number | null;
+  private departmentIdTobeDeleted!: number | null;
 
   readonly allowedToView = allowedToView;
-  deleteDepartmentEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
+  public deleteDepartmentEvent: EventEmitter<boolean> =
+    new EventEmitter<boolean>();
 
   @ViewChildren(FormControlName, { read: ElementRef })
-  formInputElements!: ElementRef[];
-  userType!: TEmployee;
+  private formInputElements!: ElementRef[];
+  public userType!: TEmployee;
 
-  displayFeedback: { [key in IPropertyName]?: string } = {};
+  public displayFeedback: { [key in IPropertyName]?: string } = {};
 
   private validatioMessages!: { [key: string]: { [key: string]: string } };
   private genericValidator!: GenericValidators;
@@ -77,14 +78,14 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
     this.getDepartments();
     this.getUserType();
   }
-  getUserType() {
+  private getUserType() {
     this.authService.userTypeMessage$.subscribe((res) => {
       if (res !== null) {
         this.userType = res;
       }
     });
   }
-  userRole() {
+  public userRole() {
     this.authService.userTypeMessage$.subscribe((res) => {
       console.log(res);
     });
@@ -105,11 +106,11 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
       });
   }
 
-  deleteDepartment(id: number) {
+  public deleteDepartment(id: number) {
     this.departmentIdTobeDeleted = id;
   }
 
-  confirm(confirmation: boolean) {
+  public confirm(confirmation: boolean) {
     if (confirmation && this.departmentIdTobeDeleted !== null) {
       this.departmentService
         .deleteDepartment(this.departmentIdTobeDeleted)
@@ -121,16 +122,23 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
     }
   }
 
-  createDepartment() {
+  public createDepartment() {
     const data = this.departmentForm.value;
-    this.departmentService.createDepartment(data).subscribe((res) => {
-      this.isLoading = true;
-      this.departmentFormInit();
-      this.getDepartments();
+    this.departmentService.createDepartment(data).subscribe({
+      next: () => {
+        this.departmentFormInit();
+        this.getDepartments();
+      },
+      error: (e) => {
+        console.log(e);
+      },
+      complete: () => {
+        this.isLoading = true;
+      },
     });
   }
 
-  departmentFormInit() {
+  private departmentFormInit() {
     this.departmentForm = new FormGroup({
       departmentName: new FormControl('', [
         Validators.required,
@@ -138,17 +146,17 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
       ]),
     });
   }
-  onViewEmployeesByDepartment(id: number) {
+  public onViewEmployeesByDepartment(id: number) {
     this.router.navigate([`../employees-by-department/${id}`], {
       relativeTo: this.route,
     });
   }
 
-  neitherTouchedNorDirty(element: AbstractControl<any, any>) {
+  private neitherTouchedNorDirty(element: AbstractControl<any, any>) {
     return !(element.touched && element.dirty);
   }
 
-  validProperty(propertyName: IPropertyName) {
+  public validProperty(propertyName: IPropertyName) {
     let style = 'form-control';
     const property = this.formValue(propertyName);
     if (this.neitherTouchedNorDirty(property)) {
@@ -160,24 +168,26 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
     }
     return style;
   }
-  formValue(propertyName: IPropertyName) {
+  private formValue(propertyName: IPropertyName) {
     return this.departmentForm.get(propertyName)!;
   }
   //TODO: make update department work
-  updateDepartment(id: number) {}
+  public updateDepartment(_id: number) {}
 
-  getDepartments() {
-    this.departmentService.getDepartments().subscribe(
-      (res) => {
-        this.isLoading = false;
+  public getDepartments() {
+    this.departmentService.getDepartments().subscribe({
+      next: (res) => {
         this.departments = res.map(
           (d) => new Department(d.id, d.departmentName, d.employeesCount),
         );
       },
-      (e) => {
+      error: (e) => {
         console.log(e);
         this.isLoading = false;
       },
-    );
+      complete: () => {
+        this.isLoading = false;
+      },
+    });
   }
 }

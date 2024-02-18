@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ConfirmationModalComponent } from '../../../shared/components/modals/confirmation-modal/confirmation-modal.component';
 import { UpsertContentModalComponent } from '../../../shared/components/modals/upsert-content-modal/upsert-content-modal.component';
@@ -39,8 +38,6 @@ export class AdminListComponent implements OnInit {
   userType!: TEmployee;
   constructor(
     private employeeService: EmployeeService,
-    private router: Router,
-    private route: ActivatedRoute,
     private adminAdapter: EmployeeAdapter,
     private authService: AuthService,
     private toastService: ToastService,

@@ -31,21 +31,21 @@ export class DepartmentComponent {
   readonly ICONS = ICONS;
   readonly UserRole = UserRole;
 
-  highlight: { edit: boolean; delete: boolean; eye: boolean } = {
+  public highlight: { edit: boolean; delete: boolean; eye: boolean } = {
     edit: false,
     delete: false,
     eye: false,
   };
-  update(id: number) {
+  public update(id: number) {
     this.updateDepartment.emit(id);
   }
-  delete(id: number) {
+  public delete(id: number) {
     this.deleteDepartment.emit(id);
   }
-  onHighlight(type: 'edit' | 'delete' | 'eye', binary: boolean) {
+  public onHighlight(type: 'edit' | 'delete' | 'eye', binary: boolean) {
     this.highlight[type] = binary;
   }
-  onEye(id: number) {
+  public onEye(id: number) {
     this.employeesByDepartment.emit(id);
   }
 }
