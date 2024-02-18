@@ -31,29 +31,29 @@ export enum NotificationTab {
   styleUrl: './notifications.component.scss',
 })
 export class NotificationsComponent implements OnInit, OnDestroy {
-  isLoading: boolean = false;
-  notifications!: Notification[];
-  scrollableDiv: any;
-  isLoadingMore: boolean = false;
-  isMoreData: boolean = true;
-  pageState: IGetNotificationsQueryParams = new GetNotificationsQueryParams(
-    (() => {
-      const data = getLocalStorageItem(LocalStorageKeys.GetNotifications);
-      if (data) {
-        console.log(data);
-        return JSON.parse(data);
-      } else {
-        return {
-          isPagination: true,
-          index: 0,
-          take: 10,
-          isSeen: null,
-        };
-      }
-    })(),
-  );
-  select!: boolean;
-  selectedIds: number[] = [];
+  public isLoading: boolean = false;
+  public notifications!: Notification[];
+  private isLoadingMore: boolean = false;
+  private isMoreData: boolean = true;
+  private pageState: IGetNotificationsQueryParams =
+    new GetNotificationsQueryParams(
+      (() => {
+        const data = getLocalStorageItem(LocalStorageKeys.GetNotifications);
+        if (data) {
+          console.log(data);
+          return JSON.parse(data);
+        } else {
+          return {
+            isPagination: true,
+            index: 0,
+            take: 10,
+            isSeen: null,
+          };
+        }
+      })(),
+    );
+  public select!: boolean;
+  public selectedIds: number[] = [];
   readonly NotificationTabs: NotificationTab[] = [
     NotificationTab.All,
     NotificationTab.Read,
@@ -80,9 +80,9 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     })();
     this.onPageStateChange();
   }
-  markAsRead(id: number) {
-    this.notificationService.markNotificationAsRead(id).subscribe(
-      () => {
+  public markAsRead(id: number) {
+    this.notificationService.markNotificationAsRead(id).subscribe({
+      next: () => {
         if (this.selectedNotificationTab === NotificationTab.UnRead)
           this.notifications = this.notifications.filter((n) => n.id !== id);
         else {
@@ -94,13 +94,13 @@ export class NotificationsComponent implements OnInit, OnDestroy {
           });
         }
       },
-      (e) => {
+      error: (e) => {
         console.log(e);
       },
-      () => {},
-    );
+      complete: () => {},
+    });
   }
-  toggleSelectedIds(id: number) {
+  public toggleSelectedIds(id: number) {
     const exist = this.selectedIds.includes(id);
     if (exist) {
       this.selectedIds = this.selectedIds.filter((n) => n !== id);
@@ -108,7 +108,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       this.selectedIds.push(id);
     }
   }
-  markAllAsRead() {
+  public markAllAsRead() {
     if (!this.select) {
       this.select = !this.select;
       return;
@@ -117,12 +117,12 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       .markNotificationsAsRead({
         notificationIDs: this.selectedIds,
       })
-      .subscribe(
-        () => {},
-        (e) => {
+      .subscribe({
+        next: () => {},
+        error: (e) => {
           console.log(e);
         },
-        () => {
+        complete: () => {
           if (this.selectedNotificationTab === NotificationTab.UnRead) {
             this.notifications = this.notifications.filter((n) => {
               return !this.selectedIds.includes(n.id);
@@ -131,28 +131,28 @@ export class NotificationsComponent implements OnInit, OnDestroy {
           this.select = !this.select;
           this.selectedIds = [];
         },
-      );
+      });
   }
-  onPageStateChange() {
+  public onPageStateChange() {
     updateLocalStorageItem(
       LocalStorageKeys.GetNotifications,
       JSON.stringify(this.pageState),
     );
     this.isLoading = true;
-    this.notificationService.getNotifications(this.pageState).subscribe(
-      (res) => {
+    this.notificationService.getNotifications(this.pageState).subscribe({
+      next: (res) => {
         console.log(res);
         this.notifications = res;
       },
-      (e) => {
+      error: (e) => {
         console.log(e);
       },
-      () => {
+      complete: () => {
         this.isLoading = false;
       },
-    );
+    });
   }
-  onTabChange(updatedTab: NotificationTab) {
+  public onTabChange(updatedTab: NotificationTab) {
     this.isMoreData = true;
     this.isLoadingMore = false;
     if (updatedTab === this.selectedNotificationTab) {
@@ -175,13 +175,10 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     };
     this.onPageStateChange();
   }
-  onBottom() {
+  public onBottom() {
     console.log('hitting');
   }
-  ngOnDestroy(): void {
-    removeLocalStorageItem(LocalStorageKeys.GetNotifications);
-  }
-  onScroll() {
+  public onScroll() {
     setTimeout(() => {
       if (this.isLoadingMore || !this.isMoreData) {
         return;
@@ -198,15 +195,15 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       }
     });
   }
-  loadMore() {
+  private loadMore() {
     this.isLoadingMore = true;
     console.log(this.scrollableIndex);
     const newPageState = {
       ...this.pageState,
       index: this.scrollableIndex,
     };
-    this.notificationService.getNotifications(newPageState).subscribe(
-      (res) => {
+    this.notificationService.getNotifications(newPageState).subscribe({
+      next: (res) => {
         this.notifications.push(...res);
         if (res.length > 0) {
           this.scrollableIndex++;
@@ -215,15 +212,18 @@ export class NotificationsComponent implements OnInit, OnDestroy {
           this.isMoreData = false;
         }
       },
-      (e) => {
+      error: (e) => {
         console.log(e);
       },
-      () => {
+      complete: () => {
         this.isLoadingMore = false;
       },
-    );
+    });
   }
-  clearSelectedIds() {
+  public clearSelectedIds() {
     this.selectedIds = [];
+  }
+  ngOnDestroy(): void {
+    removeLocalStorageItem(LocalStorageKeys.GetNotifications);
   }
 }

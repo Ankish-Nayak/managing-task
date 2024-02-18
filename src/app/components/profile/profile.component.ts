@@ -56,32 +56,45 @@ type IPropertyName =
   styleUrl: './profile.component.scss',
 })
 export class ProfileComponent implements OnInit, BlockNavigationIfChange {
-  isLoading: boolean = true;
-  isSubmitLoading: boolean = false;
-  profile: Employee = new Employee(0, '', '', 0, '', '', '', '', 0, '', '', '');
-  updateProfileForm!: FormGroup;
+  public isLoading: boolean = true;
+  public isSubmitLoading: boolean = false;
+  public profile: Employee = new Employee(
+    0,
+    '',
+    '',
+    0,
+    '',
+    '',
+    '',
+    '',
+    0,
+    '',
+    '',
+    '',
+  );
+  public updateProfileForm!: FormGroup;
   // returns the query list of FormControlName
   @ViewChildren(FormControlName, { read: ElementRef })
   formInputElements!: ElementRef[];
 
-  formInitailValue!: string;
+  private formInitailValue!: string;
 
   private _hasUnSavedChangesSource = new BehaviorSubject<boolean>(false);
 
-  hasUnSavedChanges$: Observable<boolean> =
+  public hasUnSavedChanges$: Observable<boolean> =
     this._hasUnSavedChangesSource.asObservable();
 
-  displayFeedback: { [key in IPropertyName]?: string } = {};
-  employees: { name: string; value: number }[] = [
+  public displayFeedback: { [key in IPropertyName]?: string } = {};
+  public employees: { name: string; value: number }[] = [
     { name: 'Employee', value: 0 },
     { name: 'Admin', value: 1 },
   ];
 
   cardBodyHeader: string[] = ['card-body-header'];
 
-  departments!: Department[];
+  public departments!: Department[];
 
-  updatingProfile: boolean = false;
+  public updatingProfile: boolean = false;
 
   private validatioMessages!: { [key: string]: { [key: string]: string } };
   private genericValidator!: GenericValidators;
@@ -99,7 +112,7 @@ export class ProfileComponent implements OnInit, BlockNavigationIfChange {
   ngOnInit(): void {
     this.profileComponentInit();
   }
-  profileComponentInit() {
+  private profileComponentInit() {
     this.isLoading = true;
     this.getDepartments();
 
@@ -108,7 +121,7 @@ export class ProfileComponent implements OnInit, BlockNavigationIfChange {
     this.toggleForm();
   }
 
-  getProfile() {
+  private getProfile() {
     this.authService.profile().subscribe((res) => {
       this.profile = res;
       this.updateProfileForm.patchValue(this.profile);
@@ -131,17 +144,14 @@ export class ProfileComponent implements OnInit, BlockNavigationIfChange {
         );
       });
   }
-  disabling(propertyName: IPropertyName) {
-    this.updateProfileForm.get(propertyName)?.disable();
-  }
-  enableAllowedField(fields: IPropertyName[]) {
+  private enableAllowedField(fields: IPropertyName[]) {
     fields.forEach((field) => {
       if (this.updateProfileForm.get(field)?.disabled) {
         this.updateProfileForm.get(field)?.enable();
       }
     });
   }
-  toggleForm() {
+  private toggleForm() {
     if (!this.updateProfileForm.disabled) {
       this.cardBodyHeader = this.cardBodyHeader.filter((v) => v !== 'visible');
       this.cardBodyHeader.push('invisible');
@@ -167,7 +177,7 @@ export class ProfileComponent implements OnInit, BlockNavigationIfChange {
       // this.updateProfileForm.enable();
     }
   }
-  updateProfileFormInit() {
+  private updateProfileFormInit() {
     this.updateProfileForm = new FormGroup({
       name: new FormControl(this.profile.name, [Validators.required]),
       email: new FormControl(this.profile.email, [
@@ -197,25 +207,25 @@ export class ProfileComponent implements OnInit, BlockNavigationIfChange {
     });
     // this.formInitailValue = JSON.stringify(this.profile);
   }
-  edit() {
+  public edit() {
     if (!this.updatingProfile) {
       this.updatingProfile = true;
       this.toggleForm();
     }
   }
-  reset() {
+  public reset() {
     this.updateProfileForm.patchValue(this.profile);
     this.formInitailValue = JSON.stringify(this.updateProfileForm.value);
   }
 
-  getDepartments() {
+  private getDepartments() {
     this.departmentService.getDepartments().subscribe((res) => {
       this.departments = res.map(
         (d) => new Department(d.id, d.departmentName, d.employeesCount),
       );
     });
   }
-  onSubmit() {
+  public onSubmit() {
     this.markAsTouchedAndDirty();
     const { address, country, phone, city } = this.updateProfileForm.value;
     const data: IEmployee = {
@@ -228,19 +238,21 @@ export class ProfileComponent implements OnInit, BlockNavigationIfChange {
 
     if (this.updateProfileForm.valid) {
       this.isSubmitLoading = true;
-      this.authService.updateProfile(this.profile.id, data).subscribe(
-        () => {
+      this.authService.updateProfile(this.profile.id, data).subscribe({
+        next: () => {
           this._hasUnSavedChangesSource.next(false);
           this.reloadComponent();
         },
-        () => {},
-        () => {
+        error: (e) => {
+          console.log(e);
+        },
+        complete: () => {
           this.isSubmitLoading = false;
         },
-      );
+      });
     }
   }
-  reloadComponent() {
+  private reloadComponent() {
     const currentUrl = this.router.url;
     this.router
       .navigateByUrl('/reload', { skipLocationChange: true })
@@ -248,10 +260,10 @@ export class ProfileComponent implements OnInit, BlockNavigationIfChange {
         this.router.navigate([currentUrl]);
       });
   }
-  neitherTouchedNorDirty(element: AbstractControl<any, any>) {
+  private neitherTouchedNorDirty(element: AbstractControl<any, any>) {
     return !(element.touched && element.dirty);
   }
-  validProperty(propertyName: IPropertyName) {
+  public validProperty(propertyName: IPropertyName) {
     let style = 'form-control';
     const property = this.formValue(propertyName);
     if (this.neitherTouchedNorDirty(property)) {
@@ -263,10 +275,10 @@ export class ProfileComponent implements OnInit, BlockNavigationIfChange {
     }
     return style;
   }
-  formValue(propertyName: IPropertyName) {
+  private formValue(propertyName: IPropertyName) {
     return this.updateProfileForm.get(propertyName)!;
   }
-  markAsTouchedAndDirty() {
+  private markAsTouchedAndDirty() {
     Object.values(this.updateProfileForm.controls).forEach((control) => {
       if (!control.disabled) {
         control.markAsTouched();
@@ -275,16 +287,16 @@ export class ProfileComponent implements OnInit, BlockNavigationIfChange {
     });
   }
 
-  canDeactivate() {
+  public canDeactivate() {
     const ref = this.modalService.open(SaveChangesModalComponent);
     return ref.closed;
   }
-  cancel() {
+  public cancel() {
     this.toggleForm();
 
     this._hasUnSavedChangesSource.next(false);
   }
-  onClickEnter() {
+  public onClickEnter() {
     if (this.updatingProfile) {
       this.onSubmit();
     }
