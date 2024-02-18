@@ -27,7 +27,7 @@ export class EmployeeListHeaderComponent implements OnInit {
     address: '15%',
     city: '15%',
   };
-  sortBy: {
+  protected sortBy: {
     name: keyof Employee;
     asc: boolean;
   } | null = null;
@@ -40,7 +40,7 @@ export class EmployeeListHeaderComponent implements OnInit {
       };
     console.log('sortby', this.sortBy);
   }
-  onClicked(name: string) {
+  public onClicked(name: string) {
     // console.log(name);
     if (name.includes('|')) {
       // up -> 0 -> means asc

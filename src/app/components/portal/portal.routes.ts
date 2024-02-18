@@ -82,9 +82,9 @@ export const routes: Routes = [
   },
   {
     loadComponent: () =>
-      import(
-        '../../components/dashboard/employee-list/employee-list.component'
-      ).then((m) => m.EmployeeListComponent),
+      import('./employee-list/employee-list.component').then(
+        (m) => m.EmployeeListComponent,
+      ),
     path: END_POINTS.employeeList,
     canActivate: [userBasedAuthGuard],
     data: {
@@ -93,9 +93,9 @@ export const routes: Routes = [
   },
   {
     loadComponent: () =>
-      import(
-        '../../components/dashboard/employee-list/employee-list.component'
-      ).then((m) => m.EmployeeListComponent),
+      import('./employee-list/employee-list.component').then(
+        (m) => m.EmployeeListComponent,
+      ),
     path: END_POINTS.employeesByDepartment,
     canActivate: [userBasedAuthGuard],
     data: {

@@ -13,7 +13,7 @@ import { EmployeeService } from '../../shared/services/employee/employee.service
 import { TodoService } from '../../shared/services/todo/todo.service';
 import { END_POINTS, UserRole } from '../../utils/constants';
 import { DashboardDetailCardComponent } from './dashboard-detail-card/dashboard-detail-card.component';
-import { EmployeeTab } from './employee-list/employee-list.component';
+import { EmployeeTab } from '../portal/employee-list/employee-list.component';
 import { NavbarComponent } from './navbar/navbar.component';
 //TODO: make user based rendering of dashboard component
 

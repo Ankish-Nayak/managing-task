@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Router } from '@angular/router';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { HighlightDirective } from '../../../../shared/directives/highlight/highlight.directive';
 import { ICONS } from '../../../../shared/icons/icons';
@@ -22,7 +21,7 @@ export class EmployeeComponent {
   @Output() deleteEmployee = new EventEmitter<number>();
   @Output() viewEmployeeByDepartment = new EventEmitter<number>();
   @Output() assignTask = new EventEmitter<number>();
-  highlight: {
+  public highlight: {
     eye: boolean;
     delete: boolean;
   } = {
@@ -31,38 +30,35 @@ export class EmployeeComponent {
   };
   readonly ICONS = ICONS;
   readonly EMPLOYEE_TYPE = EMPLOYEE_TYPE;
-  constructor(
-    private router: Router,
-    private chatBoxService: ChatboxService,
-  ) {}
-  update() {
+  constructor(private chatBoxService: ChatboxService) {}
+  public update() {
     localStorage.setItem(
       `employee/${this.employee.id}`,
       JSON.stringify(this.employee),
     );
     this.updateEmployee.emit(this.employee.id);
   }
-  delete() {
+  public delete() {
     this.deleteEmployee.emit(this.employee.id);
   }
 
-  onHightlight(type: 'delete' | 'eye', binary: boolean) {
+  public onHightlight(type: 'delete' | 'eye', binary: boolean) {
     this.highlight[type] = binary;
   }
-  onViewEmployeeByDepartment() {
+  public onViewEmployeeByDepartment() {
     this.viewEmployeeByDepartment.emit(this.employee.id);
     console.log(this.employee.id);
   }
-  assinTask() {
+  public assinTask() {
     this.assignTask.emit(this.employee.id);
   }
-  onChatWith() {
+  public onChatWith() {
     this.chatBoxService.addChatTab({
       id: this.employee.id,
       name: this.employee.name,
     });
   }
-  createQueryParamsString(queryParams: any): string {
+  public createQueryParamsString(queryParams: any): string {
     return Object.keys(queryParams)
       .map((key) => `${key}=${queryParams[key]}`)
       .join('&');

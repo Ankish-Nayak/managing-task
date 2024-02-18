@@ -55,9 +55,9 @@ export enum EmployeeTab {
   styleUrl: './employee-list.component.scss',
 })
 export class EmployeeListComponent implements OnInit, OnDestroy {
-  employees!: Employee[];
-  isLoading: boolean = true;
-  employeeToBeDeletedID: number | null = null;
+  public employees!: Employee[];
+  public isLoading: boolean = true;
+  private employeeToBeDeletedID: number | null = null;
   pageState = new GetEmployeesQueryParams(
     (() => {
       const data = getLocalStorageItem(LocalStorageKeys.GetEmployees);
@@ -74,7 +74,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     })(),
   );
   controlsClass: string = 'container-fluid';
-  totalPagesCount: number = 0;
+  public totalPagesCount: number = 0;
   departmentId: string | null = null;
   userType!: UserRole;
   readonly cols = COLS;
@@ -115,7 +115,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
         ? ''
         : 'invisible');
   }
-  getEmployeeTabs() {
+  public getEmployeeTabs() {
     if (this.userType === UserRole.Employee) {
       return [];
     } else if (this.userType === UserRole.Admin) {
@@ -124,7 +124,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
       return [EmployeeTab.Admins, EmployeeTab.All, EmployeeTab.Employees];
     }
   }
-  getQueryParams() {
+  public getQueryParams() {
     this.route.queryParams.subscribe((params) => {
       console.log('params ', params);
       const employeeTab = params['employeeTab'];
@@ -134,10 +134,10 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
       }
     });
   }
-  getEmployeesByDepartment() {
+  public getEmployeesByDepartment() {
     this.isLoading = true;
   }
-  getEmployees() {
+  private getEmployees() {
     // this.isLoading = true;
     if (this.departmentId) {
       this.employeeService
@@ -151,7 +151,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
       this.handleTabChange(this.employeeTab);
     }
   }
-  confirm(confirmation: boolean) {
+  public confirm(confirmation: boolean) {
     if (confirmation && this.employeeToBeDeletedID !== null) {
       this.employeeService
         .deleteEmployee(this.employeeToBeDeletedID)
@@ -162,11 +162,11 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
   }
   onViewEmployeesByDepartment() {}
 
-  delete(id: number) {
+  public delete(id: number) {
     this.employeeToBeDeletedID = id;
   }
 
-  onClicked(name: string) {
+  public onClicked(name: string) {
     this.employeeService
       .getEmployees({
         orderBy: name,
@@ -176,7 +176,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
         this.employees = res.iterableData;
       });
   }
-  onPageChange(pageStateUpdates: Partial<GetEmployeesQueryParams>) {
+  public onPageChange(pageStateUpdates: Partial<GetEmployeesQueryParams>) {
     if (pageStateUpdates.take) {
       this.pageState.index = 0;
     }
@@ -192,12 +192,12 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     this.getEmployees();
   }
 
-  onAssignTask(id: number) {
+  public onAssignTask(id: number) {
     this.router.navigateByUrl(`${END_POINTS.portal}/assign-task/${id}`, {
       replaceUrl: true,
     });
   }
-  handleTabChange(tab: EmployeeTab) {
+  public handleTabChange(tab: EmployeeTab) {
     this.controlsClass =
       'container-fluid ' +
       (tab === this.EmployeeTab.All && this.departmentId === null
@@ -227,7 +227,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
       });
     }
   }
-  createAdmin() {
+  public createAdmin() {
     const ref = this.modalService.open(UpsertContentModalComponent, {
       size: 'lg',
       backdrop: 'static',
