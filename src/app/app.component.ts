@@ -2,9 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NotificationsComponent } from './components/notifications/notifications.component';
+import { MessageToastComponent } from './shared/components/toasts/message-toast/message-toast.component';
 import { ICONS } from './shared/icons/icons';
 import { NotificationService } from './shared/services/notification/notification.service';
-import { MessageToastComponent } from './sharedComponents/toasts/message-toast/message-toast.component';
 
 @Component({
   selector: 'app-root',

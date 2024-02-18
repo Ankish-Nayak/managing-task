@@ -1,19 +1,19 @@
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { ConfirmationModalComponent } from '../../../../shared/components/modals/confirmation-modal/confirmation-modal.component';
 import { HighlightDirective } from '../../../../shared/directives/highlight/highlight.directive';
 import { ICONS } from '../../../../shared/icons/icons';
 import { TEmployee } from '../../../../shared/interfaces/employee.type';
-import { ConfirmationModalComponent } from '../../../../sharedComponents/modals/confirmation-modal/confirmation-modal.component';
+import { IUpdateTodoPostData } from '../../../../shared/interfaces/requests/toto.interface';
 import { Todo } from '../../../../shared/models/todo.model';
 import { ToastService } from '../../../../shared/services/toast/toast.service';
 import { TodoService } from '../../../../shared/services/todo/todo.service';
 import { UserRole } from '../../../../utils/constants';
 import { COLS, TCOLS, TcolsName } from '../cols';
 import { TodoTab } from '../todo-list.component';
-import { FormsModule } from '@angular/forms';
-import { IUpdateTodoPostData } from '../../../../shared/interfaces/requests/toto.interface';
 
 @Component({
   selector: '[app-todo]',
@@ -53,7 +53,6 @@ export class TodoComponent implements OnInit {
   constructor(
     private todoService: TodoService,
     private toastService: ToastService,
-    private datePipe: DatePipe,
   ) {}
   delete() {
     this.deleteTodo.emit(this.todo.id);
@@ -92,7 +91,7 @@ export class TodoComponent implements OnInit {
       .markTodo(this.todo.id, {
         isCompleted: !this.todo.isCompleted,
       })
-      .subscribe((res) => {
+      .subscribe(() => {
         this.toastService.show('Todo', 'Todo marked as done', 'success', 2000);
         this.todoMarkLoading = false;
         this.todo = {

@@ -16,6 +16,7 @@ import { ActivatedRoute } from '@angular/router';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { EmojiEvent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 import { Subscription } from 'rxjs';
+import { SpinnerComponent } from '../../../shared/components/spinners/spinner/spinner.component';
 import { ClickedEnterDirective } from '../../../shared/directives/clicked-enter/clicked-enter.directive';
 import { LongPressDirective } from '../../../shared/directives/longPress/long-press.directive';
 import { ICONS } from '../../../shared/icons/icons';
@@ -24,7 +25,6 @@ import { Message, MessageAdapter } from '../../../shared/models/message.model';
 import { TimeAgoPipe } from '../../../shared/pipes/time-ago/time-ago.pipe';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { ChatboxService } from '../../../shared/services/chatbox/chatbox.service';
-import { SpinnerComponent } from '../../../sharedComponents/spinners/spinner/spinner.component';
 import { conversationData, loggedInuserId, senderId } from './mock';
 import { MomentTimePipe } from './pipes/moment-time.pipe';
 
@@ -321,7 +321,7 @@ export class ChatMessageComponent
   deleteSeletedIds() {
     this.deletingMultipleMessagesLoading = true;
     this.chatboxService.deleteMessages(this.selectedIdsToBeDeleted).subscribe(
-      (res) => {
+      () => {
         this.messages = this.messages.filter(
           (m) => !this.selectedIdsToBeDeleted.includes(m.id),
         );

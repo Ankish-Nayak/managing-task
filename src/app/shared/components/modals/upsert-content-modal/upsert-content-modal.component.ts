@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, ViewChild } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { UpsertAdminComponent } from '../../../components/dashboard/admin-list/upsert-admin/upsert-admin.component';
-import { TodoDetailComponent } from '../../../components/dashboard/todo-list/todo-detail/todo-detail.component';
-import { UpsertTodoComponent } from '../../../components/dashboard/upsert-todo/upsert-todo.component';
-import { COMPONENT_NAME } from '../../../utils/constants';
+import { UpsertAdminComponent } from '../../../../components/dashboard/admin-list/upsert-admin/upsert-admin.component';
+import { TodoDetailComponent } from '../../../../components/dashboard/todo-list/todo-detail/todo-detail.component';
+import { UpsertTodoComponent } from '../../../../components/dashboard/upsert-todo/upsert-todo.component';
+import { COMPONENT_NAME } from '../../../../utils/constants';
 
 @Component({
   selector: 'app-upsert-content-modal',

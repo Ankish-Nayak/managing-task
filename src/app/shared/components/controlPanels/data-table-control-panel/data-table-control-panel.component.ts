@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { UserRole } from '../../../utils/constants';
+import { UserRole } from '../../../../utils/constants';
 
 @Component({
   selector: 'app-data-table-control-panel',

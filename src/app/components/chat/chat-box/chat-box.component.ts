@@ -1,6 +1,7 @@
 import { CommonModule, DatePipe, JsonPipe } from '@angular/common';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { SpinnerComponent } from '../../../shared/components/spinners/spinner/spinner.component';
 import { ICONS } from '../../../shared/icons/icons';
 import { ChatBox } from '../../../shared/models/chat-box.model';
 import { TimeAgoPipe } from '../../../shared/pipes/time-ago/time-ago.pipe';
@@ -9,7 +10,6 @@ import {
   ChatTab,
   ChatboxService,
 } from '../../../shared/services/chatbox/chatbox.service';
-import { SpinnerComponent } from '../../../sharedComponents/spinners/spinner/spinner.component';
 
 @Component({
   selector: 'app-chat-box',

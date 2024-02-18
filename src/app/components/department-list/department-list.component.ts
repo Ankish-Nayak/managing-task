@@ -17,14 +17,14 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
+import { ConfirmationModalComponent } from '../../shared/components/modals/confirmation-modal/confirmation-modal.component';
 import { TEmployee } from '../../shared/interfaces/employee.type';
-import { ConfirmationModalComponent } from '../../sharedComponents/modals/confirmation-modal/confirmation-modal.component';
 import { Department } from '../../shared/models/department.model';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { DepartmentService } from '../../shared/services/department/department.service';
 import { GenericValidators } from '../../shared/validators/generic-validator';
 import { allowedToView } from '../../utils/allowedToView';
-import { END_POINTS, UserRole } from '../../utils/constants';
+import { UserRole } from '../../utils/constants';
 import { DepartmentComponent } from './department/department.component';
 
 type IPropertyName = 'departmentName';

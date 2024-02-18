@@ -17,10 +17,11 @@ import {
   fromEvent,
   merge,
 } from 'rxjs';
+import { SaveChangesModalComponent } from '../../shared/components/modals/save-changes-modal/save-changes-modal.component';
+import { SubmitSpinnerComponent } from '../../shared/components/spinners/submit-spinner/submit-spinner.component';
 import { ClickedEnterDirective } from '../../shared/directives/clicked-enter/clicked-enter.directive';
 import { BlockNavigationIfChange } from '../../shared/interfaces/hasChanges/BlockNavigationIfChange';
 import { IEmployee } from '../../shared/interfaces/requests/employee.interface';
-import { SaveChangesModalComponent } from '../../sharedComponents/modals/save-changes-modal/save-changes-modal.component';
 import { Department } from '../../shared/models/department.model';
 import { Employee } from '../../shared/models/employee.model';
 import { AuthService } from '../../shared/services/auth/auth.service';
@@ -28,7 +29,6 @@ import { DepartmentService } from '../../shared/services/department/department.s
 import { GenericValidators } from '../../shared/validators/generic-validator';
 import { notNullValidator } from '../../shared/validators/not-null-validators';
 import { UPDATE_PROFILE_VALIDAION_MESSAGES } from './validationMessages';
-import { SubmitSpinnerComponent } from '../../sharedComponents/spinners/submit-spinner/submit-spinner.component';
 
 type IPropertyName =
   | 'name'

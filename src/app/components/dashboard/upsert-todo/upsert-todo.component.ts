@@ -17,6 +17,8 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
+import { SpinnerComponent } from '../../../shared/components/spinners/spinner/spinner.component';
+import { SubmitSpinnerComponent } from '../../../shared/components/spinners/submit-spinner/submit-spinner.component';
 import { ClickedEnterDirective } from '../../../shared/directives/clicked-enter/clicked-enter.directive';
 import {
   ICreateTodoPostData,
@@ -32,8 +34,6 @@ import { ToastService } from '../../../shared/services/toast/toast.service';
 import { TodoService } from '../../../shared/services/todo/todo.service';
 import { GenericValidators } from '../../../shared/validators/generic-validator';
 import { notNullValidator } from '../../../shared/validators/not-null-validators';
-import { SpinnerComponent } from '../../../sharedComponents/spinners/spinner/spinner.component';
-import { SubmitSpinnerComponent } from '../../../sharedComponents/spinners/submit-spinner/submit-spinner.component';
 import { END_POINTS, Months } from '../../../utils/constants';
 import { getSpiltTimeISO } from '../../../utils/time';
 

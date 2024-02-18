@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
+import { SpinnerComponent } from '../../shared/components/spinners/spinner/spinner.component';
 import { ScrollDirective } from '../../shared/directives/scroll/scroll.directive';
 import { ICONS } from '../../shared/icons/icons';
 import {
@@ -9,7 +10,6 @@ import {
 import { Notification } from '../../shared/models/notification.model';
 import { TimeAgoPipe } from '../../shared/pipes/time-ago/time-ago.pipe';
 import { NotificationService } from '../../shared/services/notification/notification.service';
-import { SpinnerComponent } from '../../sharedComponents/spinners/spinner/spinner.component';
 import { LocalStorageKeys } from '../../utils/constants';
 import {
   getLocalStorageItem,

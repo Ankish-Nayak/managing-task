@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { NgbToast } from '@ng-bootstrap/ng-bootstrap';
-import { ToastService } from '../../../shared/services/toast/toast.service';
+import { ToastService } from '../../../services/toast/toast.service';
 
 export type Tmessage = 'error' | 'success' | 'normal' | 'info';
 

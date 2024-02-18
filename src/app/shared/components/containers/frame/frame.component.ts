@@ -8,7 +8,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { ICONS } from '../../../shared/icons/icons';
+import { ICONS } from '../../../icons/icons';
 
 interface ICooridinate {
   x: number;

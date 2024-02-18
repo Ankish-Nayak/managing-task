@@ -19,6 +19,8 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
+import { SpinnerComponent } from '../../../../shared/components/spinners/spinner/spinner.component';
+import { SubmitSpinnerComponent } from '../../../../shared/components/spinners/submit-spinner/submit-spinner.component';
 import { ClickedEnterDirective } from '../../../../shared/directives/clicked-enter/clicked-enter.directive';
 import { IUpdateEmpoyee } from '../../../../shared/interfaces/requests/employee.interface';
 import {
@@ -30,13 +32,11 @@ import { AuthService } from '../../../../shared/services/auth/auth.service';
 import { DepartmentService } from '../../../../shared/services/department/department.service';
 import { EmployeeService } from '../../../../shared/services/employee/employee.service';
 import { ToastService } from '../../../../shared/services/toast/toast.service';
-import { SpinnerComponent } from '../../../../sharedComponents/spinners/spinner/spinner.component';
 import { GenericValidators } from '../../../../shared/validators/generic-validator';
 import { notNullValidator } from '../../../../shared/validators/not-null-validators';
 import { EMPLOYEE_TYPE, END_POINTS } from '../../../../utils/constants';
 import { getActiveEndpoint } from '../../../../utils/getActiveEndpoint';
 import { VALIDATION_MESSAGES } from './VALIDATION_MESSAGES';
-import { SubmitSpinnerComponent } from '../../../../sharedComponents/spinners/submit-spinner/submit-spinner.component';
 type IPropertyName =
   | 'name'
   | 'email'

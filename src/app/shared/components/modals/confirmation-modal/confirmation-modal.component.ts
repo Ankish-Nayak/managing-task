@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ConfirmationService } from '../../../shared/services/dialog/confirmation.service';
+import { ConfirmationService } from '../../../services/dialog/confirmation.service';
 
 @Component({
   selector: 'app-confirmation-modal',

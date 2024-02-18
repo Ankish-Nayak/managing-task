@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ClickedDirective } from '../../../../shared/directives/clicked/clicked.directive';
-import { Employee } from '../../../../shared/models/employee.model';
-import { COLS, TCOLS } from '../cols';
-import { GetEmployeesQueryParams } from '../../../../shared/interfaces/requests/employee.interface';
-import { ICONS } from '../../../../shared/icons/icons';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { ClickedDirective } from '../../../../shared/directives/clicked/clicked.directive';
+import { ICONS } from '../../../../shared/icons/icons';
+import { GetEmployeesQueryParams } from '../../../../shared/interfaces/requests/employee.interface';
+import { Employee } from '../../../../shared/models/employee.model';
+import { TCOLS } from '../cols';
 
 type TWidth = { [key in keyof Employee]?: string };
 @Component({

@@ -16,13 +16,13 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
-import { GenericValidators } from '../../../shared/validators/generic-validator';
-import { AuthService } from '../../../shared/services/auth/auth.service';
-import { END_POINTS } from '../../../utils/constants';
-import { Department } from '../../../shared/models/department.model';
-import { DepartmentService } from '../../../shared/services/department/department.service';
-import { notNullValidator } from '../../../shared/validators/not-null-validators';
 import { ISignupPostData } from '../../../shared/interfaces/requests/signup.interface';
+import { Department } from '../../../shared/models/department.model';
+import { AuthService } from '../../../shared/services/auth/auth.service';
+import { DepartmentService } from '../../../shared/services/department/department.service';
+import { GenericValidators } from '../../../shared/validators/generic-validator';
+import { notNullValidator } from '../../../shared/validators/not-null-validators';
+import { END_POINTS } from '../../../utils/constants';
 
 type IPropertyName =
   | 'name'

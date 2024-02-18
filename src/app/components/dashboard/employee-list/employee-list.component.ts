@@ -1,15 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ConfirmationModalComponent } from '../../../shared/components/modals/confirmation-modal/confirmation-modal.component';
+import { PaginationComponent } from '../../../shared/components/paginations/pagination/pagination.component';
 import { HighlightDirective } from '../../../shared/directives/highlight/highlight.directive';
 import { ICONS } from '../../../shared/icons/icons';
 import { GetEmployeesQueryParams } from '../../../shared/interfaces/requests/employee.interface';
-import { ConfirmationModalComponent } from '../../../sharedComponents/modals/confirmation-modal/confirmation-modal.component';
 import {
   Employee,
   EmployeeAdapter,
 } from '../../../shared/models/employee.model';
-import { PaginationComponent } from '../../../sharedComponents/paginations/pagination/pagination.component';
 import { EmployeeService } from '../../../shared/services/employee/employee.service';
 import {
   COMPONENT_NAME,
@@ -21,8 +21,8 @@ import { EmployeeListHeaderComponent } from './employee-list-header/employee-lis
 import { EmployeeComponent } from './employee/employee.component';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { DataTableControlPanelComponent } from '../../../sharedComponents/controlPanels/data-table-control-panel/data-table-control-panel.component';
-import { UpsertContentModalComponent } from '../../../sharedComponents/modals/upsert-content-modal/upsert-content-modal.component';
+import { DataTableControlPanelComponent } from '../../../shared/components/controlPanels/data-table-control-panel/data-table-control-panel.component';
+import { UpsertContentModalComponent } from '../../../shared/components/modals/upsert-content-modal/upsert-content-modal.component';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { ToastService } from '../../../shared/services/toast/toast.service';
 import {
@@ -134,7 +134,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
       }
     });
   }
-  getEmployeesByDepartment(id: number) {
+  getEmployeesByDepartment() {
     this.isLoading = true;
   }
   getEmployees() {
@@ -160,7 +160,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
         });
     }
   }
-  onViewEmployeesByDepartment(id: number) {}
+  onViewEmployeesByDepartment() {}
 
   delete(id: number) {
     this.employeeToBeDeletedID = id;

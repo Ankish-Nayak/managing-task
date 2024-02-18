@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { FrameComponent } from '../../shared/components/containers/frame/frame.component';
 import { ICONS } from '../../shared/icons/icons';
 import { ChatboxService } from '../../shared/services/chatbox/chatbox.service';
-import { FrameComponent } from '../../sharedComponents/containers/frame/frame.component';
 import { ChatComponent } from '../chat/chat.component';
 import { NavbarComponent } from '../dashboard/navbar/navbar.component';
 

@@ -18,11 +18,11 @@ import { Router, RouterLink } from '@angular/router';
 import { NgbToast } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, fromEvent, merge } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { SpinnerComponent } from '../../../shared/components/spinners/spinner/spinner.component';
+import { SubmitSpinnerComponent } from '../../../shared/components/spinners/submit-spinner/submit-spinner.component';
 import { ClickedEnterDirective } from '../../../shared/directives/clicked-enter/clicked-enter.directive';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { ToastService } from '../../../shared/services/toast/toast.service';
-import { SpinnerComponent } from '../../../sharedComponents/spinners/spinner/spinner.component';
-import { SubmitSpinnerComponent } from '../../../sharedComponents/spinners/submit-spinner/submit-spinner.component';
 import { GenericValidators } from '../../../shared/validators/generic-validator';
 
 type IPropertyName = 'email' | 'password';

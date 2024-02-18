@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Tmessage } from '../../../sharedComponents/toasts/message-toast/message-toast.component';
+import { Tmessage } from '../../components/toasts/message-toast/message-toast.component';
 
 export interface ToastInfo {
   header: string;
