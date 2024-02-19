@@ -39,24 +39,19 @@ export class EmployeeListHeaderComponent implements OnInit {
         name: this.pageState.orderBy as keyof Employee,
         asc: this.pageState.orders === 0 ? true : false,
       };
-    console.log('sortby', this.sortBy);
   }
   public onClicked(name: string) {
-    // console.log(name);
     if (name.includes('|')) {
       // up -> 0 -> means asc
       // down -> 1 -> means dsc
       const array = name.split('|');
       const colName = array[0] as keyof Employee;
-      // console.log(colName);
-      // console.log('sortBy', this.sortBy);
       if (
         this.sortBy &&
         this.sortBy.name === colName &&
         ((this.sortBy.asc && array.includes('up')) ||
           (!this.sortBy.asc && array.includes('down')))
       ) {
-        // console.log('has to toggle it');
         this.sortBy = null;
       } else {
         this.sortBy = {
@@ -65,7 +60,6 @@ export class EmployeeListHeaderComponent implements OnInit {
         };
       }
 
-      // console.log(this.sortBy);
       if (this.sortBy)
         this.pageStateChange.emit({
           orderBy: this.sortBy.name,

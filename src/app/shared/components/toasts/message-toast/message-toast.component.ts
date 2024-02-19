@@ -14,7 +14,7 @@ export type Tmessage = 'error' | 'success' | 'normal' | 'info';
 })
 export class MessageToastComponent {
   constructor(public toastService: ToastService) {}
-  provideClass(id: number) {
+  public provideClass(id: number) {
     const toast = this.toastService.toasts.at(id);
     if (toast?.messageType === 'error') {
       return 'bg-danger';

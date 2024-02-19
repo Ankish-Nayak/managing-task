@@ -20,9 +20,9 @@ import { END_POINTS } from '../../../../utils/constants';
   styleUrl: './todo-detail.component.scss',
 })
 export class TodoDetailComponent implements OnInit, OnDestroy {
-  readonly END_POINTS = END_POINTS;
-  @Input({ required: true }) id!: string;
-  @Output() edit: EventEmitter<boolean> = new EventEmitter<boolean>();
+  public readonly END_POINTS = END_POINTS;
+  @Input({ required: true }) public id!: string;
+  @Output() public edit: EventEmitter<boolean> = new EventEmitter<boolean>();
   public todo!: Todo;
   public wrapped: boolean = true;
   public canWrap: boolean = false;

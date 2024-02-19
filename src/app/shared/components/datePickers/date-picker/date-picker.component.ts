@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import {
   NgbCalendar,
   NgbDate,
-  NgbDatepickerModule,
   NgbDateStruct,
+  NgbDatepickerModule,
 } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -16,10 +16,10 @@ import {
   styleUrl: './date-picker.component.scss',
 })
 export class DatePickerComponent implements OnInit {
-  today!: NgbDate;
-  model!: NgbDateStruct;
   @Output() modalChange = new EventEmitter<NgbDateStruct>();
-  date!: { year: number; month: number };
+  public today!: NgbDate;
+  public model!: NgbDateStruct;
+  public date!: { year: number; month: number };
   constructor(private calenderService: NgbCalendar) {}
   ngOnInit(): void {
     this.today = this.calenderService.getToday();

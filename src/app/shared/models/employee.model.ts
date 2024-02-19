@@ -3,18 +3,18 @@ import { IEmployee } from '../interfaces/requests/employee.interface';
 import { Adapter } from './adapter';
 
 export class Employee implements IEmployee {
-  id: number;
-  name: string;
-  email: string;
-  employeeType: number;
-  address: string;
-  city: string;
-  country: string;
-  phone: string;
-  departmentID: number;
-  departmentName: string;
-  createdAt: string;
-  updatedAt: string;
+  public id: number;
+  public name: string;
+  public email: string;
+  public employeeType: number;
+  public address: string;
+  public city: string;
+  public country: string;
+  public phone: string;
+  public departmentID: number;
+  public departmentName: string;
+  public createdAt: string;
+  public updatedAt: string;
 
   constructor(
     id: number,
@@ -49,7 +49,7 @@ export class Employee implements IEmployee {
   providedIn: 'root',
 })
 export class EmployeeAdapter implements Adapter<Employee> {
-  adapt(item: IEmployee): Employee {
+  public adapt(item: IEmployee): Employee {
     return new Employee(
       item.id,
       item.name,
@@ -66,7 +66,7 @@ export class EmployeeAdapter implements Adapter<Employee> {
     );
   }
 
-  adaptArray(items: IEmployee[]): Employee[] {
+  public adaptArray(items: IEmployee[]): Employee[] {
     return items.map((item) => this.adapt(item));
   }
 }

@@ -10,10 +10,10 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class SaveChangesModalComponent {
   constructor(private modalService: NgbActiveModal) {}
-  closeModal(confirmation: boolean) {
+  public closeModal(confirmation: boolean) {
     this.modalService.close(confirmation);
   }
-  dismissModal() {
+  public dismissModal() {
     this.modalService.dismiss();
   }
 }

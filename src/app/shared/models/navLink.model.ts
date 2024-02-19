@@ -3,10 +3,10 @@ import { TEmployee } from '../interfaces/employee.type';
 import { Adapter } from './adapter';
 
 export class NavLink {
-  name: string;
-  path: string;
-  active: boolean;
-  notAllowedUsers: TEmployee[] | null;
+  public name: string;
+  public path: string;
+  public active: boolean;
+  public notAllowedUsers: TEmployee[] | null;
   constructor(
     name: string,
     path: string,
@@ -24,10 +24,10 @@ export class NavLink {
   providedIn: 'root',
 })
 export class NavLinkAdapter implements Adapter<NavLink> {
-  adapt(item: any): NavLink {
+  public adapt(item: any): NavLink {
     return new NavLink(item.name, item.path, item.active, item.notAllowedUsers);
   }
-  adpatArray(items: any[]): NavLink[] {
+  public adpatArray(items: any[]): NavLink[] {
     return items.map((item) => this.adapt(item));
   }
 }

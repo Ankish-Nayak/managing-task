@@ -15,7 +15,7 @@ import { ConfirmationModalComponent } from '../../../../shared/components/modals
 import { HighlightDirective } from '../../../../shared/directives/highlight/highlight.directive';
 import { ICONS } from '../../../../shared/icons/icons';
 import { TEmployee } from '../../../../shared/interfaces/employee.type';
-import { IUpdateTodoPostData } from '../../../../shared/interfaces/requests/toto.interface';
+import { IUpdateTodoPostData } from '../../../../shared/interfaces/requests/todo.interface';
 import { Todo } from '../../../../shared/models/todo.model';
 import { ToastService } from '../../../../shared/services/toast/toast.service';
 import { TodoService } from '../../../../shared/services/todo/todo.service';
@@ -38,17 +38,17 @@ import { TodoTab } from '../todo-list.component';
   styleUrl: './todo.component.scss',
 })
 export class TodoComponent implements OnInit, OnDestroy {
-  readonly UserRole = UserRole;
-  readonly ICONS = ICONS;
-  readonly TodoTab = TodoTab;
-  @Input({ required: true }) todo!: Todo;
-  @Input({ required: true }) sno!: number;
-  @Input({ required: true }) userType!: TEmployee;
-  @Input({ required: true }) isLoading!: boolean;
-  @Input({ required: true }) todoTab!: TodoTab;
-  @Output() deleteTodo = new EventEmitter<number>();
-  @Output() updateTodo = new EventEmitter<number>();
-  @Output() navigateTo = new EventEmitter<number>();
+  public readonly UserRole = UserRole;
+  public readonly ICONS = ICONS;
+  public readonly TodoTab = TodoTab;
+  @Input({ required: true }) public todo!: Todo;
+  @Input({ required: true }) public sno!: number;
+  @Input({ required: true }) public userType!: TEmployee;
+  @Input({ required: true }) public isLoading!: boolean;
+  @Input({ required: true }) public todoTab!: TodoTab;
+  @Output() private deleteTodo = new EventEmitter<number>();
+  @Output() private updateTodo = new EventEmitter<number>();
+  @Output() private navigateTo = new EventEmitter<number>();
   public highlight: { edit: boolean; delete: boolean } = {
     edit: false,
     delete: false,

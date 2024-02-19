@@ -64,12 +64,13 @@ type IPropertyName =
 })
 export class UpsertAdminComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(FormControlName, { read: ElementRef })
-  formInputElements!: ElementRef[];
-  @Input() id!: string;
-  @Input() displayTitle: boolean = true;
+  private formInputElements!: ElementRef[];
+  @Input() public id!: string;
+  @Input() public displayTitle: boolean = true;
   @Input({ alias: 'updateForm', transform: (value: boolean) => !value })
-  @Output()
-  updated: EventEmitter<boolean> = new EventEmitter<boolean>();
+  public adminRegistration: boolean = true;
+  @Output() private updated: EventEmitter<boolean> =
+    new EventEmitter<boolean>();
   public isLoading: boolean = true;
   public signupForm!: FormGroup;
   // returns the query list of FormControlName
@@ -80,7 +81,6 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit, OnDestroy {
   ];
   public isSubmitLoading = false;
   public departments!: Department[];
-  public adminRegistration: boolean = true;
 
   private subscriptions: Subscription[] = [];
   private employee!: Employee;

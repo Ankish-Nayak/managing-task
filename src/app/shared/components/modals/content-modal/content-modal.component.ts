@@ -12,7 +12,7 @@ import { TodoDetailComponent } from '../../../../components/dashboard/todo-list/
 export class ContentModalComponent {
   @Input({ required: true }) id!: number;
   constructor(private modalService: NgbActiveModal) {}
-  dismissModal() {
+  public dismissModal() {
     this.modalService.close();
   }
 }

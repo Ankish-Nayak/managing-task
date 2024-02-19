@@ -37,28 +37,23 @@ export class AuthService {
       }
     })(),
   );
-  userMessageSource = this._userSource.asObservable();
-  userTypeMessage$ = this._userTypeSource.asObservable();
+  public userMessageSource = this._userSource.asObservable();
+  public userTypeMessage$ = this._userTypeSource.asObservable();
 
   constructor(private http: HttpClient) {}
-  get Headers() {
+  public get Headers() {
     const token = getLocalStorageItem(LocalStorageKeys.AuthToken);
     return new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     });
   }
-  getHeaders() {
-    //TODO: handle headers here.
-    //
-  }
 
-  me() {
-    //TODO: make it observable for backend request.
+  public me() {
     const token = getLocalStorageItem(LocalStorageKeys.AuthToken);
     return token === null ? false : true;
   }
-  profile() {
+  public profile() {
     return this.http
       .get<IGetProfile>(`${this.apiUrl}/userDetails`, {
         withCredentials: true,
@@ -67,19 +62,19 @@ export class AuthService {
       .pipe(map((res) => res.data));
   }
 
-  updateProfile(id: number, data: IEmployee) {
+  public updateProfile(id: number, data: IEmployee) {
     return this.http.put(`${this.apiUrl}/updateuser/${id}`, data, {
       withCredentials: true,
       headers: this.Headers,
     });
   }
-  logout() {
+  public logout() {
     Object.values(LocalStorageKeys).forEach((v) => {
       removeLocalStorageItem(v);
     });
     return of();
   }
-  login(email: string, password: string) {
+  public login(email: string, password: string) {
     return this.http
       .post<ILoginRes>(
         `${this.apiUrl}/user/login`,
@@ -118,7 +113,7 @@ export class AuthService {
         }),
       );
   }
-  signup(data: ISignupPostData) {
+  public signup(data: ISignupPostData) {
     return this.http.post(
       `${this.apiUrl}/registration`,
       {
@@ -132,12 +127,12 @@ export class AuthService {
       },
     );
   }
-  changePassword(data: { newPassword: string }) {
+  public changePassword(data: { newPassword: string }) {
     return this.http.post(`${this.apiUrl}/user/ChangePassword`, data, {
       headers: this.Headers,
     });
   }
-  set userTypeSource(value: number) {
+  public set userTypeSource(value: number) {
     const employee = (() => {
       const d = value;
       if (d === EMPLOYEE_TYPE.employee) {

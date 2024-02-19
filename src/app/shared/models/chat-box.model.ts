@@ -3,14 +3,14 @@ import { IChatBox } from '../interfaces/requests/chatbox.interface';
 import { Adapter } from './adapter';
 
 export class ChatBox implements IChatBox {
-  employeeId: number;
-  employeeName: string;
-  lastMessage: string;
-  isSeen: boolean;
-  newMessages: number;
-  recieverId: number;
-  recieverName: string;
-  lastActive: string;
+  public employeeId: number;
+  public employeeName: string;
+  public lastMessage: string;
+  public isSeen: boolean;
+  public newMessages: number;
+  public recieverId: number;
+  public recieverName: string;
+  public lastActive: string;
 
   constructor(data: IChatBox) {
     this.employeeId = data.employeeId;
@@ -28,11 +28,11 @@ export class ChatBox implements IChatBox {
   providedIn: 'root',
 })
 export class ChatBoxAdapter implements Adapter<ChatBox> {
-  adapt(data: IChatBox): ChatBox {
+  public adapt(data: IChatBox): ChatBox {
     return new ChatBox(data);
   }
 
-  adaptArray(dataArray: IChatBox[]): ChatBox[] {
+  public adaptArray(dataArray: IChatBox[]): ChatBox[] {
     return dataArray.map((data) => this.adapt(data));
   }
 }

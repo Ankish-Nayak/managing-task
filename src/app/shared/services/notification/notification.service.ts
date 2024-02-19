@@ -16,29 +16,29 @@ import {
 })
 export class NotificationService {
   private _openNotification = new BehaviorSubject<boolean>(false);
-  openNotificationMessageSource$ = this._openNotification.asObservable();
+  public openNotificationMessageSource$ = this._openNotification.asObservable();
   private apiUrl = `${environment.BASE_URL}/Notification`;
   constructor(private http: HttpClient) {}
-  get Headers() {
+  public get Headers() {
     const token = getLocalStorageItem(LocalStorageKeys.AuthToken);
     return new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     });
   }
-  openNotification() {
+  public openNotification() {
     if (this._openNotification.getValue()) {
       return;
     }
     this._openNotification.next(true);
   }
-  closeNotification() {
+  public closeNotification() {
     if (!this._openNotification.getValue()) {
       return;
     }
     this._openNotification.next(false);
   }
-  getNotifications(data: IGetNotificationPostData) {
+  public getNotifications(data: IGetNotificationPostData) {
     return this.http
       .post<IGetNotifications>(`${this.apiUrl}/GetNotifications`, data, {
         withCredentials: true,
@@ -53,12 +53,12 @@ export class NotificationService {
         ),
       );
   }
-  markNotificationAsRead(id: number) {
+  public markNotificationAsRead(id: number) {
     return this.markNotificationsAsRead({
       notificationIDs: [id],
     });
   }
-  markNotificationsAsRead(data: ISetNotificationMarkAsReadPostData) {
+  public markNotificationsAsRead(data: ISetNotificationMarkAsReadPostData) {
     return this.http.post(`${this.apiUrl}/SetMarkAsRead`, data, {
       withCredentials: true,
       headers: this.Headers,

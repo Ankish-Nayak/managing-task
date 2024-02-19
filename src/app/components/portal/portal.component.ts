@@ -30,7 +30,6 @@ export class PortalComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const subscription1 = this.chatBoxService.chatOpenMessageSource$.subscribe({
       next: (res) => {
-        console.log('called');
         this.showChatBox = res;
       },
       error: (e) => {

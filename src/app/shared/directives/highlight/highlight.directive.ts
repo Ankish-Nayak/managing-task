@@ -1,18 +1,12 @@
-import {
-  Directive,
-  ElementRef,
-  EventEmitter,
-  HostListener,
-  Output,
-} from '@angular/core';
+import { Directive, EventEmitter, HostListener, Output } from '@angular/core';
 
 @Directive({
   selector: '[appHighlight]',
   standalone: true,
 })
 export class HighlightDirective {
-  constructor(private e: ElementRef) {}
   @Output() highlight = new EventEmitter<boolean>();
+  constructor() {}
   @HostListener('mouseenter') onMouseEnter() {
     this.highlight.emit(true);
   }

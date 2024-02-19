@@ -24,7 +24,7 @@ import { ClickedEnterDirective } from '../../../shared/directives/clicked-enter/
 import {
   ICreateTodoPostData,
   IUpdateTodoPostData,
-} from '../../../shared/interfaces/requests/toto.interface';
+} from '../../../shared/interfaces/requests/todo.interface';
 import {
   Employee,
   EmployeeAdapter,

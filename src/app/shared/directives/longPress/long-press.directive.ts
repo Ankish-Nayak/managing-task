@@ -11,27 +11,23 @@ import {
   standalone: true,
 })
 export class LongPressDirective {
-  private pressTimer!: any;
   @Input() timer: number = 500;
   @Output() longPressed = new EventEmitter();
-
+  private pressTimer!: any;
   constructor() {}
-
   @HostListener('mousedown', ['$event'])
-  onMouseDown(_event: MouseEvent) {
+  public onMouseDown(_event: MouseEvent) {
     this.pressTimer = setTimeout(() => {
       this.longPressed.emit();
     }, this.timer);
   }
-
   @HostListener('mouseup')
   @HostListener('mouseleave')
-  onMouseUp() {
+  public onMouseUp() {
     clearTimeout(this.pressTimer);
   }
-
   @HostListener('click')
-  onClick() {
+  public onClick() {
     clearTimeout(this.pressTimer);
   }
 }

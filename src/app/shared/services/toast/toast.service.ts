@@ -12,12 +12,17 @@ export interface ToastInfo {
   providedIn: 'root',
 })
 export class ToastService {
-  toasts: ToastInfo[] = [];
+  public toasts: ToastInfo[] = [];
   constructor() {}
-  show(header: string, body: string, messageType: Tmessage, delay?: number) {
+  public show(
+    header: string,
+    body: string,
+    messageType: Tmessage,
+    delay?: number,
+  ) {
     this.toasts.push({ header, body, messageType, delay });
   }
-  remove(toast: ToastInfo) {
+  public remove(toast: ToastInfo) {
     this.toasts = this.toasts.filter((t) => t != toast);
   }
 }

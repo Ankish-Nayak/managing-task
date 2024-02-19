@@ -4,12 +4,12 @@ import { Adapter } from './adapter';
 import { getNotificationType } from '../../utils/get-notification-type';
 
 export class Notification implements INotification {
-  id: number;
-  message: string;
-  isSeen: boolean;
-  created: string;
-  todoId: number;
-  title: string;
+  public id: number;
+  public message: string;
+  public isSeen: boolean;
+  public created: string;
+  public todoId: number;
+  public title: string;
 
   constructor(
     id: number,
@@ -32,7 +32,7 @@ export class Notification implements INotification {
   providedIn: 'root',
 })
 export class NotificationAdapter implements Adapter<Notification> {
-  adapt(item: INotification): Notification {
+  public adapt(item: INotification): Notification {
     return new Notification(
       item.id,
       item.message,
@@ -43,7 +43,7 @@ export class NotificationAdapter implements Adapter<Notification> {
     );
   }
 
-  adaptArray(items: INotification[]): Notification[] {
+  public adaptArray(items: INotification[]): Notification[] {
     return items.map((item) => this.adapt(item));
   }
 }

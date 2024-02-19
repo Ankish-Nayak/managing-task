@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ITask } from '../interfaces/requests/toto.interface';
+import { ITask } from '../interfaces/requests/todo.interface';
 export class Todo implements ITask {
   title: string;
   description: string;

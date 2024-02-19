@@ -10,7 +10,7 @@ import {
   IGetTodosRes,
   IMarkTodoPostData,
   IUpdateTodoPostData,
-} from '../../interfaces/requests/toto.interface';
+} from '../../interfaces/requests/todo.interface';
 import { getLocalStorageItem } from '../../../utils/localStorageCRUD';
 
 @Injectable({
@@ -19,14 +19,14 @@ import { getLocalStorageItem } from '../../../utils/localStorageCRUD';
 export class TodoService {
   private apiUrl = `${environment.BASE_URL}/todo`;
   constructor(private http: HttpClient) {}
-  get Headers() {
+  public get Headers() {
     const token = getLocalStorageItem(LocalStorageKeys.AuthToken);
     return new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     });
   }
-  getTodos(queryParams: Partial<IGetTodosQueryParams>) {
+  public getTodos(queryParams: Partial<IGetTodosQueryParams>) {
     const transformedQueryParams = new GetTodosQueryParams(queryParams);
     transformedQueryParams.orderBy =
       transformedQueryParams.orderBy.charAt(0).toUpperCase() +
@@ -44,30 +44,28 @@ export class TodoService {
         }),
       );
   }
-  updateTodo(todoId: number, data: IUpdateTodoPostData) {
+  public updateTodo(todoId: number, data: IUpdateTodoPostData) {
     return this.http.put(`${this.apiUrl}/update/${todoId}`, data, {
       withCredentials: true,
       headers: this.Headers,
     });
   }
-  createTodo(data: ICreateTodoPostData) {
+  public createTodo(data: ICreateTodoPostData) {
     return this.http.post(`${this.apiUrl}/add`, data, {
       withCredentials: true,
       headers: this.Headers,
     });
   }
-  deleteTodo(id: number) {
+  public deleteTodo(id: number) {
     return this.http.delete(`${this.apiUrl}/remove/${id}`, {
       withCredentials: true,
       headers: this.Headers,
     });
   }
-  getTodo(id: string) {
-    //TODO: make backend request to get particular todo.
-    //
+  public getTodo(id: string) {
     return localStorage.getItem(`todo/${id}`)!;
   }
-  markTodo(id: number, data: IMarkTodoPostData) {
+  public markTodo(id: number, data: IMarkTodoPostData) {
     return this.http.post(`${this.apiUrl}/SetTodoCompleted/${id}`, data, {
       withCredentials: true,
       headers: this.Headers,

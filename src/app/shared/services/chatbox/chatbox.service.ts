@@ -65,10 +65,10 @@ export class ChatboxService {
       }
     })(),
   );
-  chatBoxFullSizeMessageSource$ = this._chatBoxFullSize.asObservable();
-  chatTabsMessageSource$ = this._chatTabs.asObservable();
-  chatOpenMessageSource$ = this._chatOpen.asObservable();
-  selectedChatTabMessageSource$ = this._selectedChatTab.asObservable();
+  public chatBoxFullSizeMessageSource$ = this._chatBoxFullSize.asObservable();
+  public chatTabsMessageSource$ = this._chatTabs.asObservable();
+  public chatOpenMessageSource$ = this._chatOpen.asObservable();
+  public selectedChatTabMessageSource$ = this._selectedChatTab.asObservable();
   constructor(
     private http: HttpClient,
     private chatboxAdapter: ChatBoxAdapter,
@@ -87,23 +87,23 @@ export class ChatboxService {
       setLocalStorageItem(LocalStorageKeys.OpenChatBox, JSON.stringify(res));
     });
   }
-  smallChatBoxSize() {
+  public smallChatBoxSize() {
     this._chatBoxFullSize.next(false);
   }
-  fullChatBoxSize() {
+  public fullChatBoxSize() {
     this._chatBoxFullSize.next(true);
   }
-  closeChat() {
+  public closeChat() {
     if (this._chatOpen.getValue() === false) return;
     removeLocalStorageItem(LocalStorageKeys.GetChatTabs);
     removeLocalStorageItem(LocalStorageKeys.SelectedChatTab);
     this._chatOpen.next(false);
   }
-  openChat() {
+  public openChat() {
     if (this._chatOpen.getValue() === true) return;
     this._chatOpen.next(true);
   }
-  addChatTab(tab: ChatTab) {
+  public addChatTab(tab: ChatTab) {
     if (tab.id === null) {
       this._selectedChatTab.next(tab);
       return;
@@ -138,13 +138,13 @@ export class ChatboxService {
       this.openChat();
     }
   }
-  changeSelectedTab(tab: ChatTab) {
+  public changeSelectedTab(tab: ChatTab) {
     if (this._selectedChatTab.getValue().id === tab.id) {
       return;
     }
     this._selectedChatTab.next(tab);
   }
-  removeChatTab(tab: ChatTab) {
+  public removeChatTab(tab: ChatTab) {
     if (tab.id === null) {
       return;
     }
@@ -155,14 +155,14 @@ export class ChatboxService {
       ...this._chatTabs.getValue().filter((t) => t.id !== tab.id),
     ]);
   }
-  get Headers() {
+  public get Headers() {
     const token = getLocalStorageItem(LocalStorageKeys.AuthToken);
     return new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     });
   }
-  deleteMessage(id: number) {
+  public deleteMessage(id: number) {
     return this.deleteMessages([id]);
     // return this.http.delete<IDeleteApiRes>(
     //   `${this.apiUrl}/DeleteMessage/${id}`,
@@ -172,7 +172,7 @@ export class ChatboxService {
     //   },
     // );
   }
-  sendMessage(
+  public sendMessage(
     recieverId: number,
     data: {
       message: string;
@@ -187,7 +187,7 @@ export class ChatboxService {
       },
     );
   }
-  displayMessage(
+  public displayMessage(
     employeeId: number,
     data: Partial<GetDisplayMessageQueryParams>,
   ) {
@@ -212,10 +212,10 @@ export class ChatboxService {
         }),
       );
   }
-  convertUtcToIst(utcTime: string): string {
+  public convertUtcToIst(utcTime: string): string {
     return utcTime;
   }
-  getChatBox() {
+  public getChatBox() {
     return this.http
       .get<IGetChatBoxRes>(`${this.apiUrl}/GetChatBox`, {
         withCredentials: true,
@@ -232,9 +232,7 @@ export class ChatboxService {
         }),
       );
   }
-  deleteMessages(idsTodDeleted: number[]) {
-    //TODO: ask for api implementation.
-    //
+  public deleteMessages(idsTodDeleted: number[]) {
     const data: IDeleteMessagePostData = {
       ids: idsTodDeleted,
     };

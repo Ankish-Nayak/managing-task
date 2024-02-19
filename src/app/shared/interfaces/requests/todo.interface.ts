@@ -15,7 +15,7 @@ export interface ITask {
 
 export interface IGetTodosRes {
   status: string;
-  count: number; // TODO: user this make pagination work
+  count: number;
   message: string;
   statusCode: number;
   iterableData: ITask[];
@@ -52,13 +52,13 @@ export interface IMarkTodoPostData {
 }
 
 export class GetTodosQueryParams implements IGetTodosQueryParams {
-  isPagination: boolean;
-  index: number;
-  take: number;
-  search: string;
-  orders: number;
-  orderBy: string;
-  isCompleted: boolean | null;
+  public isPagination: boolean;
+  public index: number;
+  public take: number;
+  public search: string;
+  public orders: number;
+  public orderBy: string;
+  public isCompleted: boolean | null;
   constructor(params: Partial<IGetTodosQueryParams>) {
     this.isPagination = params.isPagination ?? false;
     this.index = params.index ?? 0;

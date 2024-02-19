@@ -12,8 +12,7 @@ export class ConfirmationModalComponent {
   @Output() confirmation = new EventEmitter<boolean>();
   @Input() modalBody: string = 'Do you want to delete?';
   constructor(private confirmationService: ConfirmationService) {}
-
-  confirm(confirmation: boolean) {
+  public confirm(confirmation: boolean) {
     this.confirmationService.confirm(confirmation);
     this.confirmation.emit(confirmation);
   }

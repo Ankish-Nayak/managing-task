@@ -6,9 +6,9 @@ import { Subject } from 'rxjs';
 })
 export class ActiveEndpointService {
   private _activeEndpointSource = new Subject<string>();
-  activeEndpointMessage$ = this._activeEndpointSource.asObservable();
+  public activeEndpointMessage$ = this._activeEndpointSource.asObservable();
   constructor() {}
-  updateActiveEndpoint(endPoint: string) {
+  public updateActiveEndpoint(endPoint: string) {
     this._activeEndpointSource.next(endPoint);
   }
 }

@@ -11,20 +11,19 @@ import { UserRole } from '../../../../utils/constants';
   styleUrl: './data-table-control-panel.component.scss',
 })
 export class DataTableControlPanelComponent {
+  readonly UserRole = UserRole;
   @Input() isLoading: boolean = false;
   @Input({ required: true }) userType!: UserRole;
   @Input() createRowLabel: string = 'Create Row';
-  @Output() createRow: EventEmitter<void> = new EventEmitter();
   @Input() searchBox: string = '';
-  @Output() searchBoxChange = new EventEmitter<string>();
   @Input() isSearchBoxDisabled: boolean = true;
   @Input() searchBoxPlaceholder: string = 'Search rows here';
-  readonly UserRole = UserRole;
-  ngOnInit(): void {}
-  onCreateRow() {
+  @Output() createRow: EventEmitter<void> = new EventEmitter();
+  @Output() searchBoxChange = new EventEmitter<string>();
+  public onCreateRow() {
     this.createRow.emit();
   }
-  onSearch(e?: KeyboardEvent) {
+  public onSearch(e?: KeyboardEvent) {
     if (!e || (e && e.key === 'Enter')) {
       this.searchBoxChange.emit(this.searchBox);
     }

@@ -127,7 +127,6 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
   }
   public getQueryParams() {
     const subscription = this.route.queryParams.subscribe((params) => {
-      console.log('params ', params);
       const employeeTab = params['employeeTab'];
       const key = Object.values(EmployeeTab).find((e) => e === employeeTab);
       if (key) {
@@ -208,7 +207,6 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
         ? ''
         : 'invisible');
     this.employeeTab = tab;
-    console.log('tab', this.employeeTab);
     if (this.employeeTab === EmployeeTab.All) {
       const subscription = this.employeeService
         .getEmployeesAndAdmins(this.pageState)
@@ -245,13 +243,11 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     });
     ref.componentInstance.update = false;
     ref.componentInstance.componentName = COMPONENT_NAME.UPSERT_ADMIN_COMPONENT;
-    const subscription1 = ref.closed.subscribe((res) => {
-      console.log(res);
+    const subscription1 = ref.closed.subscribe((_res) => {
       this.handleTabChange(this.employeeTab);
     });
 
-    const subscription2 = ref.dismissed.subscribe((res) => {
-      console.log(res);
+    const subscription2 = ref.dismissed.subscribe((_res) => {
       this.toastService.show(
         'Create Admin',
         'Admin creation was cancelled',

@@ -55,10 +55,10 @@ export interface IGetDisplayMessageQueryParams {
 export class GetDisplayMessageQueryParams
   implements IGetDisplayMessageQueryParams
 {
-  isPagination: boolean;
-  index: number;
-  take: number;
-  search: string;
+  public isPagination: boolean;
+  public index: number;
+  public take: number;
+  public search: string;
   constructor(data: Partial<IGetDisplayMessageQueryParams>) {
     this.isPagination = data.isPagination ?? false;
     this.index = data.index ?? 0;

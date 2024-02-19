@@ -28,29 +28,26 @@ interface ISize {
   styleUrl: './frame.component.scss',
 })
 export class FrameComponent {
+  readonly ICONS = ICONS;
   @ViewChild('wrapper') wrapperRef!: ElementRef;
   @ViewChild('topBar') topBarRef!: ElementRef;
   @Input({ required: true }) fullSize!: boolean;
   @Output() fullSizeChange = new EventEmitter<boolean>();
-  position: ICooridinate = {
+  @Output() closeFrame = new EventEmitter();
+  public position: ICooridinate = {
     x: 100,
     y: 100,
   };
-
-  readonly ICONS = ICONS;
-  size: ISize = {
+  private size: ISize = {
     w: 200,
     h: 200,
   };
-
-  lastPosition!: ICooridinate;
-  lastSize!: ISize;
-
-  minSize: ISize = {
+  private lastPosition!: ICooridinate;
+  private lastSize!: ISize;
+  private minSize: ISize = {
     w: 200,
     h: 200,
   };
-  @Output() closeFrame = new EventEmitter();
   constructor(
     @Inject(DOCUMENT) private _document: Document,
     private window: Window,
@@ -114,13 +111,13 @@ export class FrameComponent {
     this._document.addEventListener('mousemove', duringDrag);
     this._document.addEventListener('mouseup', finishDrag);
   }
-  close() {
+  public close() {
     this.closeFrame.emit();
   }
-  changeSize() {
+  public changeSize() {
     this.fullSize = !this.fullSize;
     this.fullSizeChange.emit(this.fullSize);
   }
-  minimizeTab() {}
-  toggleSize() {}
+  public minimizeTab() {}
+  private toggleSize() {}
 }

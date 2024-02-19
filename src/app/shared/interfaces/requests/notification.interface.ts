@@ -31,11 +31,11 @@ export interface IGetNotificationsQueryParams {
 export class GetNotificationsQueryParams
   implements IGetNotificationsQueryParams
 {
-  isPagination: boolean;
-  index: number;
-  take: number;
-  search: string;
-  isSeen: null | boolean;
+  public isPagination: boolean;
+  public index: number;
+  public take: number;
+  public search: string;
+  public isSeen: null | boolean;
   constructor(data: Partial<IGetNotificationsQueryParams>) {
     this.isPagination = data.isPagination ?? false;
     this.index = data.index ?? 0;

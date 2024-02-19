@@ -4,7 +4,7 @@ import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { ClickedDirective } from '../../../../shared/directives/clicked/clicked.directive';
 import { ICONS } from '../../../../shared/icons/icons';
 import { TEmployee } from '../../../../shared/interfaces/employee.type';
-import { GetTodosQueryParams } from '../../../../shared/interfaces/requests/toto.interface';
+import { GetTodosQueryParams } from '../../../../shared/interfaces/requests/todo.interface';
 import { Todo } from '../../../../shared/models/todo.model';
 import { UserViewColsPipe } from '../../../../shared/pipes/user-view-cols/user-view-cols.pipe';
 import { TCOLS } from '../cols';
@@ -17,10 +17,10 @@ import { TCOLS } from '../cols';
   styleUrl: './todo-list-header.component.scss',
 })
 export class TodoListHeaderComponent implements OnInit {
-  readonly ICONS = ICONS;
-  @Input({ required: true }) cols!: TCOLS;
-  @Input({ required: true }) userType!: TEmployee;
-  @Input({ required: true }) pageState!: GetTodosQueryParams;
+  public readonly ICONS = ICONS;
+  @Input({ required: true }) public cols!: TCOLS;
+  @Input({ required: true }) public userType!: TEmployee;
+  @Input({ required: true }) public pageState!: GetTodosQueryParams;
   @Output() clicked: EventEmitter<keyof Todo> = new EventEmitter<keyof Todo>();
   @Output() pageStateChange: EventEmitter<Partial<GetTodosQueryParams>> =
     new EventEmitter<Partial<GetTodosQueryParams>>();

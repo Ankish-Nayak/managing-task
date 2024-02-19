@@ -20,11 +20,7 @@
 <nav aria-label="todo-list-pagination">
   <ul class="pagination">
     <li [class]="leftDisabled ? 'page-item disabled' : 'page-item'">
-      <a
-        class="page-link pointer"
-        aria-label="Previous"
-        (click)="onPrev($event)"
-      >
+      <a class="page-link pointer" aria-label="Previous" (click)="onPrev()">
         <span aria-hidden="true">&laquo;</span>
       </a>
     </li>
@@ -35,13 +31,13 @@
             ? 'page-link pointer active'
             : 'page-link pointer'
         "
-        (click)="onSelectPage($event, page)"
+        (click)="onSelectPage(page)"
       >
         {{ page }}
       </a>
     </li>
     <li [class]="rightDisabled ? 'page-item disabled' : 'page-item'">
-      <a class="page-link pointer" aria-label="Next" (click)="onNext($event)">
+      <a class="page-link pointer" aria-label="Next" (click)="onNext()">
         <span aria-hidden="true">&raquo;</span>
       </a>
     </li>

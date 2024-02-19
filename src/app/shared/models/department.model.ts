@@ -4,9 +4,9 @@ import { Adapter } from './adapter';
 import { IDepartment } from '../interfaces/requests/department.interface';
 
 export class Department implements IDepartment {
-  id: number;
-  departmentName: string;
-  employeesCount: number;
+  public id: number;
+  public departmentName: string;
+  public employeesCount: number;
   constructor(id: number, name: string, employeesCount: number) {
     this.id = id;
     this.departmentName = name;
@@ -18,14 +18,14 @@ export class Department implements IDepartment {
   providedIn: 'root',
 })
 export class DepartmentAdapter implements Adapter<Department> {
-  adapt(department: IDepartment) {
+  public adapt(department: IDepartment) {
     return new Department(
       department.id,
       department.departmentName,
       department.employeesCount,
     );
   }
-  adaptArray(departments: IDepartment[]) {
+  public adaptArray(departments: IDepartment[]) {
     return departments.map((department) => this.adapt(department));
   }
 }

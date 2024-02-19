@@ -18,20 +18,20 @@ import { Employee } from '../../models/employee.model';
 export class EmployeeService {
   private apiUrl = `${environment.BASE_URL}`;
   constructor(private http: HttpClient) {}
-  get Headers() {
+  public get Headers() {
     const token = getLocalStorageItem(LocalStorageKeys.AuthToken);
     return new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     });
   }
-  getEmployee(id: number) {
+  public getEmployee(id: number) {
     const employee: Employee = JSON.parse(
       localStorage.getItem(`employee/${id}`)!,
     );
     return of(employee);
   }
-  getAdmins(queryParams: Partial<IGetEmployeesQueryParams>) {
+  public getAdmins(queryParams: Partial<IGetEmployeesQueryParams>) {
     const transformedQueryParmas = new GetEmployeesQueryParams(queryParams);
     return this.http
       .post<IGetEmployees>(`${this.apiUrl}/employees`, transformedQueryParmas, {
@@ -51,7 +51,7 @@ export class EmployeeService {
         }),
       );
   }
-  getEmployeesByDepartment(
+  public getEmployeesByDepartment(
     departmentId: number,
     queryParams: Partial<IGetEmployeesQueryParams>,
   ) {
@@ -66,7 +66,7 @@ export class EmployeeService {
       }),
     );
   }
-  getEmployees(queryParams: Partial<IGetEmployeesQueryParams>) {
+  public getEmployees(queryParams: Partial<IGetEmployeesQueryParams>) {
     const transformedQueryParmas = new GetEmployeesQueryParams(queryParams);
     return this.http
       .post<IGetEmployees>(
@@ -90,7 +90,7 @@ export class EmployeeService {
         }),
       );
   }
-  getEmployeesAndAdmins(queryParams: Partial<IGetEmployeesQueryParams>) {
+  public getEmployeesAndAdmins(queryParams: Partial<IGetEmployeesQueryParams>) {
     const transformedQueryParams = new GetEmployeesQueryParams(queryParams);
     transformedQueryParams.orderBy =
       transformedQueryParams.orderBy.charAt(0).toUpperCase() +
@@ -110,20 +110,20 @@ export class EmployeeService {
         }),
       );
   }
-  deleteEmployee(id: number) {
+  public deleteEmployee(id: number) {
     return this.http.delete(`${this.apiUrl}/deleteEmployee/${id}`, {
       withCredentials: true,
       headers: this.Headers,
     });
   }
-  updateEmployee(id: number, data: IUpdateEmpoyee) {
+  public updateEmployee(id: number, data: IUpdateEmpoyee) {
     console.log(data);
     return this.http.put(`${this.apiUrl}/updateuser/${id}`, data, {
       withCredentials: true,
       headers: this.Headers,
     });
   }
-  getSuggestions(searchItem: string) {
+  public getSuggestions(searchItem: string) {
     const queryParams = new GetEmployeesQueryParams({ search: searchItem });
     return this.getEmployeesAndAdmins(queryParams).pipe(
       map((res) => {

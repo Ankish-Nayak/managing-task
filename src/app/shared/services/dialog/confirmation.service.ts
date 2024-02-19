@@ -6,12 +6,12 @@ import { Subject } from 'rxjs';
 })
 export class ConfirmationService {
   private _confirmation = new Subject<boolean>();
-  confirmationSource$ = this._confirmation.asObservable();
+  public confirmationSource$ = this._confirmation.asObservable();
   constructor() {}
-  confirm(confirmation: boolean) {
+  public confirm(confirmation: boolean) {
     this._confirmation.next(confirmation);
   }
-  reset() {
+  public reset() {
     this._confirmation.next(false);
   }
 }

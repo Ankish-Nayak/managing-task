@@ -12,14 +12,14 @@ import { getLocalStorageItem } from '../../../utils/localStorageCRUD';
 export class DepartmentService {
   private apiUrl = `${environment.BASE_URL}`;
   constructor(private http: HttpClient) {}
-  get Headers() {
+  public get Headers() {
     const token = getLocalStorageItem(LocalStorageKeys.AuthToken);
     return new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     });
   }
-  getDepartments() {
+  public getDepartments() {
     return this.http
       .get<IGetDepartmentRes>(`${this.apiUrl}/departments`, {
         withCredentials: true,
@@ -27,19 +27,19 @@ export class DepartmentService {
       })
       .pipe(map((res) => res.iterableData));
   }
-  deleteDepartment(id: number) {
+  public deleteDepartment(id: number) {
     return this.http.delete(`${this.apiUrl}/deleteDepartment/${id}`, {
       withCredentials: true,
       headers: this.Headers,
     });
   }
-  createDepartment(data: { departmentName: string }) {
+  public createDepartment(data: { departmentName: string }) {
     return this.http.post(`${this.apiUrl}/addDepartment`, data, {
       withCredentials: true,
       headers: this.Headers,
     });
   }
-  updateDepartment() {
+  public updateDepartment() {
     return this.http.delete(`${this.apiUrl}`);
   }
 }

@@ -5,11 +5,12 @@ import { Directive, EventEmitter, HostListener, Output } from '@angular/core';
   standalone: true,
 })
 export class ClickedEnterDirective {
-  @Output() clickedEnter = new EventEmitter<void>();
-  constructor() {}
+  @Output()
+  clickedEnter = new EventEmitter<void>();
 
+  constructor() {}
   @HostListener('keydown.enter', ['$event'])
-  onEnter(event: KeyboardEvent) {
+  public onEnter(event: KeyboardEvent) {
     event.preventDefault();
     this.clickedEnter.emit();
   }

@@ -7,9 +7,8 @@ import { Directive, EventEmitter, HostListener, Output } from '@angular/core';
 export class ScrollDirective {
   @Output() hit = new EventEmitter();
   constructor() {}
-
   @HostListener('window:scroll', ['$event'])
-  onBottom(event: any) {
+  onBottom() {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
       this.hit.emit();
     }

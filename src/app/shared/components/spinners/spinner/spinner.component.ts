@@ -20,6 +20,6 @@ type BootstrapTextColors =
   styleUrl: './spinner.component.scss',
 })
 export class SpinnerComponent {
-  classArray: string[] = ['spinner-border'];
   @Input() color: BootstrapTextColors = 'text-dark';
+  public classArray: string[] = ['spinner-border'];
 }

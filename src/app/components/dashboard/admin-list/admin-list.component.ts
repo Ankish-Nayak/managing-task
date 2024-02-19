@@ -30,8 +30,8 @@ import { AdminComponent } from './admin/admin.component';
   styleUrl: './admin-list.component.scss',
 })
 export class AdminListComponent implements OnInit, OnDestroy {
-  readonly allowedToview = allowedToView;
-  readonly UserRole = UserRole;
+  public readonly allowedToview = allowedToView;
+  public readonly UserRole = UserRole;
   public isLoading: boolean = true;
   public admins!: Employee[];
   public userType!: TEmployee;

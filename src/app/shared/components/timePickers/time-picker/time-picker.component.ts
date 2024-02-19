@@ -18,7 +18,7 @@ export class TimePickerComponent {
   ngOnInit(): void {
     this.time = this.getCurrentDate();
   }
-  getCurrentDate() {
+  public getCurrentDate() {
     const currentDate = new Date();
     return {
       hour: currentDate.getHours(),
@@ -26,7 +26,7 @@ export class TimePickerComponent {
       second: currentDate.getSeconds(),
     };
   }
-  onTimeChange() {
+  public onTimeChange() {
     this.timeChange.emit({
       ...this.time,
       second: 0,

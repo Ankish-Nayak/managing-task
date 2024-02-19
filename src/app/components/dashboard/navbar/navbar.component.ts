@@ -37,8 +37,8 @@ import { Subscription } from 'rxjs';
   styleUrl: './navbar.component.scss',
 })
 export class NavbarComponent implements OnInit, OnDestroy {
-  readonly END_POINTS = END_POINTS;
-  readonly ICONS = ICONS;
+  public readonly END_POINTS = END_POINTS;
+  public readonly ICONS = ICONS;
   public navLinks: TNavLinks = NAV_LINKS;
   public profileLinks: TProfileLinks = PROFILE_LINKS;
   public userType!: TEmployee;

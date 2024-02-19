@@ -19,26 +19,26 @@ import { COMPONENT_NAME } from '../../../../utils/constants';
   styleUrl: './upsert-content-modal.component.scss',
 })
 export class UpsertContentModalComponent {
+  readonly COMPONENT_NAME = COMPONENT_NAME;
+  @ViewChild(UpsertTodoComponent) upsertTodoComponent!: UpsertTodoComponent;
+  @ViewChild(UpsertAdminComponent) upsertAdminComponent!: UpsertAdminComponent;
   @Input() update!: boolean;
   @Input() id!: string;
   @Input({ required: true }) componentName!:
     | COMPONENT_NAME.UPSERT_ADMIN_COMPONENT
     | COMPONENT_NAME.UPSERT_TODO_COMPONENT
     | COMPONENT_NAME.TODO_DETAIL_COMPONENT;
-  readonly COMPONENT_NAME = COMPONENT_NAME;
-  @ViewChild(UpsertTodoComponent) upsertTodoComponent!: UpsertTodoComponent;
-  @ViewChild(UpsertAdminComponent) upsertAdminComponent!: UpsertAdminComponent;
   constructor(private modal: NgbActiveModal) {}
   ngOnInit(): void {
     console.log(this.update, this.id);
   }
-  closeModal() {
+  public closeModal() {
     this.modal.close();
   }
-  dismissModal() {
+  public dismissModal() {
     this.modal.dismiss();
   }
-  getTitle() {
+  public getTitle() {
     if (this.componentName === COMPONENT_NAME.UPSERT_ADMIN_COMPONENT) {
       return this.update ? 'Admin Updation' : 'Admin Registration';
     } else if (this.componentName === COMPONENT_NAME.UPSERT_TODO_COMPONENT) {
@@ -47,7 +47,7 @@ export class UpsertContentModalComponent {
       return 'Todo';
     }
   }
-  onReset() {
+  public onReset() {
     if (this.componentName === COMPONENT_NAME.UPSERT_ADMIN_COMPONENT) {
       this.upsertAdminComponent.reset();
     } else if (this.componentName === COMPONENT_NAME.TODO_DETAIL_COMPONENT) {
@@ -56,7 +56,7 @@ export class UpsertContentModalComponent {
       this.upsertTodoComponent.reset();
     }
   }
-  onEdit(binary: boolean) {
+  public onEdit(binary: boolean) {
     if (binary) {
       this.componentName = COMPONENT_NAME.UPSERT_TODO_COMPONENT;
     }

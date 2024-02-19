@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { IMessage } from '../interfaces/requests/chatbox.interface';
 
 export class Message implements IMessage {
-  id: number;
-  message: string;
-  name: string;
-  userType: string;
-  isSeen: boolean;
-  messageDate: string;
-  senderId: number;
+  public id: number;
+  public message: string;
+  public name: string;
+  public userType: string;
+  public isSeen: boolean;
+  public messageDate: string;
+  public senderId: number;
 
   constructor(data: IMessage) {
     this.id = data.id;
@@ -25,10 +25,10 @@ export class Message implements IMessage {
   providedIn: 'root',
 })
 export class MessageAdapter {
-  adapt(data: IMessage): Message {
+  public adapt(data: IMessage): Message {
     return new Message(data);
   }
-  adaptArray(dataArray: IMessage[]): Message[] {
+  public adaptArray(dataArray: IMessage[]): Message[] {
     return dataArray.map((data) => this.adapt(data));
   }
 }

@@ -18,7 +18,7 @@ import { GetEmployeesQueryParams } from '../../../shared/interfaces/requests/emp
 import {
   GetTodosQueryParams,
   ITask,
-} from '../../../shared/interfaces/requests/toto.interface';
+} from '../../../shared/interfaces/requests/todo.interface';
 import { Todo } from '../../../shared/models/todo.model';
 import { UserViewColsPipe } from '../../../shared/pipes/user-view-cols/user-view-cols.pipe';
 import { AuthService } from '../../../shared/services/auth/auth.service';

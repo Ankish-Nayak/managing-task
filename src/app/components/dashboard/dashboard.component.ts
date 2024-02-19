@@ -5,7 +5,7 @@ import { Subscription, concatMap } from 'rxjs';
 import { SpinnerComponent } from '../../shared/components/spinners/spinner/spinner.component';
 import { IDepartment } from '../../shared/interfaces/requests/department.interface';
 import { IGetEmployees } from '../../shared/interfaces/requests/employee.interface';
-import { ITask } from '../../shared/interfaces/requests/toto.interface';
+import { ITask } from '../../shared/interfaces/requests/todo.interface';
 import { UserViewDashboardDetailPipe } from '../../shared/pipes/user-view-dashboard-detail-card/user-view-dashboard-detail.pipe';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { DepartmentService } from '../../shared/services/department/department.service';
