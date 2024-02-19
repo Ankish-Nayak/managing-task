@@ -16,22 +16,23 @@ type TWidth = { [key in keyof Employee]?: string };
   styleUrl: './employee-list-header.component.scss',
 })
 export class EmployeeListHeaderComponent implements OnInit {
-  @Input({ required: true }) cols!: TCOLS;
-  @Input({ required: true }) pageState!: GetEmployeesQueryParams;
-  @Output() pageStateChange = new EventEmitter<
-    Partial<GetEmployeesQueryParams>
-  >();
-  @Input({ required: true }) renderIcons!: boolean;
   readonly widths: TWidth = {
     name: '10%',
     address: '15%',
     city: '15%',
   };
+  readonly ICONS = ICONS;
+  @Input({ required: true }) cols!: TCOLS;
+  @Input({ required: true }) pageState!: GetEmployeesQueryParams;
+  @Input({ required: true }) renderIcons!: boolean;
+  @Output() pageStateChange = new EventEmitter<
+    Partial<GetEmployeesQueryParams>
+  >();
   protected sortBy: {
     name: keyof Employee;
     asc: boolean;
   } | null = null;
-  readonly ICONS = ICONS;
+
   ngOnInit(): void {
     if (this.pageState.orderBy.length > 0)
       this.sortBy = {

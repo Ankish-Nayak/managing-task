@@ -20,13 +20,13 @@ import { END_POINTS } from '../../../../utils/constants';
   styleUrl: './todo-detail.component.scss',
 })
 export class TodoDetailComponent implements OnInit, OnDestroy {
+  readonly END_POINTS = END_POINTS;
+  @Input({ required: true }) id!: string;
+  @Output() edit: EventEmitter<boolean> = new EventEmitter<boolean>();
   public todo!: Todo;
   public wrapped: boolean = true;
   public canWrap: boolean = false;
   public SHOWN_WORD_COUNT = 100;
-  readonly END_POINTS = END_POINTS;
-  @Input({ required: true }) id!: string;
-  @Output() edit: EventEmitter<boolean> = new EventEmitter<boolean>();
   constructor(private todoService: TodoService) {}
 
   ngOnInit(): void {

@@ -3,6 +3,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  OnDestroy,
   OnInit,
   ViewChildren,
 } from '@angular/core';
@@ -15,7 +16,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
+import { Observable, Subscription, debounceTime, fromEvent, merge } from 'rxjs';
 import { ISignupPostData } from '../../../shared/interfaces/requests/signup.interface';
 import { Department } from '../../../shared/models/department.model';
 import { AuthService } from '../../../shared/services/auth/auth.service';
@@ -23,6 +24,7 @@ import { DepartmentService } from '../../../shared/services/department/departmen
 import { GenericValidators } from '../../../shared/validators/generic-validator';
 import { notNullValidator } from '../../../shared/validators/not-null-validators';
 import { END_POINTS } from '../../../utils/constants';
+import { validationMessages } from './validationMessages';
 
 type IPropertyName =
   | 'name'
@@ -42,24 +44,25 @@ type IPropertyName =
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss',
 })
-export class SignupComponent implements OnInit, AfterViewInit {
-  signupForm!: FormGroup;
+export class SignupComponent implements OnInit, AfterViewInit, OnDestroy {
+  public signupForm!: FormGroup;
   // returns the query list of FormControlName
   @ViewChildren(FormControlName, { read: ElementRef })
   formInputElements!: ElementRef[];
 
-  displayFeedback: { [key in IPropertyName]?: string } = {};
-  employees: { name: string; value: number }[] = [
+  public displayFeedback: { [key in IPropertyName]?: string } = {};
+  public employees: { name: string; value: number }[] = [
     { name: 'Employee', value: 0 },
     { name: 'Admin', value: 1 },
   ];
 
-  departments!: Department[];
+  public departments!: Department[];
 
-  adminRegistration: boolean = false;
+  public adminRegistration: boolean = false;
 
   private validatioMessages!: { [key: string]: { [key: string]: string } };
   private genericValidator!: GenericValidators;
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private authService: AuthService,
@@ -68,43 +71,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
   ) {
     // defining validation messages here.
-    this.validatioMessages = {
-      email: {
-        required: 'Required',
-        email: 'Invalid email address',
-      },
-      name: {
-        required: 'Required',
-      },
-      city: {
-        required: 'Required',
-      },
-      address: {
-        required: 'Required',
-      },
-      country: {
-        pattern: 'Must be alphabets.',
-        required: 'Required',
-      },
-      phone: {
-        pattern: 'Must be numbers.',
-        required: 'Required',
-      },
-      departmentID: {
-        required: 'Required',
-        notNull: 'Select department',
-      },
-      employeeType: {
-        required: 'Required',
-        allowedvalue: 'Select from dropdown',
-      },
-      password: {
-        required: 'Required',
-        minlength: 'Must be of atleast 8 chars.',
-        pattern:
-          'Must contain at least one uppercase letter, one digit, and one special character',
-      },
-    };
+    this.validatioMessages = validationMessages;
 
     this.genericValidator = new GenericValidators(this.validatioMessages);
   }
@@ -116,8 +83,6 @@ export class SignupComponent implements OnInit, AfterViewInit {
       this.adminRegistration = false;
     }
     this.signupFormInit();
-    //FIXME: disabling departmentID has stoped value to detected.
-    // this.disabling('departmentID');
   }
 
   ngAfterViewInit(): void {
@@ -237,13 +202,20 @@ export class SignupComponent implements OnInit, AfterViewInit {
     };
 
     if (this.signupForm.valid) {
-      this.authService.signup(data).subscribe(() => {
-        if (this.adminRegistration) {
-          this.router.navigate(['', END_POINTS.adminList]);
-        } else {
-          this.router.navigate(['', END_POINTS.dashboard.toString()]);
-        }
+      const subscription = this.authService.signup(data).subscribe({
+        next: () => {
+          if (this.adminRegistration) {
+            this.router.navigate(['', END_POINTS.adminList]);
+          } else {
+            this.router.navigate(['', END_POINTS.dashboard.toString()]);
+          }
+        },
+        error: (e) => {
+          console.log(e);
+        },
+        complete: () => {},
       });
+      this.subscriptions.push(subscription);
     }
   }
   private neitherTouchedNorDirty(element: AbstractControl<any, any>) {
@@ -270,6 +242,11 @@ export class SignupComponent implements OnInit, AfterViewInit {
         control.markAsTouched();
         control.markAsDirty();
       }
+    });
+  }
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((s) => {
+      s.unsubscribe();
     });
   }
 }

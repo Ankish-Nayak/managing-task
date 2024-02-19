@@ -1,5 +1,11 @@
 import { CommonModule, JsonPipe } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChildren } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChildren,
+} from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -13,6 +19,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import {
   BehaviorSubject,
   Observable,
+  Subscription,
   debounceTime,
   fromEvent,
   merge,
@@ -55,7 +62,14 @@ type IPropertyName =
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
 })
-export class ProfileComponent implements OnInit, BlockNavigationIfChange {
+export class ProfileComponent
+  implements OnInit, BlockNavigationIfChange, OnDestroy
+{
+  @ViewChildren(FormControlName, { read: ElementRef })
+  private formInputElements!: ElementRef[];
+  private _hasUnSavedChangesSource = new BehaviorSubject<boolean>(false);
+  public hasUnSavedChanges$: Observable<boolean> =
+    this._hasUnSavedChangesSource.asObservable();
   public isLoading: boolean = true;
   public isSubmitLoading: boolean = false;
   public profile: Employee = new Employee(
@@ -73,31 +87,18 @@ export class ProfileComponent implements OnInit, BlockNavigationIfChange {
     '',
   );
   public updateProfileForm!: FormGroup;
-  // returns the query list of FormControlName
-  @ViewChildren(FormControlName, { read: ElementRef })
-  formInputElements!: ElementRef[];
-
-  private formInitailValue!: string;
-
-  private _hasUnSavedChangesSource = new BehaviorSubject<boolean>(false);
-
-  public hasUnSavedChanges$: Observable<boolean> =
-    this._hasUnSavedChangesSource.asObservable();
-
   public displayFeedback: { [key in IPropertyName]?: string } = {};
   public employees: { name: string; value: number }[] = [
     { name: 'Employee', value: 0 },
     { name: 'Admin', value: 1 },
   ];
-
-  cardBodyHeader: string[] = ['card-body-header'];
-
+  public cardBodyHeader: string[] = ['card-body-header'];
   public departments!: Department[];
-
   public updatingProfile: boolean = false;
-
   private validatioMessages!: { [key: string]: { [key: string]: string } };
   private genericValidator!: GenericValidators;
+  private formInitailValue!: string;
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private authService: AuthService,
@@ -122,12 +123,13 @@ export class ProfileComponent implements OnInit, BlockNavigationIfChange {
   }
 
   private getProfile() {
-    this.authService.profile().subscribe((res) => {
+    const subscription = this.authService.profile().subscribe((res) => {
       this.profile = res;
       this.updateProfileForm.patchValue(this.profile);
       // this.formInitailValue = JSON.stringify(res);
       this.isLoading = false;
     });
+    this.subscriptions.push(subscription);
   }
 
   ngAfterViewInit(): void {
@@ -136,13 +138,17 @@ export class ProfileComponent implements OnInit, BlockNavigationIfChange {
       (formControl: ElementRef) => fromEvent(formControl.nativeElement, 'blur'),
     );
 
-    merge(this.updateProfileForm.valueChanges, ...controlsBlurs)
+    const subscription = merge(
+      this.updateProfileForm.valueChanges,
+      ...controlsBlurs,
+    )
       .pipe(debounceTime(800))
       .subscribe(() => {
         this.displayFeedback = this.genericValidator.processMessages(
           this.updateProfileForm,
         );
       });
+    this.subscriptions.push(subscription);
   }
   private enableAllowedField(fields: IPropertyName[]) {
     fields.forEach((field) => {
@@ -168,13 +174,13 @@ export class ProfileComponent implements OnInit, BlockNavigationIfChange {
       this.enableAllowedField(['phone', 'city', 'country', 'address']);
       this.formInitailValue = JSON.stringify(this.updateProfileForm.value);
 
-      this.updateProfileForm.valueChanges.subscribe(() => {
+      const subscription = this.updateProfileForm.valueChanges.subscribe(() => {
         const currentValue = JSON.stringify(this.updateProfileForm.value);
         this._hasUnSavedChangesSource.next(
           this.formInitailValue !== currentValue,
         );
       });
-      // this.updateProfileForm.enable();
+      this.subscriptions.push(subscription);
     }
   }
   private updateProfileFormInit() {
@@ -219,11 +225,14 @@ export class ProfileComponent implements OnInit, BlockNavigationIfChange {
   }
 
   private getDepartments() {
-    this.departmentService.getDepartments().subscribe((res) => {
-      this.departments = res.map(
-        (d) => new Department(d.id, d.departmentName, d.employeesCount),
-      );
-    });
+    const subscription = this.departmentService
+      .getDepartments()
+      .subscribe((res) => {
+        this.departments = res.map(
+          (d) => new Department(d.id, d.departmentName, d.employeesCount),
+        );
+      });
+    this.subscriptions.push(subscription);
   }
   public onSubmit() {
     this.markAsTouchedAndDirty();
@@ -238,18 +247,21 @@ export class ProfileComponent implements OnInit, BlockNavigationIfChange {
 
     if (this.updateProfileForm.valid) {
       this.isSubmitLoading = true;
-      this.authService.updateProfile(this.profile.id, data).subscribe({
-        next: () => {
-          this._hasUnSavedChangesSource.next(false);
-          this.reloadComponent();
-        },
-        error: (e) => {
-          console.log(e);
-        },
-        complete: () => {
-          this.isSubmitLoading = false;
-        },
-      });
+      const subscription = this.authService
+        .updateProfile(this.profile.id, data)
+        .subscribe({
+          next: () => {
+            this._hasUnSavedChangesSource.next(false);
+            this.reloadComponent();
+          },
+          error: (e) => {
+            console.log(e);
+          },
+          complete: () => {
+            this.isSubmitLoading = false;
+          },
+        });
+      this.subscriptions.push(subscription);
     }
   }
   private reloadComponent() {
@@ -286,7 +298,6 @@ export class ProfileComponent implements OnInit, BlockNavigationIfChange {
       }
     });
   }
-
   public canDeactivate() {
     const ref = this.modalService.open(SaveChangesModalComponent);
     return ref.closed;
@@ -300,5 +311,8 @@ export class ProfileComponent implements OnInit, BlockNavigationIfChange {
     if (this.updatingProfile) {
       this.onSubmit();
     }
+  }
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((s) => s.unsubscribe());
   }
 }

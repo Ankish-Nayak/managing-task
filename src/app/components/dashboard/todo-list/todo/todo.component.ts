@@ -1,8 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { Subscription } from 'rxjs';
 import { ConfirmationModalComponent } from '../../../../shared/components/modals/confirmation-modal/confirmation-modal.component';
 import { HighlightDirective } from '../../../../shared/directives/highlight/highlight.directive';
 import { ICONS } from '../../../../shared/icons/icons';
@@ -29,26 +37,27 @@ import { TodoTab } from '../todo-list.component';
   templateUrl: './todo.component.html',
   styleUrl: './todo.component.scss',
 })
-export class TodoComponent implements OnInit {
-  private todoMarkLoading = false;
+export class TodoComponent implements OnInit, OnDestroy {
+  readonly UserRole = UserRole;
+  readonly ICONS = ICONS;
+  readonly TodoTab = TodoTab;
   @Input({ required: true }) todo!: Todo;
   @Input({ required: true }) sno!: number;
-  @Output() deleteTodo = new EventEmitter<number>();
-  @Output() updateTodo = new EventEmitter<number>();
-  @Output() navigateTo = new EventEmitter<number>();
   @Input({ required: true }) userType!: TEmployee;
   @Input({ required: true }) isLoading!: boolean;
   @Input({ required: true }) todoTab!: TodoTab;
-  readonly TodoTab = TodoTab;
+  @Output() deleteTodo = new EventEmitter<number>();
+  @Output() updateTodo = new EventEmitter<number>();
+  @Output() navigateTo = new EventEmitter<number>();
   public highlight: { edit: boolean; delete: boolean } = {
     edit: false,
     delete: false,
   };
   public cols: TCOLS = COLS;
-  readonly UserRole = UserRole;
-  readonly ICONS = ICONS;
   public deadline!: string;
   public wantToChangeDeadline = false;
+  private todoMarkLoading = false;
+  private subscriptions: Subscription[] = [];
   constructor(
     private todoService: TodoService,
     private toastService: ToastService,
@@ -86,7 +95,7 @@ export class TodoComponent implements OnInit {
   }
   public mark() {
     this.todoMarkLoading = true;
-    this.todoService
+    const subscription = this.todoService
       .markTodo(this.todo.id, {
         isCompleted: !this.todo.isCompleted,
       })
@@ -98,6 +107,7 @@ export class TodoComponent implements OnInit {
           isCompleted: !this.todo.isCompleted,
         };
       });
+    this.subscriptions.push(subscription);
   }
 
   public onHighlight(type: 'edit' | 'delete', binary: boolean) {
@@ -116,10 +126,16 @@ export class TodoComponent implements OnInit {
       ...this.todo,
       deadLine: this.deadline,
     };
-    this.todoService.updateTodo(this.todo.id, data).subscribe(() => {
-      this.isLoading = false;
-      this.todo.deadLine = this.deadline;
-    });
+    const subscription = this.todoService
+      .updateTodo(this.todo.id, data)
+      .subscribe(() => {
+        this.isLoading = false;
+        this.todo.deadLine = this.deadline;
+      });
+    this.subscriptions.push(subscription);
     this.togglewantToChangeDeadline();
+  }
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((s) => s.unsubscribe());
   }
 }

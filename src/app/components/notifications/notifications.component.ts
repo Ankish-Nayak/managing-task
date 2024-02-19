@@ -16,6 +16,7 @@ import {
   removeLocalStorageItem,
   updateLocalStorageItem,
 } from '../../utils/localStorageCRUD';
+import { Subscription } from 'rxjs';
 
 export enum NotificationTab {
   All = 'All',
@@ -31,8 +32,18 @@ export enum NotificationTab {
   styleUrl: './notifications.component.scss',
 })
 export class NotificationsComponent implements OnInit, OnDestroy {
+  readonly NotificationTabs: NotificationTab[] = [
+    NotificationTab.All,
+    NotificationTab.Read,
+    NotificationTab.UnRead,
+  ];
+  readonly NotificationTab = NotificationTab;
+  readonly ICONS = ICONS;
   public isLoading: boolean = false;
+  public select!: boolean;
+  public selectedIds: number[] = [];
   public notifications!: Notification[];
+  public selectedNotificationTab: NotificationTab = NotificationTab.All;
   private isLoadingMore: boolean = false;
   private isMoreData: boolean = true;
   private pageState: IGetNotificationsQueryParams =
@@ -52,17 +63,8 @@ export class NotificationsComponent implements OnInit, OnDestroy {
         }
       })(),
     );
-  public select!: boolean;
-  public selectedIds: number[] = [];
-  readonly NotificationTabs: NotificationTab[] = [
-    NotificationTab.All,
-    NotificationTab.Read,
-    NotificationTab.UnRead,
-  ];
-  readonly NotificationTab = NotificationTab;
-  selectedNotificationTab: NotificationTab = NotificationTab.All;
-  scrollableIndex!: number;
-  readonly ICONS = ICONS;
+  private scrollableIndex!: number;
+  private susbcriptions: Subscription[] = [];
   constructor(
     private notificationService: NotificationService,
     private elementRef: ElementRef,
@@ -81,24 +83,27 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     this.onPageStateChange();
   }
   public markAsRead(id: number) {
-    this.notificationService.markNotificationAsRead(id).subscribe({
-      next: () => {
-        if (this.selectedNotificationTab === NotificationTab.UnRead)
-          this.notifications = this.notifications.filter((n) => n.id !== id);
-        else {
-          this.notifications = this.notifications.map((n) => {
-            if (n.id === id) {
-              n.isSeen = true;
-            }
-            return n;
-          });
-        }
-      },
-      error: (e) => {
-        console.log(e);
-      },
-      complete: () => {},
-    });
+    const subscription = this.notificationService
+      .markNotificationAsRead(id)
+      .subscribe({
+        next: () => {
+          if (this.selectedNotificationTab === NotificationTab.UnRead)
+            this.notifications = this.notifications.filter((n) => n.id !== id);
+          else {
+            this.notifications = this.notifications.map((n) => {
+              if (n.id === id) {
+                n.isSeen = true;
+              }
+              return n;
+            });
+          }
+        },
+        error: (e) => {
+          console.log(e);
+        },
+        complete: () => {},
+      });
+    this.susbcriptions.push(subscription);
   }
   public toggleSelectedIds(id: number) {
     const exist = this.selectedIds.includes(id);
@@ -113,7 +118,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       this.select = !this.select;
       return;
     }
-    this.notificationService
+    const subscription = this.notificationService
       .markNotificationsAsRead({
         notificationIDs: this.selectedIds,
       })
@@ -132,6 +137,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
           this.selectedIds = [];
         },
       });
+    this.susbcriptions.push(subscription);
   }
   public onPageStateChange() {
     updateLocalStorageItem(
@@ -139,18 +145,21 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       JSON.stringify(this.pageState),
     );
     this.isLoading = true;
-    this.notificationService.getNotifications(this.pageState).subscribe({
-      next: (res) => {
-        console.log(res);
-        this.notifications = res;
-      },
-      error: (e) => {
-        console.log(e);
-      },
-      complete: () => {
-        this.isLoading = false;
-      },
-    });
+    const subscription = this.notificationService
+      .getNotifications(this.pageState)
+      .subscribe({
+        next: (res) => {
+          console.log(res);
+          this.notifications = res;
+        },
+        error: (e) => {
+          console.log(e);
+        },
+        complete: () => {
+          this.isLoading = false;
+        },
+      });
+    this.susbcriptions.push(subscription);
   }
   public onTabChange(updatedTab: NotificationTab) {
     this.isMoreData = true;
@@ -202,28 +211,32 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       ...this.pageState,
       index: this.scrollableIndex,
     };
-    this.notificationService.getNotifications(newPageState).subscribe({
-      next: (res) => {
-        this.notifications.push(...res);
-        if (res.length > 0) {
-          this.scrollableIndex++;
-        }
-        if (res.length === 0) {
-          this.isMoreData = false;
-        }
-      },
-      error: (e) => {
-        console.log(e);
-      },
-      complete: () => {
-        this.isLoadingMore = false;
-      },
-    });
+    const subscription = this.notificationService
+      .getNotifications(newPageState)
+      .subscribe({
+        next: (res) => {
+          this.notifications.push(...res);
+          if (res.length > 0) {
+            this.scrollableIndex++;
+          }
+          if (res.length === 0) {
+            this.isMoreData = false;
+          }
+        },
+        error: (e) => {
+          console.log(e);
+        },
+        complete: () => {
+          this.isLoadingMore = false;
+        },
+      });
+    this.susbcriptions.push(subscription);
   }
   public clearSelectedIds() {
     this.selectedIds = [];
   }
   ngOnDestroy(): void {
     removeLocalStorageItem(LocalStorageKeys.GetNotifications);
+    this.susbcriptions.forEach((s) => s.unsubscribe());
   }
 }

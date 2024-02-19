@@ -4,6 +4,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  OnDestroy,
   OnInit,
   ViewChildren,
 } from '@angular/core';
@@ -16,7 +17,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
+import { Observable, Subscription, debounceTime, fromEvent, merge } from 'rxjs';
 import { ConfirmationModalComponent } from '../../shared/components/modals/confirmation-modal/confirmation-modal.component';
 import { TEmployee } from '../../shared/interfaces/employee.type';
 import { Department } from '../../shared/models/department.model';
@@ -40,25 +41,24 @@ type IPropertyName = 'departmentName';
   templateUrl: './department-list.component.html',
   styleUrl: './department-list.component.scss',
 })
-export class DepartmentListComponent implements OnInit, AfterViewInit {
+export class DepartmentListComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
+  readonly allowedToView = allowedToView;
+  readonly UserRole = UserRole;
+  @ViewChildren(FormControlName, { read: ElementRef })
+  private formInputElements!: ElementRef[];
   public isLoading: boolean = true;
   public departments!: Department[];
   departmentForm!: FormGroup;
-  readonly UserRole = UserRole;
-  private departmentIdTobeDeleted!: number | null;
-
-  readonly allowedToView = allowedToView;
   public deleteDepartmentEvent: EventEmitter<boolean> =
     new EventEmitter<boolean>();
-
-  @ViewChildren(FormControlName, { read: ElementRef })
-  private formInputElements!: ElementRef[];
   public userType!: TEmployee;
-
   public displayFeedback: { [key in IPropertyName]?: string } = {};
-
+  public subscriptions: Subscription[] = [];
   private validatioMessages!: { [key: string]: { [key: string]: string } };
   private genericValidator!: GenericValidators;
+  private departmentIdTobeDeleted!: number | null;
 
   constructor(
     private departmentService: DepartmentService,
@@ -79,16 +79,18 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
     this.getUserType();
   }
   private getUserType() {
-    this.authService.userTypeMessage$.subscribe((res) => {
+    const subscription = this.authService.userTypeMessage$.subscribe((res) => {
       if (res !== null) {
         this.userType = res;
       }
     });
+    this.subscriptions.push(subscription);
   }
   public userRole() {
-    this.authService.userTypeMessage$.subscribe((res) => {
+    const subscription = this.authService.userTypeMessage$.subscribe((res) => {
       console.log(res);
     });
+    this.subscriptions.push(subscription);
   }
   ngAfterViewInit(): void {
     this.departmentFormInit();
@@ -97,13 +99,17 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
       (formControl: ElementRef) => fromEvent(formControl.nativeElement, 'blur'),
     );
 
-    merge(this.departmentForm.valueChanges, ...controlsBlurs)
+    const subscription = merge(
+      this.departmentForm.valueChanges,
+      ...controlsBlurs,
+    )
       .pipe(debounceTime(800))
       .subscribe(() => {
         this.displayFeedback = this.genericValidator.processMessages(
           this.departmentForm,
         );
       });
+    this.subscriptions.push(subscription);
   }
 
   public deleteDepartment(id: number) {
@@ -112,13 +118,14 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
 
   public confirm(confirmation: boolean) {
     if (confirmation && this.departmentIdTobeDeleted !== null) {
-      this.departmentService
+      const subscription = this.departmentService
         .deleteDepartment(this.departmentIdTobeDeleted)
         .subscribe((res) => {
           console.log(res);
           this.isLoading = true;
           this.getDepartments();
         });
+      this.subscriptions.push(subscription);
     }
   }
 
@@ -171,11 +178,10 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
   private formValue(propertyName: IPropertyName) {
     return this.departmentForm.get(propertyName)!;
   }
-  //TODO: make update department work
   public updateDepartment(_id: number) {}
 
   public getDepartments() {
-    this.departmentService.getDepartments().subscribe({
+    const subscription = this.departmentService.getDepartments().subscribe({
       next: (res) => {
         this.departments = res.map(
           (d) => new Department(d.id, d.departmentName, d.employeesCount),
@@ -189,5 +195,9 @@ export class DepartmentListComponent implements OnInit, AfterViewInit {
         this.isLoading = false;
       },
     });
+    this.subscriptions.push(subscription);
+  }
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((s) => s.unsubscribe());
   }
 }

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Params, RouterOutlet } from '@angular/router';
-import { concatMap } from 'rxjs';
+import { Subscription, concatMap } from 'rxjs';
 import { SpinnerComponent } from '../../shared/components/spinners/spinner/spinner.component';
 import { IDepartment } from '../../shared/interfaces/requests/department.interface';
 import { IGetEmployees } from '../../shared/interfaces/requests/employee.interface';
@@ -15,7 +15,6 @@ import { END_POINTS, UserRole } from '../../utils/constants';
 import { EmployeeTab } from '../portal/employee-list/employee-list.component';
 import { DashboardDetailCardComponent } from './dashboard-detail-card/dashboard-detail-card.component';
 import { NavbarComponent } from './navbar/navbar.component';
-//TODO: make user based rendering of dashboard component
 
 export interface ICard {
   title: string;
@@ -38,10 +37,11 @@ export interface ICard {
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   public isLoading: boolean = false;
   public cards: ICard[] = [];
   public userType!: UserRole;
+  private subscriptions: Subscription[] = [];
   constructor(
     private employeeService: EmployeeService,
     private todoService: TodoService,
@@ -52,7 +52,7 @@ export class DashboardComponent implements OnInit {
     this.getEmployeeType();
   }
   private getEmployeeType() {
-    this.authService.userTypeMessage$.subscribe((res) => {
+    const subscription = this.authService.userTypeMessage$.subscribe((res) => {
       if (res !== null) {
         this.userType = res;
         if (this.userType === UserRole.Employee) {
@@ -62,23 +62,25 @@ export class DashboardComponent implements OnInit {
         }
       }
     });
+    this.subscriptions.push(subscription);
   }
   private cardDataInOrderInitForEmployee() {
     if (this.isLoading) {
       return;
     }
     this.isLoading = true;
-    this.todoService.getTodos({}).subscribe((res) => {
+    const subscription = this.todoService.getTodos({}).subscribe((res) => {
       this.cards.push(this.getTodosDetails(res));
       this.isLoading = false;
     });
+    this.subscriptions.push(subscription);
   }
   private cardDataInOrderInit() {
     if (this.isLoading) {
       return;
     }
     this.isLoading = true;
-    this.employeeService
+    const subscription = this.employeeService
       .getAdmins({})
       .pipe(
         concatMap((firstApiRes) => {
@@ -105,6 +107,7 @@ export class DashboardComponent implements OnInit {
           this.isLoading = false;
         },
       });
+    this.subscriptions.push(subscription);
   }
   private getEmployeeesDetails(res: IGetEmployees) {
     return {
@@ -214,5 +217,8 @@ export class DashboardComponent implements OnInit {
         queryParams: link.queryParams,
       }));
     return newLinks;
+  }
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((s) => s.unsubscribe());
   }
 }

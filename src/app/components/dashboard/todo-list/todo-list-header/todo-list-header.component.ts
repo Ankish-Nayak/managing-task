@@ -17,13 +17,13 @@ import { TCOLS } from '../cols';
   styleUrl: './todo-list-header.component.scss',
 })
 export class TodoListHeaderComponent implements OnInit {
+  readonly ICONS = ICONS;
   @Input({ required: true }) cols!: TCOLS;
   @Input({ required: true }) userType!: TEmployee;
   @Input({ required: true }) pageState!: GetTodosQueryParams;
   @Output() clicked: EventEmitter<keyof Todo> = new EventEmitter<keyof Todo>();
   @Output() pageStateChange: EventEmitter<Partial<GetTodosQueryParams>> =
     new EventEmitter<Partial<GetTodosQueryParams>>();
-  readonly ICONS = ICONS;
   public sortBy: {
     name: keyof Todo;
     asc: boolean;

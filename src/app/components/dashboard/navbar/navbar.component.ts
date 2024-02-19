@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   ActivatedRoute,
   Router,
@@ -21,6 +21,7 @@ import {
   TNavLinks,
   TProfileLinks,
 } from './navBarLinks';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -35,16 +36,16 @@ import {
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
+  readonly END_POINTS = END_POINTS;
+  readonly ICONS = ICONS;
   public navLinks: TNavLinks = NAV_LINKS;
   public profileLinks: TProfileLinks = PROFILE_LINKS;
   public userType!: TEmployee;
-  readonly END_POINTS = END_POINTS;
-  readonly ICONS = ICONS;
   public activeEndPoint!: string;
   public notificationCount!: number;
-
   public notificationState!: boolean;
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private router: Router,
@@ -54,25 +55,32 @@ export class NavbarComponent implements OnInit {
     private notificationService: NotificationService,
   ) {}
   ngOnInit(): void {
-    this.notificationService.openNotificationMessageSource$.subscribe((res) => {
-      this.notificationState = res;
-    });
+    const subscription1 =
+      this.notificationService.openNotificationMessageSource$.subscribe(
+        (res) => {
+          this.notificationState = res;
+        },
+      );
     this.activeEndPoint = getActiveEndpoint(this.route);
     this.getEmployeeType();
-    this.route.data.subscribe(() => {
+    const subscription2 = this.route.data.subscribe(() => {
       console.log(getActiveEndpoint(this.route));
     });
-    this.activeEndpoint.activeEndpointMessage$.subscribe((endPoint) => {
-      this.updateNavLinks(endPoint);
-    });
+    const subscription3 = this.activeEndpoint.activeEndpointMessage$.subscribe(
+      (endPoint) => {
+        this.updateNavLinks(endPoint);
+      },
+    );
     this.getNotificationCount();
+    this.subscriptions.push(...[subscription1, subscription2, subscription3]);
   }
   private getNotificationCount() {
-    this.notificationService
+    const subscription = this.notificationService
       .getNotifications({ isSeen: false })
       .subscribe((res) => {
         this.notificationCount = res.length;
       });
+    this.subscriptions.push(subscription);
   }
   private updateNavLinks(endpoint: string) {
     this.navLinks = this.navLinks.map((n) => {
@@ -100,9 +108,10 @@ export class NavbarComponent implements OnInit {
     return style;
   }
   private getEmployeeType() {
-    this.authService.userTypeMessage$.subscribe((res) => {
+    const subscription = this.authService.userTypeMessage$.subscribe((res) => {
       if (res !== null) this.userType = res;
     });
+    this.subscriptions.push(subscription);
   }
   public handleProfileLinks(event: MouseEvent, name: string) {
     if (this.notificationState) {
@@ -119,9 +128,10 @@ export class NavbarComponent implements OnInit {
       }
       case 'logout': {
         this.router.navigate([``]);
-        this.authService.logout().subscribe(() => {
+        const subscription = this.authService.logout().subscribe(() => {
           this.router.navigate([``]);
         });
+        this.subscriptions.push(subscription);
         break;
       }
       default: {
@@ -135,5 +145,8 @@ export class NavbarComponent implements OnInit {
     } else {
       this.notificationService.openNotification();
     }
+  }
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((s) => s.unsubscribe());
   }
 }

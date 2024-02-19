@@ -3,6 +3,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  OnDestroy,
   OnInit,
   ViewChildren,
 } from '@angular/core';
@@ -16,7 +17,7 @@ import {
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { NgbToast } from '@ng-bootstrap/ng-bootstrap';
-import { Observable, fromEvent, merge } from 'rxjs';
+import { Observable, Subscription, fromEvent, merge } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { SpinnerComponent } from '../../../shared/components/spinners/spinner/spinner.component';
 import { SubmitSpinnerComponent } from '../../../shared/components/spinners/submit-spinner/submit-spinner.component';
@@ -24,6 +25,7 @@ import { ClickedEnterDirective } from '../../../shared/directives/clicked-enter/
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { ToastService } from '../../../shared/services/toast/toast.service';
 import { GenericValidators } from '../../../shared/validators/generic-validator';
+import { validationMessages } from '../signup/validationMessages';
 
 type IPropertyName = 'email' | 'password';
 
@@ -42,34 +44,22 @@ type IPropertyName = 'email' | 'password';
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
-export class LoginComponent implements OnInit, AfterViewInit {
+export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(FormControlName, { read: ElementRef })
   formInputElements!: ElementRef[];
-  loginForm!: FormGroup;
-  displayFeedback: { [key in IPropertyName]?: string } = {};
-  errorMessage: any;
-  isSubmitLoading: boolean = false;
+  public loginForm!: FormGroup;
+  public displayFeedback: { [key in IPropertyName]?: string } = {};
+  public isSubmitLoading: boolean = false;
 
   private validationMessages!: { [key: string]: { [key: string]: string } };
   private genericValidator!: GenericValidators;
+  private subscriptions: Subscription[] = [];
   constructor(
     private authService: AuthService,
     private router: Router,
     public toastService: ToastService,
   ) {
-    // defining validationMessages here.
-    this.validationMessages = {
-      email: {
-        required: 'Required',
-        email: 'Invalid email address',
-      },
-      password: {
-        required: 'Required',
-        minlength: 'Must be of atleast 8 chars.',
-        pattern:
-          'Must contain at least one uppercase letter, one digit, and one special character',
-      },
-    };
+    this.validationMessages = validationMessages;
 
     this.genericValidator = new GenericValidators(this.validationMessages);
   }
@@ -109,12 +99,11 @@ export class LoginComponent implements OnInit, AfterViewInit {
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
       this.isSubmitLoading = true;
-      this.authService.login(email, password).subscribe({
+      const subscription = this.authService.login(email, password).subscribe({
         next: () => {
           this.router.navigate(['', 'dashboard']);
         },
         error: (e) => {
-          this.errorMessage = e;
           this.toastService.show(
             'Unauthorized',
             'Invalid email or password',
@@ -126,6 +115,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
           this.isSubmitLoading = false;
         },
       });
+      this.subscriptions.push(subscription);
     } else {
     }
   }
@@ -151,6 +141,11 @@ export class LoginComponent implements OnInit, AfterViewInit {
     Object.values(this.loginForm.controls).forEach((control) => {
       control.markAsDirty();
       control.markAsTouched();
+    });
+  }
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((s) => {
+      s.unsubscribe();
     });
   }
 }

@@ -21,16 +21,15 @@ import { UserRole } from '../../../utils/constants';
   styleUrl: './department.component.scss',
 })
 export class DepartmentComponent {
-  @Input({ required: true }) department!: Department;
-  @Input({ required: true }) sNo!: number;
-  @Output() updateDepartment = new EventEmitter<number>();
-  @Output() deleteDepartment = new EventEmitter<number>();
-  @Output() employeesByDepartment = new EventEmitter<number>();
-  @Input({ required: true }) userType!: TEmployee;
   readonly allowedToView = allowedToView;
   readonly ICONS = ICONS;
   readonly UserRole = UserRole;
-
+  @Input({ required: true }) department!: Department;
+  @Input({ required: true }) sNo!: number;
+  @Input({ required: true }) userType!: TEmployee;
+  @Output() updateDepartment = new EventEmitter<number>();
+  @Output() deleteDepartment = new EventEmitter<number>();
+  @Output() employeesByDepartment = new EventEmitter<number>();
   public highlight: { edit: boolean; delete: boolean; eye: boolean } = {
     edit: false,
     delete: false,

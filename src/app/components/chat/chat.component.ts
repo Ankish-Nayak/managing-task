@@ -7,6 +7,7 @@ import {
   RouterLink,
   RouterOutlet,
 } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { ICONS } from '../../shared/icons/icons';
 import {
   CHATTAB,
@@ -34,16 +35,17 @@ import { ChatMessageComponent } from './chat-message/chat-message.component';
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
 })
-export class ChatComponent implements OnInit, OnDestroy {
+export class ChatComponent implements OnInit, OnDestroy, OnDestroy {
+  readonly ICONS = ICONS;
+  readonly END_POINTS = END_POINTS;
   public searchBoxInput: string = '';
   public isLoading = false;
   public chatTabs!: ChatTab[];
-  readonly ICONS = ICONS;
   public selectedChatTab!: ChatTab;
-  readonly END_POINTS = END_POINTS;
   public fullSize!: boolean;
   public suggestions: ChatTab[] = [];
   public renderSuggestions: boolean = false;
+  private subscriptions: Subscription[] = [];
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -53,7 +55,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.getSelectedChatTab();
     this.getChatTabs();
-    this.route.queryParamMap.subscribe((params) => {
+    const subscription1 = this.route.queryParamMap.subscribe((params) => {
       const id = params.get('id');
       const name = params.get('name');
       if (id && name) {
@@ -63,35 +65,40 @@ export class ChatComponent implements OnInit, OnDestroy {
         });
       }
     });
-    this.router.events.subscribe(() => {
+    const subscription2 = this.router.events.subscribe(() => {
       this.getActiveTab();
     });
+    this.subscriptions.push(...[subscription2, subscription1]);
     this.getFullSize();
   }
   private getFullSize() {
-    this.chatboxService.chatBoxFullSizeMessageSource$.subscribe({
-      next: (res) => {
-        this.fullSize = res;
-      },
-      error: (e) => {
-        console.log(e);
-      },
-      complete: () => {},
-    });
+    const subscription =
+      this.chatboxService.chatBoxFullSizeMessageSource$.subscribe({
+        next: (res) => {
+          this.fullSize = res;
+        },
+        error: (e) => {
+          console.log(e);
+        },
+        complete: () => {},
+      });
+    this.subscriptions.push(subscription);
   }
   private getSelectedChatTab() {
-    this.chatboxService.selectedChatTabMessageSource$.subscribe({
-      next: (res) => {
-        this.selectedChatTab = res;
-      },
-      error: (e) => {
-        console.log(e);
-      },
-      complete: () => {},
-    });
+    const subscription =
+      this.chatboxService.selectedChatTabMessageSource$.subscribe({
+        next: (res) => {
+          this.selectedChatTab = res;
+        },
+        error: (e) => {
+          console.log(e);
+        },
+        complete: () => {},
+      });
+    this.subscriptions.push(subscription);
   }
   private getChatTabs() {
-    this.chatboxService.chatTabsMessageSource$.subscribe({
+    const subscription = this.chatboxService.chatTabsMessageSource$.subscribe({
       next: (res) => {
         this.chatTabs = res;
       },
@@ -100,6 +107,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       },
       complete: () => {},
     });
+    this.subscriptions.push(subscription);
   }
   private getActiveTab() {
     const activeEndPoint = getActiveEndpoint(this.route);
@@ -108,7 +116,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.chatTabs.find((v) => v.id === null)!,
       );
     } else {
-      this.route.queryParamMap.subscribe((params) => {
+      const subscription = this.route.queryParamMap.subscribe((params) => {
         const id = params.get('id');
         if (id) {
           this.chatboxService.changeSelectedTab(
@@ -116,6 +124,7 @@ export class ChatComponent implements OnInit, OnDestroy {
           );
         }
       });
+      this.subscriptions.push(subscription);
     }
   }
   public addingChatTab(tab: ChatTab) {
@@ -131,16 +140,15 @@ export class ChatComponent implements OnInit, OnDestroy {
   public deleteTab(tab: ChatTab) {
     this.chatboxService.removeChatTab(tab);
   }
-  ngOnDestroy(): void {
-    removeLocalStorageItem(LocalStorageKeys.GetChatTabs);
-  }
+
   public searchEmployees() {
     this.renderSuggestions = true;
-    this.employeeService
+    const subscription = this.employeeService
       .getSuggestions(this.searchBoxInput)
       .subscribe((res) => {
         this.suggestions = res;
       });
+    this.subscriptions.push(subscription);
   }
   public onSearchBoxChange() {
     console.log(this.searchBoxInput);
@@ -149,4 +157,10 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
   }
   public onFocus() {}
+  ngOnDestroy() {
+    removeLocalStorageItem(LocalStorageKeys.GetChatTabs);
+    this.subscriptions.forEach((s) => {
+      s.unsubscribe();
+    });
+  }
 }

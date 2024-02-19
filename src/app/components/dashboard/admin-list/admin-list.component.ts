@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Subscription } from 'rxjs';
 import { ConfirmationModalComponent } from '../../../shared/components/modals/confirmation-modal/confirmation-modal.component';
 import { UpsertContentModalComponent } from '../../../shared/components/modals/upsert-content-modal/upsert-content-modal.component';
 import { TEmployee } from '../../../shared/interfaces/employee.type';
@@ -28,14 +29,14 @@ import { AdminComponent } from './admin/admin.component';
   templateUrl: './admin-list.component.html',
   styleUrl: './admin-list.component.scss',
 })
-export class AdminListComponent implements OnInit {
-  isLoading: boolean = true;
-  admins!: Employee[];
-  adminForm!: FormGroup;
-  adminToBeDeletedID: number | null = null;
+export class AdminListComponent implements OnInit, OnDestroy {
   readonly allowedToview = allowedToView;
   readonly UserRole = UserRole;
-  userType!: TEmployee;
+  public isLoading: boolean = true;
+  public admins!: Employee[];
+  public userType!: TEmployee;
+  private adminToBeDeletedID: number | null = null;
+  private subcriptions: Subscription[] = [];
   constructor(
     private employeeService: EmployeeService,
     private adminAdapter: EmployeeAdapter,
@@ -47,21 +48,20 @@ export class AdminListComponent implements OnInit {
     this.getAdmins();
     this.getUserType();
   }
-  getUserType() {
-    this.authService.userTypeMessage$.subscribe((res) => {
+  private getUserType() {
+    const subscription = this.authService.userTypeMessage$.subscribe((res) => {
       if (res !== null) {
         this.userType = res;
       }
     });
+    this.subcriptions.push(subscription);
   }
-  getAdmins() {
-    this.employeeService.getAdmins({}).subscribe(
-      (res) => {
+  private getAdmins() {
+    const subscription = this.employeeService.getAdmins({}).subscribe({
+      next: (res) => {
         this.admins = this.adminAdapter.adaptArray(res.iterableData);
-        this.isLoading = false;
       },
-      (e) => {
-        this.isLoading = false;
+      error: (e) => {
         this.toastService.show(
           'Fetching Todos',
           'Failed to fetching todos',
@@ -70,12 +70,16 @@ export class AdminListComponent implements OnInit {
         );
         console.log(e);
       },
-    );
+      complete: () => {
+        this.isLoading = false;
+      },
+    });
+    this.subcriptions.push(subscription);
   }
-  delete(id: number) {
+  public delete(id: number) {
     this.adminToBeDeletedID = id;
   }
-  update(id: number) {
+  public update(id: number) {
     const ref = this.modalService.open(UpsertContentModalComponent, {
       size: 'lg',
       backdrop: 'static',
@@ -83,11 +87,11 @@ export class AdminListComponent implements OnInit {
     ref.componentInstance.update = true;
     ref.componentInstance.id = id;
     ref.componentInstance.componentName = COMPONENT_NAME.UPSERT_ADMIN_COMPONENT;
-    ref.closed.subscribe((res) => {
+    const subscription1 = ref.closed.subscribe((res) => {
       console.log(res);
       this.getAdmins();
     });
-    ref.dismissed.subscribe((res) => {
+    const subscription2 = ref.dismissed.subscribe((res) => {
       console.log(res);
       this.toastService.show(
         'Admin Updation',
@@ -95,20 +99,21 @@ export class AdminListComponent implements OnInit {
         'info',
       );
     });
+    this.subcriptions.push(...[subscription1, subscription2]);
   }
-  createAdmin() {
+  public createAdmin() {
     const ref = this.modalService.open(UpsertContentModalComponent, {
       size: 'lg',
       backdrop: 'static',
     });
     ref.componentInstance.update = false;
     ref.componentInstance.componentName = COMPONENT_NAME.UPSERT_ADMIN_COMPONENT;
-    ref.closed.subscribe((res) => {
+    const subscription1 = ref.closed.subscribe((res) => {
       console.log(res);
       this.getAdmins();
     });
 
-    ref.dismissed.subscribe((res) => {
+    const subscription2 = ref.dismissed.subscribe((res) => {
       console.log(res);
       this.toastService.show(
         'Create Admin',
@@ -116,17 +121,19 @@ export class AdminListComponent implements OnInit {
         'info',
       );
     });
+    this.subcriptions.push(...[subscription1, subscription2]);
   }
-  adminFormInit() {
-    this.adminForm = new FormGroup({});
-  }
-  confirm(confirmation: boolean) {
+  public confirm(confirmation: boolean) {
     if (confirmation && this.adminToBeDeletedID !== null) {
-      this.employeeService
+      const subscription = this.employeeService
         .deleteEmployee(this.adminToBeDeletedID)
         .subscribe(() => {
           this.getAdmins();
         });
+      this.subcriptions.push(subscription);
     }
+  }
+  ngOnDestroy(): void {
+    this.subcriptions.forEach((s) => s.unsubscribe());
   }
 }

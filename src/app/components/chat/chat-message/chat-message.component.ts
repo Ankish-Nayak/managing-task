@@ -6,6 +6,7 @@ import {
   ElementRef,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Renderer2,
   SimpleChanges,
@@ -47,32 +48,32 @@ import { MomentTimePipe } from './pipes/moment-time.pipe';
   styleUrl: './chat-message.component.scss',
 })
 export class ChatMessageComponent
-  implements OnInit, OnChanges, AfterViewChecked, AfterViewInit
+  implements OnInit, OnChanges, AfterViewChecked, AfterViewInit, OnDestroy
 {
+  readonly ICONS = ICONS;
+  @Input({ required: true }) senderId!: number;
+  @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   public deletingMultipleMessages: boolean = false;
   public selectedIdsToBeDeleted: number[] = [];
   public deletingMultipleMessagesLoading: boolean = false;
-  readonly ICONS = ICONS;
   public isLoading = false;
-  private isSubmitLoading = false;
   public messages!: Message[];
   public senderMessage: string = '';
-  @Input({ required: true }) senderId!: number;
-  private loggedInuserId!: number;
   public chatForm!: FormGroup;
+  public idToBeDeleted: null | number = null;
+  public isLoadingMoreData: boolean = false;
+  public showEmoji: boolean = false;
+  private subscriptions: Subscription[] = [];
+  private isSubmitLoading = false;
+  private loggedInuserId!: number;
   private pageState: GetDisplayMessageQueryParams =
     new GetDisplayMessageQueryParams({
       isPagination: true,
       index: 0,
       take: 10,
     });
-  sendMessageSubscription: Subscription | undefined;
-  @ViewChild('scrollContainer') scrollContainer!: ElementRef;
-  public idToBeDeleted: null | number = null;
-  public isLoadingMoreData: boolean = false;
   private isNoMoreData: boolean = false;
   private toBottom: boolean = true;
-  showEmoji: boolean = false;
   constructor(
     private chatMessageAdapter: MessageAdapter,
     private chatboxService: ChatboxService,
@@ -106,16 +107,17 @@ export class ChatMessageComponent
     this.messages = this.chatMessageAdapter.adaptArray(conversationData);
   }
   private getLoggedInUserId() {
-    this.authService.userMessageSource.subscribe((res) => {
+    const subscription = this.authService.userMessageSource.subscribe((res) => {
       if (res) this.loggedInuserId = res.id;
     });
+    this.subscriptions.push(subscription);
   }
   public isLoggedInUserMessage(message: Message) {
     return message.senderId === this.loggedInuserId;
   }
   private getDisplayMessage() {
     this.isLoading = true;
-    this.chatboxService
+    const subscription = this.chatboxService
       .displayMessage(this.senderId, this.pageState)
       .subscribe({
         next: (res) => {
@@ -127,22 +129,21 @@ export class ChatMessageComponent
           this.toBottom = true;
         },
       });
+    this.subscriptions.push(subscription);
   }
   public sendMessage() {
     if (this.isSubmitLoading) {
       return;
     }
     const message = this.senderMessage;
-    // const { message } = this.chatForm.value;
     if (message.length > 0) {
       this.isSubmitLoading = true;
-      this.sendMessageSubscription = this.chatboxService
+      const subscription = this.chatboxService
         .sendMessage(this.senderId, { message: this.senderMessage })
         .subscribe({
           next: () => {
             this.senderMessage = '';
             this.udpateDisplayMessage();
-            // this.getDisplayMessage();
           },
           error: (e) => {
             console.log(e);
@@ -152,11 +153,12 @@ export class ChatMessageComponent
             this.toBottom = true;
           },
         });
+      this.subscriptions.push(subscription);
     }
   }
 
   private udpateDisplayMessage() {
-    this.chatboxService
+    const subscription = this.chatboxService
       .displayMessage(this.senderId, this.pageState)
       .subscribe({
         next: (res) => {
@@ -170,6 +172,7 @@ export class ChatMessageComponent
         },
         complete: () => {},
       });
+    this.subscriptions.push(subscription);
   }
   public trackById(_index: number, message: Message) {
     return message.id;
@@ -180,10 +183,11 @@ export class ChatMessageComponent
       return;
     }
     this.idToBeDeleted = id;
-    this.chatboxService.deleteMessage(id).subscribe(() => {
+    const subscription = this.chatboxService.deleteMessage(id).subscribe(() => {
       this.idToBeDeleted = null;
       this.messages = this.messages.filter((m) => m.id !== id);
     });
+    this.subscriptions.push(subscription);
   }
   public onScroll(event: any) {
     if (this.isLoadingMoreData) {
@@ -258,7 +262,7 @@ export class ChatMessageComponent
       tempIndex++;
     }
     const nextIndex = Math.floor(tempIndex);
-    this.chatboxService
+    const subscription = this.chatboxService
       .displayMessage(this.senderId, {
         ...this.pageState,
         index: nextIndex,
@@ -280,6 +284,7 @@ export class ChatMessageComponent
           this.isLoadingMoreData = false;
         },
       });
+    this.subscriptions.push(subscription);
   }
   public toggleEmoji() {
     this.showEmoji = !this.showEmoji;
@@ -310,24 +315,30 @@ export class ChatMessageComponent
   }
   public deleteSeletedIds() {
     this.deletingMultipleMessagesLoading = true;
-    this.chatboxService.deleteMessages(this.selectedIdsToBeDeleted).subscribe({
-      next: () => {
-        this.messages = this.messages.filter(
-          (m) => !this.selectedIdsToBeDeleted.includes(m.id),
-        );
-        this.selectedIdsToBeDeleted = [];
-        this.deletingMultipleMessages = false;
-      },
-      error: (e) => {
-        console.log(e);
-      },
-      complete: () => {
-        this.deletingMultipleMessagesLoading = false;
-      },
-    });
+    const subscription = this.chatboxService
+      .deleteMessages(this.selectedIdsToBeDeleted)
+      .subscribe({
+        next: () => {
+          this.messages = this.messages.filter(
+            (m) => !this.selectedIdsToBeDeleted.includes(m.id),
+          );
+          this.selectedIdsToBeDeleted = [];
+          this.deletingMultipleMessages = false;
+        },
+        error: (e) => {
+          console.log(e);
+        },
+        complete: () => {
+          this.deletingMultipleMessagesLoading = false;
+        },
+      });
+    this.subscriptions.push(subscription);
   }
   public cancelSelection() {
     this.deletingMultipleMessages = false;
     this.selectedIdsToBeDeleted = [];
+  }
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((s) => s.unsubscribe());
   }
 }

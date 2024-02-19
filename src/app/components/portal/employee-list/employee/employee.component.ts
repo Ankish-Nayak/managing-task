@@ -15,6 +15,8 @@ import { EMPLOYEE_TYPE } from '../../../../utils/constants';
   styleUrl: './employee.component.scss',
 })
 export class EmployeeComponent {
+  readonly ICONS = ICONS;
+  readonly EMPLOYEE_TYPE = EMPLOYEE_TYPE;
   @Input({ required: true }) employee!: Employee;
   @Input({ required: true }) sno!: number;
   @Output() updateEmployee = new EventEmitter<number>();
@@ -28,8 +30,6 @@ export class EmployeeComponent {
     eye: false,
     delete: false,
   };
-  readonly ICONS = ICONS;
-  readonly EMPLOYEE_TYPE = EMPLOYEE_TYPE;
   constructor(private chatBoxService: ChatboxService) {}
   public update() {
     localStorage.setItem(

@@ -31,6 +31,7 @@ import {
   UserRole,
 } from '../../../utils/constants';
 
+import { Subscription } from 'rxjs';
 import {
   getLocalStorageItem,
   removeLocalStorageItem,
@@ -68,7 +69,6 @@ export class TodoListComponent
 {
   public isLoading: boolean = true;
   public todos!: Todo[];
-  private todoIdTobeDeleted: null | number = null;
   public userType!: UserRole;
   public cols: TCOLS = COLS;
   public UserRole = UserRole;
@@ -98,6 +98,8 @@ export class TodoListComponent
     TodoTab.Pending,
   ];
   public totalPagesCount: number = 0;
+  private todoIdTobeDeleted: null | number = null;
+  private subscriptions: Subscription[] = [];
   constructor(
     private todoService: TodoService,
     private authService: AuthService,
@@ -120,17 +122,18 @@ export class TodoListComponent
     this.processCols();
   }
   private getUserType() {
-    this.authService.userTypeMessage$.subscribe((res) => {
+    const subscription = this.authService.userTypeMessage$.subscribe((res) => {
       if (res !== null) {
         this.userType = res;
       }
     });
+    this.subscriptions.push(subscription);
   }
   ngDoCheck(): void {}
   ngAfterViewInit(): void {}
   private getTodos() {
     this.isLoading = true;
-    this.todoService.getTodos(this.pageState).subscribe({
+    const subscription = this.todoService.getTodos(this.pageState).subscribe({
       next: (res) => {
         this.todos = res.iterableData;
         this.totalPagesCount = res.totalPageCount;
@@ -142,6 +145,7 @@ export class TodoListComponent
         this.isLoading = false;
       },
     });
+    this.subscriptions.push(subscription);
   }
   public navigateTo(id: number) {
     const ref = this.modalService.open(UpsertContentModalComponent, {
@@ -151,9 +155,10 @@ export class TodoListComponent
     ref.componentInstance.id = id;
     ref.componentInstance.update = true;
     ref.componentInstance.componentName = COMPONENT_NAME.TODO_DETAIL_COMPONENT;
-    ref.closed.subscribe(() => {
+    const subscription1 = ref.closed.subscribe(() => {
       this.getTodos();
     });
+    this.subscriptions.push(subscription1);
   }
   public updateTodo(id: number) {
     const ref = this.modalService.open(UpsertContentModalComponent, {
@@ -163,63 +168,71 @@ export class TodoListComponent
     ref.componentInstance.update = true;
     ref.componentInstance.id = id;
     ref.componentInstance.componentName = COMPONENT_NAME.UPSERT_TODO_COMPONENT;
-    ref.closed.subscribe(() => {
+    const subscription1 = ref.closed.subscribe(() => {
       this.getTodos();
     });
-    ref.dismissed.subscribe(() => {
+    const subscription2 = ref.dismissed.subscribe(() => {
       this.toastService.show(
         'Task Updation',
         'Task updation was cancelled',
         'info',
       );
     });
+    this.subscriptions.push(...[subscription2, subscription1]);
   }
   public deleteTodo(id: number) {
     this.todoIdTobeDeleted = id;
   }
   public confirm(confirmation: boolean) {
     if (confirmation && this.todoIdTobeDeleted !== null) {
-      this.todoService.deleteTodo(this.todoIdTobeDeleted).subscribe(() => {
-        this.toastService.show(
-          'Todo Deletion',
-          'Todo was deleted',
-          'success',
-          2000,
-        );
-        this.getTodos();
-      });
+      const subscription = this.todoService
+        .deleteTodo(this.todoIdTobeDeleted)
+        .subscribe(() => {
+          this.toastService.show(
+            'Todo Deletion',
+            'Todo was deleted',
+            'success',
+            2000,
+          );
+          this.getTodos();
+        });
+      this.subscriptions.push(subscription);
     }
     this.todoIdTobeDeleted = null;
   }
   private canAssignTask() {
-    this.employeeService.getEmployees({}).subscribe((res) => {
-      if (res.iterableData.length === 0) {
-        this.toastService.show(
-          'Can Assign Task',
-          'No employee in department to assign task',
-          'error',
-          5000,
-        );
-      } else {
-        const ref = this.modalService.open(UpsertContentModalComponent, {
-          size: 'lg',
-          backdrop: 'static',
-        });
-        ref.componentInstance.update = false;
-        ref.componentInstance.componentName =
-          COMPONENT_NAME.UPSERT_TODO_COMPONENT;
-        ref.closed.subscribe(() => {
-          this.getTodos();
-        });
-        ref.dismissed.subscribe(() => {
+    const subscription1 = this.employeeService
+      .getEmployees({})
+      .subscribe((res) => {
+        if (res.iterableData.length === 0) {
           this.toastService.show(
-            'Assign Task',
-            'Task assignment was cancelled',
-            'info',
+            'Can Assign Task',
+            'No employee in department to assign task',
+            'error',
+            5000,
           );
-        });
-      }
-    });
+        } else {
+          const ref = this.modalService.open(UpsertContentModalComponent, {
+            size: 'lg',
+            backdrop: 'static',
+          });
+          ref.componentInstance.update = false;
+          ref.componentInstance.componentName =
+            COMPONENT_NAME.UPSERT_TODO_COMPONENT;
+          const subscription2 = ref.closed.subscribe(() => {
+            this.getTodos();
+          });
+          const subscriptin3 = ref.dismissed.subscribe(() => {
+            this.toastService.show(
+              'Assign Task',
+              'Task assignment was cancelled',
+              'info',
+            );
+          });
+          this.subscriptions.push(...[subscriptin3, subscription2]);
+        }
+      });
+    this.subscriptions.push(subscription1);
   }
   public assignTo() {
     this.canAssignTask();
@@ -236,17 +249,17 @@ export class TodoListComponent
       LocalStorageKeys.GetTodos,
       JSON.stringify(this.pageState),
     );
-    this.todoService.getTodos(this.pageState).subscribe((res) => {
-      this.todos = res.iterableData;
-      this.totalPagesCount = res.totalPageCount;
-      this.pageState.take = Math.min(this.pageState.take, res.totalPageCount);
-    });
+    const subscription = this.todoService
+      .getTodos(this.pageState)
+      .subscribe((res) => {
+        this.todos = res.iterableData;
+        this.totalPagesCount = res.totalPageCount;
+        this.pageState.take = Math.min(this.pageState.take, res.totalPageCount);
+      });
+    this.subscriptions.push(subscription);
   }
   public allowedToView(allowedUsers: TEmployee[]) {
     return allowedUsers.includes(this.userType);
-  }
-  ngOnDestroy(): void {
-    removeLocalStorageItem(LocalStorageKeys.GetTodos);
   }
   public handleTabChange(tab: TodoTab) {
     this.todoTab = tab;
@@ -282,5 +295,9 @@ export class TodoListComponent
         return col;
       });
     }
+  }
+  ngOnDestroy(): void {
+    removeLocalStorageItem(LocalStorageKeys.GetTodos);
+    this.subscriptions.forEach((s) => s.unsubscribe());
   }
 }

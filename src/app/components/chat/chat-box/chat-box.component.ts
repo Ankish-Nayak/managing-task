@@ -1,6 +1,13 @@
 import { CommonModule, DatePipe, JsonPipe } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { SpinnerComponent } from '../../../shared/components/spinners/spinner/spinner.component';
 import { ICONS } from '../../../shared/icons/icons';
 import { ChatBox } from '../../../shared/models/chat-box.model';
@@ -18,24 +25,27 @@ import {
   templateUrl: './chat-box.component.html',
   styleUrl: './chat-box.component.scss',
 })
-export class ChatBoxComponent implements OnInit {
+export class ChatBoxComponent implements OnInit, OnDestroy {
+  readonly ICONS = ICONS;
+  @Output() addChatBox = new EventEmitter<ChatTab>();
   public WORD_LIMIT = 30;
   public chatboxs!: ChatBox[];
   public loggedInUserId!: number;
-  @Output() addChatBox = new EventEmitter<ChatTab>();
   public isLoading: boolean = false;
-  readonly ICONS = ICONS;
+  private subscriptions: Subscription[] = [];
   constructor(
     private chatBoxService: ChatboxService,
     private authService: AuthService,
     private datePipe: DatePipe,
   ) {}
   ngOnInit(): void {
-    this.authService.userMessageSource.subscribe((res) => {
-      if (res) this.loggedInUserId = res.id!;
-    });
+    const subscription1 = this.authService.userMessageSource.subscribe(
+      (res) => {
+        if (res) this.loggedInUserId = res.id!;
+      },
+    );
     this.isLoading = true;
-    this.chatBoxService.getChatBox().subscribe({
+    const subscription2 = this.chatBoxService.getChatBox().subscribe({
       next: (res) => {
         this.chatboxs = res
           .map((m) => ({
@@ -60,6 +70,7 @@ export class ChatBoxComponent implements OnInit {
         this.isLoading = false;
       },
     });
+    this.subscriptions.push(...[subscription1, subscription2]);
   }
   public getIsSeen(chatbox: ChatBox) {
     return this.loggedInUserId === chatbox.employeeId;
@@ -83,5 +94,8 @@ export class ChatBoxComponent implements OnInit {
         name: chatbox.employeeName,
       });
     }
+  }
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((s) => s.unsubscribe());
   }
 }

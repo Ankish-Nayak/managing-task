@@ -5,6 +5,7 @@ import {
   ElementRef,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output,
   ViewChildren,
@@ -18,7 +19,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
+import { Observable, Subscription, debounceTime, fromEvent, merge } from 'rxjs';
 import { SpinnerComponent } from '../../../../shared/components/spinners/spinner/spinner.component';
 import { SubmitSpinnerComponent } from '../../../../shared/components/spinners/submit-spinner/submit-spinner.component';
 import { ClickedEnterDirective } from '../../../../shared/directives/clicked-enter/clicked-enter.directive';
@@ -61,29 +62,29 @@ type IPropertyName =
   templateUrl: './upsert-admin.component.html',
   styleUrl: './upsert-admin.component.scss',
 })
-export class UpsertAdminComponent implements OnInit, AfterViewInit {
+export class UpsertAdminComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChildren(FormControlName, { read: ElementRef })
+  formInputElements!: ElementRef[];
+  @Input() id!: string;
+  @Input() displayTitle: boolean = true;
+  @Input({ alias: 'updateForm', transform: (value: boolean) => !value })
+  @Output()
+  updated: EventEmitter<boolean> = new EventEmitter<boolean>();
   public isLoading: boolean = true;
   public signupForm!: FormGroup;
   // returns the query list of FormControlName
-  @ViewChildren(FormControlName, { read: ElementRef })
-  formInputElements!: ElementRef[];
-  @Input() displayTitle: boolean = true;
   public displayFeedback: { [key in IPropertyName]?: string } = {};
   public employees: { name: string; value: number }[] = [
     { name: 'Employee', value: 0 },
     { name: 'Admin', value: 1 },
   ];
   public isSubmitLoading = false;
-
-  @Output() updated: EventEmitter<boolean> = new EventEmitter<boolean>();
-  private employee!: Employee;
   public departments!: Department[];
-  @Input() id!: string;
-
-  @Input({ alias: 'updateForm', transform: (value: boolean) => !value })
   public adminRegistration: boolean = true;
-  private endPoint: string = '';
 
+  private subscriptions: Subscription[] = [];
+  private employee!: Employee;
+  private endPoint: string = '';
   private validatioMessages!: { [key: string]: { [key: string]: string } };
   private genericValidator!: GenericValidators;
 
@@ -101,17 +102,18 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
     this.genericValidator = new GenericValidators(this.validatioMessages);
   }
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
+    const subscription1 = this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       if (id !== null) {
         this.id = id;
       }
     });
-
-    this.employeeService.getEmployee(Number(this.id)).subscribe((res) => {
-      this.employee = res;
-      // this.signupForm.patchValue(res);
-    });
+    const subscription2 = this.employeeService
+      .getEmployee(Number(this.id))
+      .subscribe((res) => {
+        this.employee = res;
+      });
+    this.subscriptions.push(...[subscription2, subscription1]);
 
     this.getDepartments();
     if (getActiveEndpoint(this.route) === `./${END_POINTS.updateAdmin}`) {
@@ -127,13 +129,14 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
       (formControl: ElementRef) => fromEvent(formControl.nativeElement, 'blur'),
     );
 
-    merge(this.signupForm.valueChanges, ...controlsBlurs)
+    const subscription = merge(this.signupForm.valueChanges, ...controlsBlurs)
       .pipe(debounceTime(800))
       .subscribe(() => {
         this.displayFeedback = this.genericValidator.processMessages(
           this.signupForm,
         );
       });
+    this.subscriptions.push(subscription);
   }
 
   public reset() {
@@ -201,22 +204,25 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
   }
 
   private getDepartments() {
-    this.departmentService.getDepartments().subscribe((res) => {
-      this.departments = this.departmentAdapter.adaptArray(res);
-      if (!this.adminRegistration) {
-        this.departments = this.departments.filter(
-          (d) => this.employee.departmentID !== d.id,
-        );
-        this.departments.push(
-          new Department(
-            this.employee.departmentID,
-            this.employee.departmentName,
-            0,
-          ),
-        );
-      }
-      this.isLoading = false;
-    });
+    const subscription = this.departmentService
+      .getDepartments()
+      .subscribe((res) => {
+        this.departments = this.departmentAdapter.adaptArray(res);
+        if (!this.adminRegistration) {
+          this.departments = this.departments.filter(
+            (d) => this.employee.departmentID !== d.id,
+          );
+          this.departments.push(
+            new Department(
+              this.employee.departmentID,
+              this.employee.departmentName,
+              0,
+            ),
+          );
+        }
+        this.isLoading = false;
+      });
+    this.subscriptions.push(subscription);
   }
   public onSubmit() {
     // Mark all form as touched to trigger validation messages
@@ -226,7 +232,7 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
       this.isSubmitLoading = true;
       if (this.adminRegistration) {
         const data = this.signupForm.value;
-        this.authService.signup(data).subscribe({
+        const subscription = this.authService.signup(data).subscribe({
           next: () => {
             this.updated.emit(true);
             if (this.endPoint == `./${END_POINTS.createAdmin}`) {
@@ -242,6 +248,7 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
             this.isSubmitLoading = false;
           },
         });
+        this.subscriptions.push(subscription);
       } else {
         const departmentName = this.departments.find(
           (d) => d.id.toString() === this.signupForm.value.departmentID,
@@ -252,31 +259,34 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
           employeeType: Number(this.signupForm.value.employeeType),
           departmentName,
         };
-        this.employeeService.updateEmployee(Number(this.id), data).subscribe({
-          next: () => {
-            this.updated.emit(true);
-            if (this.endPoint === `./${END_POINTS.updateAdmin}`) {
-              this.router.navigate(['', END_POINTS.portal.toString()]);
-            }
+        const subscription = this.employeeService
+          .updateEmployee(Number(this.id), data)
+          .subscribe({
+            next: () => {
+              this.updated.emit(true);
+              if (this.endPoint === `./${END_POINTS.updateAdmin}`) {
+                this.router.navigate(['', END_POINTS.portal.toString()]);
+              }
 
-            this.toastService.show(
-              'Admin Updatation',
-              'Admin has been updated',
-              'success',
-            );
-          },
-          error: (e) => {
-            console.log(e);
-            this.toastService.show(
-              'Admin Updatation',
-              'Failed to update admin',
-              'error',
-            );
-          },
-          complete: () => {
-            this.isSubmitLoading = false;
-          },
-        });
+              this.toastService.show(
+                'Admin Updatation',
+                'Admin has been updated',
+                'success',
+              );
+            },
+            error: (e) => {
+              console.log(e);
+              this.toastService.show(
+                'Admin Updatation',
+                'Failed to update admin',
+                'error',
+              );
+            },
+            complete: () => {
+              this.isSubmitLoading = false;
+            },
+          });
+        this.subscriptions.push(subscription);
       }
     }
   }
@@ -308,5 +318,8 @@ export class UpsertAdminComponent implements OnInit, AfterViewInit {
   }
   public onClickedEnter() {
     this.onSubmit();
+  }
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((s) => s.unsubscribe());
   }
 }

@@ -4,6 +4,7 @@ import {
   ElementRef,
   EventEmitter,
   Input,
+  OnDestroy,
   Output,
   ViewChildren,
 } from '@angular/core';
@@ -16,7 +17,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, debounceTime, fromEvent, merge } from 'rxjs';
+import { Observable, Subscription, debounceTime, fromEvent, merge } from 'rxjs';
 import { SpinnerComponent } from '../../../shared/components/spinners/spinner/spinner.component';
 import { SubmitSpinnerComponent } from '../../../shared/components/spinners/submit-spinner/submit-spinner.component';
 import { ClickedEnterDirective } from '../../../shared/directives/clicked-enter/clicked-enter.directive';
@@ -36,6 +37,7 @@ import { GenericValidators } from '../../../shared/validators/generic-validator'
 import { notNullValidator } from '../../../shared/validators/not-null-validators';
 import { END_POINTS, Months } from '../../../utils/constants';
 import { getSpiltTimeISO } from '../../../utils/time';
+import { validationMessages } from './validationMessages';
 
 type IPropertyName =
   | 'title'
@@ -60,24 +62,23 @@ type IPropertyName =
   templateUrl: './upsert-todo.component.html',
   styleUrl: './upsert-todo.component.scss',
 })
-export class UpsertTodoComponent {
+export class UpsertTodoComponent implements OnDestroy {
+  readonly Months = Months;
+  @Input({ required: true }) updateForm!: boolean;
+  @Input() id!: string;
+  @Input() displayTitle: boolean = true;
+  @Output() updated: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @ViewChildren(FormControlName, { read: ElementRef })
+  formInputElements!: ElementRef[];
   public isLoading: boolean = true;
   public isSubmitLoading: boolean = false;
   todoForm!: FormGroup;
   public displayFeedback: { [key in IPropertyName]?: string } = {};
-  @ViewChildren(FormControlName, { read: ElementRef })
-  formInputElements!: ElementRef[];
-  @Input() id!: string;
-  @Input() displayTitle: boolean = true;
-
   public employees!: Employee[];
-  readonly Months = Months;
-
   private employeeId: number | null = null;
-  @Input({ required: true }) updateForm!: boolean;
-  @Output() updated: EventEmitter<boolean> = new EventEmitter<boolean>();
   private validatioMessages!: { [key: string]: { [key: string]: string } };
   private genericValidator!: GenericValidators;
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private todoService: TodoService,
@@ -88,61 +89,11 @@ export class UpsertTodoComponent {
     private employeeAdapter: EmployeeAdapter,
     private datePipe: DatePipe,
   ) {
-    this.validatioMessages = {
-      title: {
-        required: 'Required',
-        minlength: 'Must be of aleast 6 chars.',
-      },
-      description: {
-        required: 'Required',
-        minlength: 'Must be of aleast 6 chars.',
-      },
-      employeeId: {
-        required: 'Required',
-        notNull: 'Select Employee',
-      },
-      date: {
-        required: 'Required',
-        pattern: 'InValid date format',
-      },
-      deadlineDate: {
-        required: 'Required',
-        notNull: 'Select deadline Date',
-      },
-      deadlineTime: {
-        required: 'Required',
-        notNull: 'Select deadline Time',
-      },
-    };
+    this.validatioMessages = validationMessages;
     this.genericValidator = new GenericValidators(this.validatioMessages);
   }
-  ngAfterViewInit(): void {
-    // blur events.
-    const controlsBlurs: Observable<any>[] = this.formInputElements.map(
-      (formControl: ElementRef) => fromEvent(formControl.nativeElement, 'blur'),
-    );
-
-    merge(this.todoForm.valueChanges, ...controlsBlurs)
-      .pipe(debounceTime(800))
-      .subscribe(() => {
-        this.displayFeedback = this.genericValidator.processMessages(
-          this.todoForm,
-        );
-      });
-  }
-  private getEmployees() {
-    this.employeeService.getEmployees({}).subscribe((res) => {
-      this.employees = this.employeeAdapter.adaptArray(res.iterableData);
-      if (this.employeeId !== null) {
-        this.employees = this.employees.filter(
-          (employee) => employee.id === this.employeeId,
-        );
-      }
-      this.isLoading = false;
-    });
-  }
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
+    const subscription1 = this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       if (id !== null) {
         this.id = id;
@@ -151,7 +102,7 @@ export class UpsertTodoComponent {
 
     this.getEmployees();
     this.todoFormInit();
-    this.route.paramMap.subscribe((params) => {
+    const subscription2 = this.route.paramMap.subscribe((params) => {
       const id = params.get('employeeId');
       if (id !== null) {
         this.todoForm.patchValue({ employeeId: id });
@@ -159,6 +110,36 @@ export class UpsertTodoComponent {
         this.todoForm.get('employeeId')?.disable();
       }
     });
+    this.subscriptions.push(...[subscription2, subscription1]);
+  }
+  ngAfterViewInit(): void {
+    // blur events.
+    const controlsBlurs: Observable<any>[] = this.formInputElements.map(
+      (formControl: ElementRef) => fromEvent(formControl.nativeElement, 'blur'),
+    );
+
+    const subscription = merge(this.todoForm.valueChanges, ...controlsBlurs)
+      .pipe(debounceTime(800))
+      .subscribe(() => {
+        this.displayFeedback = this.genericValidator.processMessages(
+          this.todoForm,
+        );
+      });
+    this.subscriptions.push(subscription);
+  }
+  private getEmployees() {
+    const subscription = this.employeeService
+      .getEmployees({})
+      .subscribe((res) => {
+        this.employees = this.employeeAdapter.adaptArray(res.iterableData);
+        if (this.employeeId !== null) {
+          this.employees = this.employees.filter(
+            (employee) => employee.id === this.employeeId,
+          );
+        }
+        this.isLoading = false;
+      });
+    this.subscriptions.push(subscription);
   }
   public onSubmit() {
     if (this.updateForm) {
@@ -179,30 +160,33 @@ export class UpsertTodoComponent {
             ) + 'Z',
         };
 
-        this.todoService.updateTodo(data.employeeId, data).subscribe({
-          next: () => {
-            this.updated.emit(true);
-            this.toastService.show(
-              'Todo',
-              'Todo has been updated successfully',
-              'success',
-              2000,
-            );
-          },
-          error: (e) => {
-            // this.isLoading = false;
-            console.log(e);
-            this.toastService.show(
-              'Todo',
-              'Failed to update todo',
-              'error',
-              2000,
-            );
-          },
-          complete: () => {
-            this.isSubmitLoading = false;
-          },
-        });
+        const subscription = this.todoService
+          .updateTodo(data.employeeId, data)
+          .subscribe({
+            next: () => {
+              this.updated.emit(true);
+              this.toastService.show(
+                'Todo',
+                'Todo has been updated successfully',
+                'success',
+                2000,
+              );
+            },
+            error: (e) => {
+              // this.isLoading = false;
+              console.log(e);
+              this.toastService.show(
+                'Todo',
+                'Failed to update todo',
+                'error',
+                2000,
+              );
+            },
+            complete: () => {
+              this.isSubmitLoading = false;
+            },
+          });
+        this.subscriptions.push(subscription);
       }
     } else {
       const { title, description, employeeId, deadlineDate, deadlineTime } =
@@ -227,7 +211,7 @@ export class UpsertTodoComponent {
       if (this.todoForm.valid) {
         this.isSubmitLoading = true;
         // this.isLoading = true;
-        this.todoService.createTodo(data).subscribe({
+        const subscription = this.todoService.createTodo(data).subscribe({
           next: () => {
             if (this.employeeId) {
               this.router.navigate([`../../${END_POINTS.employeeList}`], {
@@ -255,6 +239,7 @@ export class UpsertTodoComponent {
             this.isSubmitLoading = false;
           },
         });
+        this.subscriptions.push(subscription);
       }
     }
   }
@@ -329,5 +314,8 @@ export class UpsertTodoComponent {
   }
   onClickedEnter() {
     this.onSubmit();
+  }
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((s) => s.unsubscribe());
   }
 }

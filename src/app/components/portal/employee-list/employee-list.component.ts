@@ -31,8 +31,8 @@ import {
   setLocalStorageItem,
 } from '../../../utils/localStorageCRUD';
 import { COLS } from './cols';
-//TODO: add placeholder on every small element which exists like employee todo and alll to make this
-//much better
+import { Subscription } from 'rxjs';
+
 export enum EmployeeTab {
   All = 'All',
   Admins = 'Admins',
@@ -55,10 +55,13 @@ export enum EmployeeTab {
   styleUrl: './employee-list.component.scss',
 })
 export class EmployeeListComponent implements OnInit, OnDestroy {
+  readonly cols = COLS;
+  readonly ICONS = ICONS;
+  readonly UserRole = UserRole;
+  readonly EmployeeTab = EmployeeTab;
   public employees!: Employee[];
   public isLoading: boolean = true;
-  private employeeToBeDeletedID: number | null = null;
-  pageState = new GetEmployeesQueryParams(
+  public pageState = new GetEmployeesQueryParams(
     (() => {
       const data = getLocalStorageItem(LocalStorageKeys.GetEmployees);
       if (data) {
@@ -73,20 +76,18 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
       }
     })(),
   );
-  controlsClass: string = 'container-fluid';
+  public controlsClass: string = 'container-fluid';
   public totalPagesCount: number = 0;
-  departmentId: string | null = null;
-  userType!: UserRole;
-  readonly cols = COLS;
-  employeesTabs: EmployeeTab[] = [
+  public departmentId: string | null = null;
+  public userType!: UserRole;
+  public employeesTabs: EmployeeTab[] = [
     EmployeeTab.All,
     EmployeeTab.Admins,
     EmployeeTab.Employees,
   ];
-  employeeTab: EmployeeTab = EmployeeTab.All;
-  readonly ICONS = ICONS;
-  readonly UserRole = UserRole;
-  readonly EmployeeTab = EmployeeTab;
+  public employeeTab: EmployeeTab = EmployeeTab.All;
+  private employeeToBeDeletedID: number | null = null;
+  private subscriptions: Subscription[] = [];
   constructor(
     private employeeService: EmployeeService,
     private employeeAdapter: EmployeeAdapter,
@@ -125,7 +126,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     }
   }
   public getQueryParams() {
-    this.route.queryParams.subscribe((params) => {
+    const subscription = this.route.queryParams.subscribe((params) => {
       console.log('params ', params);
       const employeeTab = params['employeeTab'];
       const key = Object.values(EmployeeTab).find((e) => e === employeeTab);
@@ -133,6 +134,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
         this.employeeTab = key;
       }
     });
+    this.subscriptions.push(subscription);
   }
   public getEmployeesByDepartment() {
     this.isLoading = true;
@@ -140,24 +142,26 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
   private getEmployees() {
     // this.isLoading = true;
     if (this.departmentId) {
-      this.employeeService
+      const subscription = this.employeeService
         .getEmployeesByDepartment(Number(this.departmentId), {})
         .subscribe((res) => {
           this.employees = this.employeeAdapter.adaptArray(res.iterableData);
           this.totalPagesCount = res.count;
           this.isLoading = false;
         });
+      this.subscriptions.push(subscription);
     } else {
       this.handleTabChange(this.employeeTab);
     }
   }
   public confirm(confirmation: boolean) {
     if (confirmation && this.employeeToBeDeletedID !== null) {
-      this.employeeService
+      const subscription = this.employeeService
         .deleteEmployee(this.employeeToBeDeletedID)
         .subscribe(() => {
           this.getEmployees();
         });
+      this.subscriptions.push(subscription);
     }
   }
   onViewEmployeesByDepartment() {}
@@ -167,7 +171,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
   }
 
   public onClicked(name: string) {
-    this.employeeService
+    const subscription = this.employeeService
       .getEmployees({
         orderBy: name,
         orders: 1,
@@ -175,6 +179,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         this.employees = res.iterableData;
       });
+    this.subscriptions.push(subscription);
   }
   public onPageChange(pageStateUpdates: Partial<GetEmployeesQueryParams>) {
     if (pageStateUpdates.take) {
@@ -188,7 +193,6 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
       LocalStorageKeys.GetEmployees,
       JSON.stringify(this.pageState),
     );
-    console.log('changes happening', this.pageState);
     this.getEmployees();
   }
 
@@ -206,25 +210,32 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     this.employeeTab = tab;
     console.log('tab', this.employeeTab);
     if (this.employeeTab === EmployeeTab.All) {
-      this.employeeService
+      const subscription = this.employeeService
         .getEmployeesAndAdmins(this.pageState)
         .subscribe((res) => {
           this.employees = this.employeeAdapter.adaptArray(res.iterableData);
           this.totalPagesCount = res.count;
           this.isLoading = false;
         });
+      this.subscriptions.push(subscription);
     } else if (this.employeeTab === EmployeeTab.Admins) {
-      this.employeeService.getAdmins({}).subscribe((res) => {
-        this.employees = this.employeeAdapter.adaptArray(res.iterableData);
-        this.totalPagesCount = res.count;
-        this.isLoading = false;
-      });
+      const subscription = this.employeeService
+        .getAdmins({})
+        .subscribe((res) => {
+          this.employees = this.employeeAdapter.adaptArray(res.iterableData);
+          this.totalPagesCount = res.count;
+          this.isLoading = false;
+        });
+      this.subscriptions.push(subscription);
     } else {
-      this.employeeService.getEmployees({}).subscribe((res) => {
-        this.employees = this.employeeAdapter.adaptArray(res.iterableData);
-        this.totalPagesCount = res.count;
-        this.isLoading = false;
-      });
+      const subscription = this.employeeService
+        .getEmployees({})
+        .subscribe((res) => {
+          this.employees = this.employeeAdapter.adaptArray(res.iterableData);
+          this.totalPagesCount = res.count;
+          this.isLoading = false;
+        });
+      this.subscriptions.push(subscription);
     }
   }
   public createAdmin() {
@@ -234,12 +245,12 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     });
     ref.componentInstance.update = false;
     ref.componentInstance.componentName = COMPONENT_NAME.UPSERT_ADMIN_COMPONENT;
-    ref.closed.subscribe((res) => {
+    const subscription1 = ref.closed.subscribe((res) => {
       console.log(res);
       this.handleTabChange(this.employeeTab);
     });
 
-    ref.dismissed.subscribe((res) => {
+    const subscription2 = ref.dismissed.subscribe((res) => {
       console.log(res);
       this.toastService.show(
         'Create Admin',
@@ -247,8 +258,10 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
         'info',
       );
     });
+    this.subscriptions.push(...[subscription2, subscription1]);
   }
   ngOnDestroy(): void {
     removeLocalStorageItem(LocalStorageKeys.GetEmployees);
+    this.subscriptions.forEach((s) => s.unsubscribe());
   }
 }
