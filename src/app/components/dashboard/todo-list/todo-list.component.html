@@ -11,48 +11,96 @@
   (searchBoxChange)="onPageChange({ search: $event })"
   [searchBoxPlaceholder]="'Search todos here'"
 ></app-data-table-control-panel>
-<ul class="nav nav-tabs" *ngIf="!isLoading">
-  <li class="nav-item" *ngFor="let tab of todosTabs">
-    <a
-      [class]="'nav-link pointer ' + (tab === todoTab ? 'active' : '')"
-      aria-current="page"
-      (click)="handleTabChange(tab)"
-      >{{ tab }}</a
-    >
-  </li>
-</ul>
-
-<div class="scroll" *ngIf="!isLoading">
-  <table class="table table-hover">
-    <thead>
-      <tr
-        class="todo-list-header"
-        app-todo-list-header
-        [cols]="cols"
-        [userType]="userType"
-        (pageStateChange)="onPageChange($event)"
-        [pageState]="pageState"
-      ></tr>
-    </thead>
-    <tbody class="scroll">
-      <tr
-        *ngFor="let todo of todos; let i = index"
-        app-todo
-        [todo]="todo"
-        [sno]="pageState.index * pageState.take + (i + 1)"
-        (updateTodo)="updateTodo($event)"
-        (deleteTodo)="deleteTodo($event)"
-        (navigateTo)="navigateTo($event)"
-        [userType]="userType"
-        [isLoading]="isLoading"
-        [todoTab]="todoTab"
-      ></tr>
-      <tr *ngIf="!(todos && todos.length !== 0)">
-        <th [colSpan]="7">"Nothing Here"</th>
-      </tr>
-    </tbody>
-  </table>
+<div class="d-flex justify-content-end container-fuild" *ngIf="!isLoading">
+  <i
+    id="toggleView"
+    [class]="tableView ? ICONS.tableViewFilled.class : ICONS.tableView.class"
+    (click)="toggleTableView()"
+  ></i>
 </div>
+<ng-container *ngIf="tableView">
+  <ul class="nav nav-tabs" *ngIf="!isLoading">
+    <li class="nav-item" *ngFor="let tab of todosTabs">
+      <a
+        [class]="'nav-link pointer ' + (tab === todoTab ? 'active' : '')"
+        aria-current="page"
+        (click)="handleTabChange(tab)"
+        >{{ tab }}</a
+      >
+    </li>
+  </ul>
+
+  <div class="scroll" *ngIf="!isLoading">
+    <table class="table table-hover">
+      <thead>
+        <tr
+          class="todo-list-header"
+          app-todo-list-header
+          [cols]="cols"
+          [userType]="userType"
+          (pageStateChange)="onPageChange($event)"
+          [pageState]="pageState"
+        ></tr>
+      </thead>
+      <tbody class="scroll">
+        <tr
+          *ngFor="let todo of todos; let i = index"
+          app-todo
+          [todo]="todo"
+          [sno]="pageState.index * pageState.take + (i + 1)"
+          (updateTodo)="updateTodo($event)"
+          (deleteTodo)="deleteTodo($event)"
+          (navigateTo)="navigateTo($event)"
+          [userType]="userType"
+          [isLoading]="isLoading"
+          [todoTab]="todoTab"
+        ></tr>
+        <tr *ngIf="!(todos && todos.length !== 0)">
+          <th [colSpan]="7">"Nothing Here"</th>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="!tableView">
+  <div class="d-flex justify-content-evenly align-items-center container-fuild">
+    <h2>Todo</h2>
+    <h2>Done</h2>
+  </div>
+  <div id="draggable-items-container">
+    <div class="example-container">
+      <div
+        cdkDropList
+        #todoList="cdkDropList"
+        [cdkDropListData]="pendingTodos"
+        [cdkDropListConnectedTo]="[doneList]"
+        class="example-list"
+        (cdkDropListDropped)="drop($event)"
+      >
+        @for (item of pendingTodos; track item) {
+          <div class="example-box" cdkDrag>{{ item.title }}</div>
+        }
+      </div>
+    </div>
+
+    <div class="example-container">
+      <div
+        cdkDropList
+        #doneList="cdkDropList"
+        [cdkDropListData]="completedTodos"
+        [cdkDropListConnectedTo]="[todoList]"
+        class="example-list"
+        (cdkDropListDropped)="drop($event)"
+      >
+        @for (item of completedTodos; track item) {
+          <div class="example-box" cdkDrag>{{ item.title }}</div>
+        }
+      </div>
+    </div>
+  </div>
+</ng-container>
+
 <app-pagination
   *ngIf="!isLoading"
   [(selectedPage)]="pageState.index"

@@ -237,4 +237,18 @@ export const ICONS = {
     openDelay: 1000,
     closeDelay: 500,
   },
+  tableView: {
+    class: 'bi bi-grid-3x3-gap',
+    name: 'tableView',
+    toolTip: 'minimize',
+    openDelay: 1000,
+    closeDelay: 500,
+  },
+  tableViewFilled: {
+    class: 'bi bi-grid-3x3-gap-fill',
+    name: 'tableViewFilled',
+    toolTip: 'minimize',
+    openDelay: 1000,
+    closeDelay: 500,
+  },
 };

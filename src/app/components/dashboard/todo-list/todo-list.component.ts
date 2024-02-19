@@ -40,6 +40,14 @@ import {
 import { COLS, TCOLS } from './cols';
 import { TodoListHeaderComponent } from './todo-list-header/todo-list-header.component';
 import { TodoComponent } from './todo/todo.component';
+import { ICONS } from '../../../shared/icons/icons';
+import {
+  CdkDragDrop,
+  moveItemInArray,
+  transferArrayItem,
+  CdkDrag,
+  CdkDropList,
+} from '@angular/cdk/drag-drop';
 
 export enum TodoTab {
   All = 'All',
@@ -60,6 +68,8 @@ export enum TodoTab {
     UpsertContentModalComponent,
     PaginationComponent,
     DataTableControlPanelComponent,
+    CdkDropList,
+    CdkDrag,
   ],
   templateUrl: './todo-list.component.html',
   styleUrl: './todo-list.component.scss',
@@ -67,6 +77,10 @@ export enum TodoTab {
 export class TodoListComponent
   implements OnInit, AfterViewInit, OnDestroy, DoCheck
 {
+  public pendingTodos: Todo[] = [];
+  public completedTodos: Todo[] = [];
+  public readonly ICONS = ICONS;
+  public tableView: boolean = false;
   public isLoading: boolean = true;
   public todos!: Todo[];
   public userType!: UserRole;
@@ -137,6 +151,8 @@ export class TodoListComponent
       next: (res) => {
         this.todos = res.iterableData;
         this.totalPagesCount = res.totalPageCount;
+        this.pendingTodos = this.todos.filter((t) => !t.isCompleted);
+        this.completedTodos = this.todos.filter((t) => t.isCompleted);
       },
       error: (e) => {
         console.log(e);
@@ -253,6 +269,8 @@ export class TodoListComponent
       .getTodos(this.pageState)
       .subscribe((res) => {
         this.todos = res.iterableData;
+        this.pendingTodos = res.iterableData.filter((t) => !t.isCompleted);
+        this.completedTodos = res.iterableData.filter((t) => t.isCompleted);
         this.totalPagesCount = res.totalPageCount;
         this.pageState.take = Math.min(this.pageState.take, res.totalPageCount);
       });
@@ -295,6 +313,56 @@ export class TodoListComponent
         return col;
       });
     }
+  }
+
+  public drop(event: CdkDragDrop<Todo[]>) {
+    if (event.previousContainer === event.container) {
+      console.log('moved in array');
+      moveItemInArray(
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex,
+      );
+    } else {
+      console.log('moved across container');
+      // item to be moved
+      const todo = event.container.data[event.currentIndex];
+      const destinationStatus =
+        this.pendingTodos.findIndex((t) => t.id === todo.id) !== -1
+          ? 'done'
+          : 'pending';
+      // const prevContainer = event.previousContainer;
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex,
+      );
+      const subscription = this.todoService
+        .markTodo(todo.id, { isCompleted: !todo.isCompleted })
+        .subscribe({
+          next: (_res) => {},
+          error: (e) => {
+            transferArrayItem(
+              event.container.data,
+              event.previousContainer.data,
+              event.currentIndex,
+              event.previousIndex,
+            );
+            this.toastService.show(
+              'Todo Status',
+              `Failed to mark todo as ${destinationStatus}`,
+              'error',
+            );
+            console.log(e);
+          },
+          complete: () => {},
+        });
+      this.subscriptions.push(subscription);
+    }
+  }
+  public toggleTableView() {
+    this.tableView = !this.tableView;
   }
   ngOnDestroy(): void {
     removeLocalStorageItem(LocalStorageKeys.GetTodos);
