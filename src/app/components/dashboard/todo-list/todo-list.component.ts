@@ -31,7 +31,15 @@ import {
   UserRole,
 } from '../../../utils/constants';
 
+import {
+  CdkDrag,
+  CdkDragDrop,
+  CdkDropList,
+  moveItemInArray,
+  transferArrayItem,
+} from '@angular/cdk/drag-drop';
 import { Subscription } from 'rxjs';
+import { ICONS } from '../../../shared/icons/icons';
 import {
   getLocalStorageItem,
   removeLocalStorageItem,
@@ -40,14 +48,7 @@ import {
 import { COLS, TCOLS } from './cols';
 import { TodoListHeaderComponent } from './todo-list-header/todo-list-header.component';
 import { TodoComponent } from './todo/todo.component';
-import { ICONS } from '../../../shared/icons/icons';
-import {
-  CdkDragDrop,
-  moveItemInArray,
-  transferArrayItem,
-  CdkDrag,
-  CdkDropList,
-} from '@angular/cdk/drag-drop';
+import { TimeAgoPipe } from '../../../shared/pipes/time-ago/time-ago.pipe';
 
 export enum TodoTab {
   All = 'All',
@@ -70,6 +71,7 @@ export enum TodoTab {
     DataTableControlPanelComponent,
     CdkDropList,
     CdkDrag,
+    TimeAgoPipe,
   ],
   templateUrl: './todo-list.component.html',
   styleUrl: './todo-list.component.scss',
@@ -114,6 +116,7 @@ export class TodoListComponent
   public totalPagesCount: number = 0;
   private todoIdTobeDeleted: null | number = null;
   private subscriptions: Subscription[] = [];
+  private WORD_LIMIT = 80;
   constructor(
     private todoService: TodoService,
     private authService: AuthService,
@@ -317,31 +320,35 @@ export class TodoListComponent
 
   public drop(event: CdkDragDrop<Todo[]>) {
     if (event.previousContainer === event.container) {
-      console.log('moved in array');
       moveItemInArray(
         event.container.data,
         event.previousIndex,
         event.currentIndex,
       );
     } else {
-      console.log('moved across container');
-      // item to be moved
-      const todo = event.container.data[event.currentIndex];
-      const destinationStatus =
-        this.pendingTodos.findIndex((t) => t.id === todo.id) !== -1
-          ? 'done'
-          : 'pending';
-      // const prevContainer = event.previousContainer;
       transferArrayItem(
         event.previousContainer.data,
         event.container.data,
         event.previousIndex,
         event.currentIndex,
       );
+
+      // item to be moved
+      const todo = event.container.data[event.currentIndex];
+      const destinationStatus =
+        this.pendingTodos.findIndex((t) => t.id === todo.id) !== -1
+          ? 'pending'
+          : 'done';
       const subscription = this.todoService
         .markTodo(todo.id, { isCompleted: !todo.isCompleted })
         .subscribe({
-          next: (_res) => {},
+          next: (_res) => {
+            this.toastService.show(
+              'Todo Completion',
+              `Marked todo as ${destinationStatus}`,
+              'success',
+            );
+          },
           error: (e) => {
             transferArrayItem(
               event.container.data,
@@ -361,8 +368,27 @@ export class TodoListComponent
       this.subscriptions.push(subscription);
     }
   }
+  public getDescription(description: string) {
+    return description.length > this.WORD_LIMIT
+      ? description.substring(0, this.WORD_LIMIT) + '...'
+      : description;
+  }
   public toggleTableView() {
     this.tableView = !this.tableView;
+  }
+  public onDragStart(id: number) {
+    const listItem = document.getElementById(id.toString());
+    if (listItem) {
+      listItem.classList.add('active');
+      listItem.classList.add('move');
+    }
+  }
+  public onDragEnd(id: number) {
+    const listItem = document.getElementById(id.toString());
+    if (listItem) {
+      listItem.classList.remove('active');
+      listItem.classList.remove('move');
+    }
   }
   ngOnDestroy(): void {
     removeLocalStorageItem(LocalStorageKeys.GetTodos);

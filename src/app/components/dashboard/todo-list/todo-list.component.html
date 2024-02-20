@@ -64,9 +64,13 @@
 </ng-container>
 
 <ng-container *ngIf="!tableView">
-  <div class="d-flex justify-content-evenly align-items-center container-fuild">
-    <h2>Todo</h2>
-    <h2>Done</h2>
+  <div class="d-flex justify-content-around align-items-center container-fuild">
+    <div>
+      <h2>Todo</h2>
+    </div>
+    <div>
+      <h2>Done</h2>
+    </div>
   </div>
   <div id="draggable-items-container">
     <div class="example-container">
@@ -78,9 +82,35 @@
         class="example-list"
         (cdkDropListDropped)="drop($event)"
       >
-        @for (item of pendingTodos; track item) {
-          <div class="example-box" cdkDrag>{{ item.title }}</div>
-        }
+        <div class="list-group">
+          @for (item of pendingTodos; track item) {
+            <a
+              cdkDrag
+              class="list-group-item list-group-item-action shadow"
+              [id]="item.id"
+              (cdkDragStarted)="onDragStart(item.id)"
+              (cdkDragEnded)="onDragEnd(item.id)"
+            >
+              <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ item.title }}</h5>
+                <small class="text-muted">{{
+                  item.createdDate | timeAgo
+                }}</small>
+              </div>
+              <p class="mb-1">
+                {{ getDescription(item.description) }}
+              </p>
+              <div
+                class="d-flex justify-content-between align-items container-fuild"
+              >
+                <small class="text-muted">{{
+                  item.assignBy === 2 ? "SuperAdmin" : "Admin"
+                }}</small>
+                <small class="text-muted">{{ item.deadLine! | timeAgo }}</small>
+              </div>
+            </a>
+          }
+        </div>
       </div>
     </div>
 
@@ -93,9 +123,24 @@
         class="example-list"
         (cdkDropListDropped)="drop($event)"
       >
-        @for (item of completedTodos; track item) {
-          <div class="example-box" cdkDrag>{{ item.title }}</div>
-        }
+        <div class="list-group">
+          @for (item of completedTodos; track item) {
+            <a cdkDrag class="list-group-item list-group-item-action">
+              <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ item.title }}</h5>
+                <small class="text-muted">{{
+                  item.createdDate | timeAgo
+                }}</small>
+              </div>
+              <p class="mb-1">
+                {{ getDescription(item.description) }}
+              </p>
+              <small class="text-muted">{{
+                item.assignBy === 2 ? "SuperAdmin" : "Admin"
+              }}</small>
+            </a>
+          }
+        </div>
       </div>
     </div>
   </div>
